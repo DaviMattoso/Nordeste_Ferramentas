@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Fundo azul da empresa -->
+  <rect width="32" height="32" rx="6" fill="#2563eb"/>
+  
+  <!-- Ferramenta centralizada -->
+  <path d="M10 14 L14 10 L18 14 L22 10 L26 14 L22 18 L18 22 L14 18 L10 14 Z" 
+        fill="#ffffff"/>
+  
+  <!-- Centro da ferramenta -->
+  <circle cx="18" cy="18" r="3" fill="#2563eb"/>
+</svg>

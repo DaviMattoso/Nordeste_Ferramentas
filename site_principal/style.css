@@ -1,0 +1,1145 @@
+/* =====================================================
+   RESET BÁSICO
+   ===================================================== */
+* {
+    margin: 0;                 /* Remove margens padrão */
+    padding: 0;                /* Remove espaçamentos padrão */
+    box-sizing: border-box;    /* Inclui padding/borda no tamanho */
+}
+
+/* =====================================================
+   BASE DO SITE
+   Afeta TODO o HTML
+   ===================================================== */
+body {
+    font-family: 'Inter', sans-serif; /* Fonte principal */
+    font-size: 16px;                  /* Tamanho base */
+    line-height: 1.6;                 /* Altura das linhas */
+    background-color: #ffffff;        /* Fundo branco */
+}
+
+/* 
+   Compensa o header fixo
+   Evita que cubra o conteúdo da página
+*/
+body {
+    padding-top: 140px; /* valor inicial (desktop) */
+}
+
+
+/* Container padrão usado em várias seções */
+.container {
+    width: 90%;           /* Usa 90% da largura */
+    max-width: 1000px;    /* Limita largura máxima */
+    margin: auto;         /* Centraliza */
+}
+
+/* Classe utilitária para centralizar texto */
+.center {
+    text-align: center;
+}
+
+/* =====================================================
+   HEADER
+   <header class="header">
+   ===================================================== */
+.header {
+    border-bottom: 1px solid #eee;/* Linha inferior */
+    position: fixed;          /* Fixa no topo */
+    top: 0;                   /* Começa no topo */
+    left: 0;
+    width: 100%;              /* Ocupa toda largura */
+    z-index: 9999;            /* Fica acima de tudo */
+    transition: top 0.3s ease; /* Animação suave */
+    background: #ffffff;      /* Fundo branco */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Pequena sombra */
+}
+
+/* Estrutura interna do header !! */
+.header-content {
+    display: flex;                  /* Layout flexível */
+    justify-content: space-between; /* Logo à esquerda, menu à direita */
+    align-items: center;            /* Centraliza verticalmente */
+    padding: 20px 0;                /* Espaço vertical */
+    gap: 20px;
+}
+
+/* Container do texto da marca */
+.logo-text {
+    display: flex;              /* Organiza os textos */
+    flex-direction: column;     /* Nome em cima, slogan embaixo */
+    justify-content: center;    /* Centraliza verticalmente */
+}
+
+/* Nome da empresa */
+.company-name {
+    font-size: 24px;            /* Tamanho do nome */
+    font-weight: 700;           /* Negrito */
+    line-height: 1.2;           /* Espaçamento entre linhas */
+    color: #1e3a8a;             /* Azul principal */
+    white-space: nowrap;        /* ⬅ Impede quebra de linha oque soluciona o problema do espaçamento entre logo e menu*/
+}
+
+/* Slogan da empresa */
+.company-tagline {
+    font-size: 14px;            /* Texto menor */
+    color: #6b7280;             /* Cinza */
+}
+
+/* Imagem do logo */
+.logo-img {
+    width: 150px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Nome da empresa */
+.company-name {
+    color: #1e3a8a;               /* Azul da marca */
+    font-weight: 700;             /* Negrito */
+    font-size: 22px;
+}
+
+/* Slogan da empresa */
+.company-tagline {
+    color: #6b7280;               /* Cinza */
+    font-size: 14px;              /* Texto menor */
+}
+
+/* 
+   NOTA:
+   Não existe estado "active" no menu.
+   Todos os links só mudam visualmente no :hover.
+   Isso garante comportamento uniforme e evita bugs.
+*/
+/* Definições de estilo dos botoes do header*/
+/* Container do menu */
+.nav {
+    display: flex;                 /* Links lado a lado */
+    gap: 20px;                     /* Espaço entre botões */
+    align-items: center;           /* Alinhamento vertical */
+}
+
+/* Links do menu – estado normal */
+.nav-btn {
+    background: transparent;      /* Botão sem fundo */
+    border: none;                 /* Remove borda padrão */
+    padding: 8px 14px;            /* Área clicável */
+    border-radius: 6px;           /* Cantos arredondados */
+    font-family: inherit;         /* Usa a fonte do site */
+    font-size: 16px;              /* Tamanho do texto */
+    color: #1f2937;               /* Cor padrão do texto */
+    cursor: pointer;              /* Cursor de clique */
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        transform 0.3s ease;
+}
+
+/* Hover dos botões do menu */
+.nav-btn:hover {
+    background-color: #f1f5f9;    /* Fundo cinza claro */
+    color: #ff6b35;               /* Texto laranja */
+    transform: translateY(-2px);  /* Leve subida */
+}
+
+/* =====================================================
+   BOTÕES
+   ===================================================== */
+.btn-primary,
+.btn-secondary,
+button {
+    cursor: pointer;              /* Cursor de mão */
+    transition: 0.3s;             /* Animação */
+    border-radius: 8px;           /* Bordas arredondadas */
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* Botão principal (Portal de Locação)(laranja) */
+.btn-primary {
+    background: #ff6b35;
+    color: #ffffff;
+    padding: 12px 20px;
+}
+
+/* Hover botão principal */
+.btn-primary:hover {
+    background: #e85a28;
+    transform: translateY(-2px);
+}
+
+/* Botão secundário (azul) */
+.btn-secondary {
+    background: #1e3a8a;
+    color: #ffffff;
+    padding: 12px 20px;
+}
+
+/* Hover botão secundário */
+.btn-secondary:hover {
+    background: #1e40af;
+    transform: translateY(-2px);
+}
+
+/* =====================================================
+   HERO
+   <section class="hero">
+   ===================================================== */
+.hero {
+    padding: 80px 0; /* Espaço vertical */
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 colunas iguais */
+    align-items: center;            /* Alinha verticalmente */
+    gap: 60px;                      /* Espaço entre texto e imagem */
+}
+
+/* TEXTO */
+.hero-text h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin-bottom: 20px;
+}
+
+.hero-text h1 span {
+    color: #ff6b35;
+}
+
+.hero-text p {
+    font-size: 18px;
+    color: #4b5563;
+    max-width: 520px;
+}
+
+/* IMAGEM */
+.hero-image img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* Botões do hero */
+.hero-buttons {
+    margin-top: 30px;          /* Espaço entre texto e botões */
+    display: flex;
+    gap: 20px;                 /* Espaço entre botões */
+    flex-wrap: wrap;           /* Evita quebrar layout no mobile */
+}
+
+/* Botão específico do hero */
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;                 /* Espaço entre ícone e texto */
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* =====================================================
+   Blog
+   ===================================================== */
+.blog{
+    width: 100%;
+    height: auto;
+    margin: 25px 0;
+}
+
+.blog h1{
+    text-align: center;
+    font-size: 50px;
+    margin-bottom: 30px;
+    color: #1e3a8a;
+}
+
+.blog .blog_box{
+    width: 95%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.blog .blog_box .blog_card{
+    margin: 0 auto;
+    width: 450px;
+    height: auto;
+    box-shadow: 0 0 8px rgba(255, 94, 0, 0.5);
+}
+
+.blog .blog_box .blog_card .blog_img{
+    width: 450px;
+    height: 300px;
+    overflow: hidden;
+}
+
+.blog .blog_box .blog_card .blog_img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.blog .blog_box .blog_card .blog_tag{
+    padding: 20px;
+}
+
+.blog .blog_box .blog_card .blog_tag h2{
+    color: #ff6b35;
+}
+
+.blog .blog_box .blog_card .blog_tag p{
+    margin-top: 10px;
+    text-align: justify;
+    line-height: 22px;
+}
+
+.blog .blog_box .blog_card .blog_tag .blog_icon{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #ff6b35;
+    cursor: pointer;
+}
+
+/* Botão de acesso ao Blog */
+.blog-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px; /* Espaço entre os cards e o botão */
+}
+
+.blog-btn {
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #000000; /* Mesmo padrão dos outros botões */
+}
+
+/* Corrige cor dos títulos clicáveis do blog */
+.blog .blog_box .blog_card .blog_tag h2 a {
+    color: #ff6b35;          /* mantém o laranja */
+    text-decoration: none;  /* remove sublinhado */
+}
+
+/* Hover opcional (fica lindo) */
+.blog .blog_box .blog_card .blog_tag h2 a:hover {
+    color: #e85a28;          /* laranja um pouco mais escuro */
+}
+
+
+/* =====================================================
+   Ferramentas
+   ===================================================== */
+/* Cabeçalho da seção Ferramentas */
+.section-header {
+    text-align: center;      /* Centraliza tudo */
+    margin-bottom: 3rem;     /* Espaço antes dos cards */
+}
+
+.section-title {
+    font-size: 50px;        
+    color: #1e3a8a;          
+    margin-bottom: 30px;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    color: #4b5563;          /* Cinza suave */
+}
+
+.equipamentos {
+    padding: 4rem 0; 
+}
+
+/* Grid dos cards */
+.equipamentos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 cards lado a lado */
+    gap: 2rem;
+}
+
+/* Card individual */
+.equipamento-card {
+    background: #ffffff;   
+    padding: 3rem;         
+    border-radius: 12px;   
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    border: 2px solid transparent;
+}
+
+/* Hover do card */
+.equipamento-card:hover {
+    border-color: #ff6b35; 
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15); 
+}
+
+/* Ícone circular */
+.equipamento-icon {
+    width: 80px;
+    height: 80px;
+    background: #ff6b35;   
+    color: #ffffff;       
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem; 
+    font-size: 2rem;
+}
+
+/* Título do card */
+.equipamento-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;     
+    color: #334155;      
+    margin-bottom: 1rem; 
+}
+
+/* Texto do card */
+.equipamento-card p {
+    color: #64748b;      
+    line-height: 1.6;
+}
+
+/* Área do botão */
+.equipamentos-actions {
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* Card destacado */
+.highlight {
+    border: 2px solid #ff6b35;
+}
+
+.equipamentos-actions .btn-primary {
+    border: 2px solid #000000;   /* Borda preta */
+}
+
+/* =====================================================
+   SOBRE – Nordeste Ferramentas
+   ===================================================== */
+.sobre {
+    padding: 4rem 0;
+    background-color: #f8fafc; /* cinza claro do fundo */
+}
+
+/* Grid principal */
+.sobre-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* texto | imagem */
+    gap: 4rem;
+    align-items: center;
+}
+
+/* Texto */
+.sobre-text .section-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: #1e3a8a; /* azul principal */
+    margin-bottom: 20px;
+}
+
+.sobre-description {
+    font-size: 18px;
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+/* Lista de benefícios */
+.sobre-features {
+    margin-bottom: 30px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 16px;
+    color: #334155;
+}
+
+.feature i {
+    color: #10b981; /* verde de sucesso */
+    font-size: 18px;
+}
+
+/* Botão outline */
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border: 2px solid #1e3a8a;
+    color: #1e3a8a;
+    background: transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-outline:hover {
+    background-color: #1e3a8a;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* Imagem */
+.sobre-image {
+    text-align: center;
+}
+
+.sobre-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* =====================================================
+   CONTATO
+   ===================================================== */
+.contato {
+    padding: 80px 0;
+}
+
+/* Grid principal */
+.contato-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+/* =========================
+   INFORMAÇÕES DE CONTATO
+   ========================= */
+.contato-info {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.contato-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.contato-item i {
+    color: #ff6b35;
+    font-size: 24px;
+    margin-top: 4px;
+}
+
+.contato-item h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+}
+
+.contato-item p {
+    color: #64748b;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* =========================
+   FORMULÁRIO
+   ========================= */
+.contato-form {
+    background: #f8fafc;
+    padding: 40px;
+    border-radius: 12px;
+}
+
+/* Grupo de campos */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #f8fafc;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background: #ffffff;
+}
+
+/* Foco */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff6b35;
+}
+
+/* Textarea */
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Botão */
+.contato-form .btn-primary {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* =====================================================
+   FOOTER
+   ===================================================== */
+.footer {
+    background: #1e3a8a;
+    color: #ffffff;
+    padding: 48px 0 20px; /* MENOR altura */
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px; /* menor espaçamento */
+    margin-bottom: 32px;
+}
+
+/* Logo */
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.footer-logo-img {
+    width: 36px;
+    height: 36px;
+}
+
+/* Texto */
+.footer-section p {
+    color: #e5e7eb;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Títulos */
+.footer-section h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* Links */
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 6px;
+}
+
+/* LINKS SEM NAVEGAÇÃO REAL (visual apenas) */
+.footer-links a {
+    color: #e5e7eb;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #ff6b35;
+}
+
+/* Redes sociais – lado a lado */
+.social-links {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+/* Ícones */
+.social-link {
+    width: 36px;
+    height: 36px;
+    background: #ffffff;
+    color: #1e3a8a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.social-link:hover {
+    background: #ff6b35;
+    color: #ffffff;
+}
+
+/* Linha inferior */
+.footer-bottom {
+    text-align: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    font-size: 13px;
+    color: #d1d5db;
+}
+
+/* =====================================================
+   RESPONSIVIDADE – TABLET
+   Até 1024px
+   ===================================================== */
+   /* Bloco da marca (logo + nome) */
+.brand {
+    display: flex;
+    align-items: center;   /* alinha verticalmente */
+    gap: 12px;             /* espaço entre logo e texto */
+}
+
+/* Logo */
+.logo-img {
+    width: 60px;           /* tamanho equilibrado */
+    height: auto;
+}
+
+/* Texto da marca */
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 1024px) {  /* MEDIA QUERIES */
+    .logo-img {
+    width: 56px;
+    }
+
+    .company-name {
+    font-size: 18px;
+    }
+
+    .header-content {
+        height: 100%;
+        display: flex;
+        align-items: center;
+       justify-content: space-between;
+       gap: 20px; 
+    }
+
+    .hero h1 {
+        font-size: 40px;          /* Reduz título */
+    }
+
+    .hero p {
+        font-size: 17px;
+    }
+}
+
+/* =====================================================
+   RESPONSIVIDADE – MOBILE
+   Até 768px
+   ===================================================== */
+@media (max-width: 768px) {
+
+    /* =====================================================
+       COMPENSAÇÃO DO HEADER FIXO (MOBILE)
+       ===================================================== */
+    body {
+        padding-top: 200px; /* Altura REAL do header no mobile */
+    }
+
+    /* =====================================================
+       HEADER
+       ===================================================== */
+    .header-content {
+        flex-direction: column;   /* Logo em cima, menu embaixo */
+        text-align: center;
+        gap: 12px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;       /* Logo ao lado do nome */
+        gap: 10px;
+    }
+
+    .logo-img {
+        width: 60px;              /* Logo proporcional no mobile */
+        height: auto;
+    }
+
+    /* =====================================================
+       MENU
+       ===================================================== */
+    .nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .nav-btn {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* =====================================================
+       HERO
+       ===================================================== */
+       .hero-grid{
+        grid-template-columns: 1fr; /* 1 coluna */
+       }
+
+       .hero-text p{
+        margin: 0 auto;
+       }
+
+       .hero-image {
+        margin: 30px auto 0;
+       }
+
+       /*Botão do hero*/
+       .hero-buttons {
+        justify-content: center;
+       }
+       .hero-btn {
+        width: 100%;
+        justify-content: center;
+       }
+
+    /* ===============================
+    BLOG – MOBILE
+    =============================== */
+    /* Container geral do blog */
+    .blog {
+        margin: 40px 0;
+    }
+
+    /* Título do blog */
+    .blog h1 {
+        font-size: 32px;       /* Menor que no desktop */
+        margin-bottom: 20px;
+        padding: 0 10px;
+        text-align: center;
+    }
+
+    /* Grid vira coluna única */
+    .blog .blog_box {
+        grid-template-columns: 1fr; /* 1 card por linha */
+        gap: 30px;
+    }
+
+    /* Card ocupa toda a largura */
+    .blog .blog_box .blog_card {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Imagem responsiva */
+    .blog .blog_box .blog_card .blog_img {
+        width: 100%;
+        height: 220px; /* Altura equilibrada no mobile */
+    }
+
+    /* Texto do card */
+    .blog .blog_box .blog_card .blog_tag h2 {
+        font-size: 20px;
+    }
+
+    .blog .blog_box .blog_card .blog_tag p {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    /* Ícones */
+    .blog .blog_box .blog_card .blog_tag .blog_icon {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+    /* Botão de acesso ao Blog */
+    .blog-actions {
+    width: 100%;                 /* garante largura total */
+    display: flex;
+    justify-content: center;     /* centraliza horizontalmente */
+    margin: 50px 0 20px;         /* espaço acima e abaixo */
+    }
+
+    .blog-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;                   /* espaço entre ícone e texto */
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border: 2px solid #000000;   /* padrão do site */
+    }
+
+    .blog-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .blog-btn {
+        width: 100%;
+        max-width: 280px; /* mesmo padrão do botão catálogo */
+        text-align: center;
+        justify-content: center;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* =====================================================
+    FERRAMENTAS – MOBILE
+    ===================================================== */
+    /* Título e subtítulo centralizados */
+    .section-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        font-size: 28px;          /* Menor que desktop */
+    }
+
+    .section-subtitle {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    /* Grid vira coluna (1 card por linha) */
+    .equipamentos-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    /* Cards ocupam largura total */
+    .equipamento-card {
+        width: 100%;
+        padding: 24px;
+    }
+
+    /* Ícone central continua ok */
+    .equipamento-icon {
+        margin-bottom: 16px;
+    }
+
+    /* Botão do catálogo centralizado e confortável */
+    .equipamentos-actions {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .equipamentos-actions .btn {
+        width: 100%;
+        max-width: 280px; /* Evita botão gigante */
+    }
+
+    /* =====================================================
+   SOBRE – MOBILE
+   ===================================================== */
+   .sobre-content {
+    grid-template-columns: 1fr; /*Vira coluna*/
+    gap: 30px;
+    text-align: center;
+   }
+
+   .sobre-text .section-title {
+    font-size: 30px;
+   }
+
+   .sobre-description {
+    font-size: 16px;
+   }
+
+   .feature {
+    justify-content: flex-start; /* alinha tudo pela esquerda */
+    text-align: left;
+    width: 100%;
+   }
+
+   /* Alinhamento correto dos itens da lista no mobile */
+    .sobre-features {
+    align-items: flex-start;
+    }
+
+    .feature i {
+    width: 22px;
+    min-width: 22px;
+    text-align: center;
+    }
+
+   .btn-outline {
+    width: 100%;
+    justify-content: center;
+   }
+
+   .sobre-image {
+    margin-top: 20px;
+   }
+
+   /* =====================================================
+   CONTATO – MOBILE
+   ===================================================== */
+    /* Grid vira coluna única */
+    .contato-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    /* Centraliza cabeçalho */
+    .contato .section-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Info de contato */
+    .contato-info {
+        gap: 24px;
+    }
+
+    .contato-item {
+        align-items: flex-start;
+    }
+
+    .contato-item i {
+        font-size: 22px;
+        margin-top: 6px;
+    }
+
+    /* Formulário ocupa toda largura */
+    .contato-form {
+        padding: 30px 20px;
+    }
+
+    /* Inputs confortáveis no toque */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px;
+        padding: 14px;
+    }
+
+    /* Botão grande e fácil de clicar */
+    .contato-form .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* =====================================================
+   FOOTER – MOBILE
+   ===================================================== */
+   .footer {
+        padding: 40px 0 20px;
+        text-align: center;
+    }
+
+    /* Grid vira coluna */
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    /* Logo + nome centralizados */
+    .footer-logo {
+        justify-content: center;
+    }
+
+    .footer-logo-img {
+        width: 36px;
+        height: auto;
+    }
+
+    .footer-section h4 {
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    /* Links centralizados */
+    .footer-links {
+        padding: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: 8px;
+    }
+
+    .footer-links a {
+        font-size: 14px;
+    }
+
+    /* Redes sociais lado a lado e centralizadas */
+    .social-links {
+        justify-content: center;
+    }
+
+    .social-link {
+        width: 38px;
+        height: 38px;
+    }
+
+    /* Linha inferior mais compacta */
+    .footer-bottom {
+        margin-top: 20px;
+        padding-top: 15px;
+        font-size: 13px;
+    }
+
+    /* =====================================================
+       OUTROS AJUSTES
+       ===================================================== */
+    .container {
+        width: 92%;
+    }
+
+    .filters {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+/* =====================================================
+   RESPONSIVIDADE – MOBILE PEQUENO
+   Até 480px
+   ===================================================== */
+@media (max-width: 480px) {
+
+    .hero h1 {
+        font-size: 26px;          /* Título menor */
+    }
+
+    .company-tagline {
+        font-size: 12px;
+    }
+}
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Fundo circular -->
+  <circle cx="16" cy="16" r="16" fill="#2563eb"/>
+  
+  <!-- Ferramenta estilizada (chave inglesa) -->
+  <path d="M8 12 L12 8 L16 12 L20 8 L24 12 L20 16 L16 20 L12 16 L8 12 Z" 
+        fill="#ffffff" stroke="#1e40af" stroke-width="1"/>
+  
+  <!-- Engrenagem interna -->
+  <circle cx="16" cy="16" r="4" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <circle cx="16" cy="16" r="2" fill="#1e40af"/>
+  
+  <!-- Texto "NF" (Nordeste Ferramentas) -->
+  <text x="16" y="28" font-family="Arial, sans-serif" font-size="8" 
+        font-weight="bold" text-anchor="middle" fill="#ffffff">NF</text>
+</svg>

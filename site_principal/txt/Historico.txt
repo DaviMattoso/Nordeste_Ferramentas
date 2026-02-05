@@ -1,0 +1,607 @@
+Diário de Desenvolvimento 
+(Dia 1)
+
+Projeto: Nordeste Ferramentas
+
+-> Iniciar a estrutura do projeto e criar uma base sólida em **HTML + CSS**, já pensando em:
+- organização do código
+- responsividade
+- manutenção futura
+- evolução para JavaScript e backend
+
+1- Estrutura inicial do projeto
+
+Criação do arquivo HTML
+- Criei o arquivo HTML base do site
+- Dividi o site em seções bem definidas (`header`, `hero`, `blog`, `equipamentos`, `sobre`, `contato`)
+- Adicionei comentários detalhados para identificar claramente cada parte da página
+- Preparei a estrutura pensando em navegação futura por scroll (âncoras)
+
+Criação do arquivo CSS
+- Criei o arquivo CSS principal do projeto
+- Iniciei com um **reset básico** para evitar comportamentos padrão do navegador
+- Testei e ajustei o `body` (fonte, tamanho base, line-height)
+- Trabalhei a responsividade desde o início, evitando deixar isso para depois
+
+Cores e identidade visual
+- Analisei o CSS original do site
+- Removi a dependência excessiva de variáveis globais de cor
+- Passei a definir cores **por seção e por componente**, facilitando ajustes futuros
+- Mantive a paleta principal (azul + laranja) como identidade do projeto
+
+2- Edições funcionais no site
+-> Tipos de arquivo
+- Alterei o formato do ícone do site de `.svg` para `.ico`
+- Adicionei corretamente o favicon no `<head>` do HTML
+- Garantia de compatibilidade com navegadores
+
+3- Header (parte mais trabalhada do dia)
+-> Estrutura e layout
+- Ajustei o tamanho e o estilo do header
+- Reestruturei o HTML para agrupar corretamente:
+  - logo
+  - nome da empresa
+  - slogan
+- Corrigi problemas de alinhamento no desktop e no mobile
+
+-> Botões do header
+- Estilizei todos os botões como **botões reais**, não links de navegação
+- Criei animações de hover:
+  - mudança de cor
+  - leve elevação (`translateY`)
+- Corrigi um bug onde o botão **“Início” ficava com hover permanente**
+
+-> Botão “Portal de Locação”
+- Mantive o botão com:
+  - texto branco
+  - fonte em negrito
+- Adicionei ícone com Font Awesome
+- Configurei o botão para abrir **uma nova página (`login.html`)**
+- Estrutura preparada para no futuro:
+  - sistema de login
+  - integração com backend e banco de dados
+
+!! Navegação futura (comentada no código)
+- Criei comentários explicando como será implementado:
+  - scroll automático para cada seção
+  - uso de âncoras (`#hero`, `#blog`, etc.)
+  - possível scroll suave via CSS ou JavaScript
+
+4- Header fixo (sticky)
+- Transformei o header em `position: fixed`
+- Corrigi todos os problemas de sobreposição com o conteúdo
+- Aprendi e documentei a compensação correta usando `padding-top` no `body`
+- Ajustei valores específicos para desktop e mobile via media queries
+
+5- Responsividade
+- Adaptei o layout para:
+  - desktop
+  - tablet
+  - mobile
+- Ajustei tamanho do logo no mobile
+- Corrigi espaçamentos quebrados no header
+- Garanti que o header não cubra o hero em nenhuma resolução
+
+6- Aprendizados do dia
+- Header fixo exige compensação no `body`
+- Estrutura HTML bem feita evita 90% dos bugs de layout
+- Media queries precisam ser organizadas e sem duplicação
+- Resolver responsividade no início economiza MUITO tempo depois
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+(Dia 2)
+
+################# HEADER ################# 
+
+Nota Técnica — Ajustes do Header (Desktop e Mobile)
+Objetivo
+O objetivo dessa etapa foi construir um header fixo, responsivo e estável, garantindo que:
+- o header não cubra o conteúdo (hero)
+- não existam espaços em branco gigantes
+- o layout funcione corretamente no desktop e no mobile
+- o código fique limpo e previsível, sem gambiarras
+
+Problemas encontrados:
+
+1- Header fixo cobrindo o hero
+O header usa `position: fixed`, o que remove ele do fluxo normal da página.  
+Com isso, o conteúdo (hero) acabava ficando “por baixo” do header.
+
+2- Espaçamentos inconsistentes
+Foram identificados vários problemas de espaçamento:
+
+- `padding-top` duplicado no `body`
+- `padding` duplicado no `.hero`
+- valores muito altos (ex: `250px`) no mobile
+- regras se sobrescrevendo dentro do mesmo `@media`
+
+Isso causava comportamentos imprevisíveis:
+- em tela cheia ficava errado
+- em meia tela ficava certo
+- no mobile quebrava tudo
+
+3- Logo quebrando o layout no mobile
+O logo estava:
+- fora de um agrupamento lógico
+- posicionado "acima" do nome da empresa
+- deixando o header muito alto no mobile
+
+Resultado: layout “tronxo” e difícil de controlar.
+
+4- Media queries desorganizadas
+Havia:
+- regras repetidas dentro do mesmo `@media`
+- propriedades iguais definidas várias vezes
+- dificuldade de entender qual regra realmente estava ativa
+
+Soluções aplicadas:
+->Estrutura correta do header
+Criei um agrupamento lógico para a marca:
+- logo
+- nome da empresa
+- slogan
+
+O logo passou a ficar "ao lado do nome", tanto no desktop quanto no mobile.  
+Isso reduziu a altura do header e estabilizou o layout.
+
+Compensação correta do header fixo
+Mantive o header como `position: fixed`, mas corrigi a compensação:
+```css
+body {
+    padding-top: <altura real do header>;
+}
+
+6- Começando a fazer o Hero
+-> Objetivos:
+  1º - Organizar o texto do hero
+  2º - Adicionar a img da equipe
+
+1- Estrutura do HERO
+- O hero foi dividido visualmente em duas áreas:
+  - Lado esquerdo: conteúdo textual (título e descrição)
+  - Lado direito: imagem institucional / conceitual
+
+- A estrutura foi pensada para:
+  - Desktop → layout em duas colunas
+  - Mobile → layout empilhado (texto em cima, imagem embaixo)
+
+2- Texto do HERO
+Título (`<h1>`)
+- Mantido o texto principal:
+  “Equipamentos de qualidade para seu negócio”
+- A palavra “qualidade” permanece destacada visualmente para reforçar o valor da marca.
+
+3- Parágrafo (`<p>`)
+- O texto original foi reescrito e adaptado, misturando:
+  - Linguagem profissional
+  - Referência ao aluguel e conserto de ferramentas
+  - Identidade regional do Nordeste (sem exagero ou caricatura)
+
+- Resultado:
+  - Texto mais curto
+  - Direto
+  - Comercial
+  - Com personalidade regional
+
+3- Botão “Ver Equipamentos”
+
+- Foi criado o botão “Ver Equipamentos” no hero, seguindo o padrão visual do site principal.
+- Função planejada:
+  - Levar o usuário diretamente à seção de equipamentos da página.
+  OBS:  
+  O comportamento do botão **não foi implementado ainda**, pois a seção de equipamentos será desenvolvida depois.
+- Foi deixada nota no código para voltar e conectar esse botão futuramente (âncora ou JS).
+- O botão de acesso ao portal foi retirado porque ja existe um no Header
+
+4 - Imagem do HERO
+- A imagem é momentanea e vai ser editada, mas um chapeu do cangaço na parafusadeira é genial
+
+5- Responsividade do HERO
+
+- O hero foi ajustado para funcionar corretamente em:
+  - Desktop
+  - Tablet
+  - Mobile
+- Correções feitas para:
+  - Evitar que o header cubra o conteúdo
+  - Eliminar espaços em branco excessivos
+  - Garantir boa leitura no mobile
+
+6- Resultado Final
+
+- Hero limpo, profissional e com identidade
+- Texto claro e comercial
+- Imagem com conceito próprio
+- Base pronta para:
+  - Animações futuras
+  - Ajustes finos de layout
+  - Integração com outras seções
+
+!! Observação para o futuro
+- Voltar ao botão “Ver Equipamentos” após a criação da seção de ferramentas.
+- Possível melhoria futura:
+  - Pequena animação na imagem
+  - Scroll suave ao clicar no botão
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+(Dia 3)
+
+################# BLOG ################# 
+
+1- Estrutura do Blog (HTML)
+Nesta etapa foi criada a seção de Blog da página principal, com o objetivo de apresentar conteúdos informativos e educativos logo na home.
+A seção principal é definida pela <div class="blog">, que funciona como o container geral do blog.
+
+Dentro dela, foi adicionado um título principal (<h1>), deixando claro que se trata do blog da Nordeste Ferramentas.
+O conteúdo do blog é organizado dentro da <div class="blog_box">, que agrupa todas as publicações.
+Cada publicação é representada por uma <div class="blog_card">, criando a estrutura de cards.
+
+Cada card contém:
+.blog_img → responsável por exibir a imagem de destaque do post.
+.blog_tag → área de conteúdo textual, com:
+<h2> → título do post
+<p> → texto introdutório do tema
+.blog_icon → ícones visuais (data e curtida), preparando o layout para futuras interações.
+
+2- Estilização do Blog (CSS)
+
+No CSS, a estilização foi feita de forma modular, seguindo a estrutura do HTML.
+.blog define o espaçamento geral da seção na página.
+.blog h1 centraliza o título do blog, aumenta o tamanho da fonte e aplica a cor azul da marca, mantendo identidade visual.
+.blog_box utiliza CSS Grid (grid-template-columns: 1fr 1fr 1fr) para exibir 3 cards lado a lado, criando um layout limpo e organizado no desktop.
+.blog_card recebe:
+-largura fixa
+-sombra (box-shadow) com tom alaranjado, reforçando a identidade visual
+
+.blog_img controla o tamanho da imagem e usa overflow: hidden para manter o enquadramento correto.
+A imagem (img) usa object-fit: cover, garantindo que a imagem preencha o espaço sem distorcer.
+.blog_tag define o espaçamento interno do texto.
+O título do card (h2) recebe a cor laranja, destacando os temas.
+O parágrafo (p) usa text-align: justify e line-height para melhorar a leitura.
+.blog_icon usa flex para alinhar os ícones nas extremidades, já preparando o layout para futuras funcionalidades (data real, likes, interações com JS).
+
+3-Ajustes Mobile — Seção Blog
+
+Problemas identificados no mobile
+- O layout em 3 colunas ficava espremido em telas pequenas.
+- Os cards tinham largura fixa (450px), causando quebra do layout.
+- As imagens não se adaptavam bem ao tamanho da tela.
+- O texto ficava visualmente pesado para leitura no celular.
+
+Soluções aplicadas
+
+Estrutura em coluna única
+- No mobile, o grid do blog foi alterado para 1 coluna:
+- Cada publicação aparece uma abaixo da outra.
+- Layout semelhante ao Hero, mais natural para scroll vertical.
+
+Remoção de larguras fixas
+- A largura fixa dos cards foi sobrescrita no mobile.
+- Os cards passaram a ocupar 100% da largura disponível, evitando estouros horizontais.
+
+Ajuste das imagens
+- As imagens do blog passaram a:
+- ocupar 100% da largura do card
+- ter altura controlada
+
+Tipografia otimizada
+- O título principal do blog (`h1`) teve o tamanho reduzido.
+- Os títulos dos cards (`h2`) e os parágrafos (`p`) ficaram mais confortáveis para leitura em telas pequenas.
+
+Espaçamento e respiro visual
+- Espaçamentos entre cards foram ajustados.
+- Margens e paddings foram refinados para evitar poluição visual.
+
+Resultado final
+- Blog totalmente funcional no mobile
+- Leitura fluida e agradável
+- Layout consistente com o Hero
+- Base pronta para futuras interações com JavaScript
+
+
+################# FERRAMENTAS ################# 
+
+1- Criação da seção de Equipamentos (HTML)
+Criação da section equipamentos com estrutura semântica clara
+Uso de .container para manter alinhamento com o restante do site
+Criação de um header da seção com:
+Título (Nossos Equipamentos)
+Subtítulo explicativo
+Criação de um grid de cards representando os tipos de equipamentos:
+Ferramentas Manuais
+Máquinas Elétricas
+Equipamentos Pesados
+EPIs e Segurança
+
+Cada card contém:
+Ícone (Font Awesome)
+Título
+Texto descritivo
+Adição do botão “Ver Catálogo Completo” como CTA principal da seção
+
+Estilização da seção (CSS)
+
+Conversão do CSS original que usava variáveis (:root) para valores reais
+→ Mantendo o visual fiel ao projeto original, mas padronizado com o resto do site
+
+Definição de:
+Espaçamentos reais (padding, gap, margin)
+Cores fixas (#ff6b35, #1e3a8a, tons de cinza)
+Bordas arredondadas e sombras suaves
+
+Estilo dos cards:
+Fundo branco
+Borda invisível por padrão
+
+Hover com:
+Borda laranja
+Elevação (translateY)
+Sombra mais forte
+Ícones circulares com fundo laranja para destaque visual]
+
+Ajustes de layout (Desktop)
+Centralização do título e subtítulo da seção
+Aumento do tamanho do título “Nossos Equipamentos”
+Aplicação da cor #ff6b35 no título para reforçar identidade visual
+Organização dos cards em grid, mantendo todos lado a lado quando houver espaço
+Centralização do botão “Ver Catálogo Completo”
+Aplicação de borda preta no botão, seguindo o padrão visual dos botões do header e hero
+
+Responsividade (Mobile)
+Adaptação completa da seção para telas pequenas:
+Grid passa para coluna única
+Um card por linha
+Espaçamentos reduzidos e mais confortáveis
+Cards passam a ocupar 100% da largura disponível
+
+Botão do catálogo:
+Centrazizado
+Largura controlada para não ficar exagerado
+Mantida a mesma lógica do hero:
+Layout simples
+Leitura clara
+Zero quebra visual
+
+!! Preparação para funcionalidades futuras
+
+Botão “Ver Catálogo Completo” preparado para:
+No futuro fazer download automático de um catálogo em PDF
+Comentário deixado no HTML indicando onde implementar essa funcionalidade
+
+Estrutura pensada para integração futura com:
+Portal
+Página dedicada de catálogo
+Backend ou JS
+
+################# SOBRE ################# 
+
+Nesta etapa foi desenvolvida a seção **Sobre a Nordeste Ferramentas**, seguindo o mesmo padrão aplicado anteriormente na seção de Equipamentos, mantendo consistência visual e estrutural em todo o site.
+
+1- Estrutura (HTML)
+- Criação da seção `<section id="sobre">` para navegação futura via menu.
+- Organização do conteúdo em dois blocos principais:
+  - Texto institucional (título, descrição, lista de diferenciais e botão de contato).
+  - Imagem da empresa/equipe, reforçando credibilidade e identidade visual.
+- Utilização de classes semânticas (`.sobre-content`, `.sobre-text`, `.sobre-image`) para facilitar a leitura e manutenção do código.
+
+2- Estilização (CSS)
+- Conversão do CSS original que utilizava variáveis globais para valores reais, mantendo o padrão do projeto atual.
+- Layout em grid de duas colunas no desktop, com bom espaçamento entre texto e imagem.
+- Definição de cores, fontes e sombras alinhadas à identidade visual da marca:
+  - Azul para títulos e botões.
+  - Cinza para textos descritivos.
+  - Verde para ícones de confirmação (benefícios).
+- Criação de botão com estilo outline, mantendo coerência com os outros botões do site.
+
+3- Responsividade
+- No mobile, a seção passa a ter layout em coluna única, garantindo boa leitura e usabilidade.
+- Centralização do conteúdo e ajuste de tamanhos de fonte para telas menores.
+- Botão “Fale Conosco” adaptado para ocupar toda a largura no mobile.
+
+!! Ajuste de alinhamento da lista (mobile – seção “Sobre”)
+
+Durante o ajuste da versão mobile da seção Sobre a Nordeste Ferramentas, surgiu um problema visual na lista de benefícios (ícones + texto).
+As linhas não iniciavam na mesma margem, deixando o layout desalinhado e com aparência “quebrada”.
+
+Problema identificado
+No CSS mobile, a classe .feature estava usando:
+justify-content: center;
+
+Isso fazia com que cada item da lista fosse centralizado como um bloco, anulando qualquer tentativa de alinhar os textos pela esquerda.
+Mesmo adicionando novas regras, o comportamento não mudava porque essa propriedade tinha prioridade no layout flex.
+
+Solução aplicada
+A correção foi feita somente no mobile, substituindo o alinhamento central por alinhamento à esquerda e garantindo largura total do item:
+
+.feature {
+    justify-content: flex-start;
+    text-align: left;
+    width: 100%;
+}
+
+Além disso, foi padronizada a largura do ícone para garantir alinhamento consistente entre todas as linhas:
+
+.feature i {
+    width: 22px;
+    min-width: 22px;
+    text-align: center;
+}
+
+Resultado
+
+Todos os itens da lista passaram a começar exatamente na mesma margem
+Ícones e textos ficaram perfeitamente alinhados
+Layout mobile ficou limpo, organizado e profissional
+O desktop não foi afetado
+
+/*Aprendizado
+Quando uma alteração visual “não funciona”, geralmente existe uma regra anterior anulando o comportamento esperado.
+Antes de adicionar mais CSS, é essencial verificar qual propriedade está dominando o layout.*/
+
+################# ENTRE EM CONTATO #################
+
+1- Estrutura HTML
+Foi criada a seção Entre em Contato com foco em clareza e usabilidade, dividida em dois blocos principais:
+-Informações de contato
+-Telefone
+-Email
+-Endereço
+-Horário de funcionamento
+Cada item utiliza ícones para facilitar a leitura visual.
+
+2- Formulário de contato
+Campos para nome, email, telefone, assunto e mensagem
+Botão de envio com ícone
+Estrutura preparada para futura integração com JavaScript e backend
+O HTML foi organizado de forma semântica, usando classes bem definidas para facilitar a estilização e a responsividade.
+
+3- Estilização CSS (sem variáveis)
+O CSS original utilizava variáveis globais (:root).
+Nesta etapa, todas as variáveis foram removidas e substituídas por valores reais, mantendo o visual fiel ao projeto original.
+Principais pontos do CSS:
+Grid em duas colunas no desktop
+Ícones com cor de destaque (#ff6b35)
+Formulário com fundo claro, bordas arredondadas e foco visual nos campos ativos
+Inputs e textarea com espaçamento confortável e transições suaves
+Layout consistente com o restante do site
+
+4- Responsividade (Mobile)
+A adaptação para mobile foi feita exclusivamente via media queries, sem impactar o desktop.
+
+5- No mobile:
+O layout passa de duas colunas para uma coluna
+Informações de contato ficam acima do formulário
+Formulário ocupa 100% da largura da tela
+Inputs e botão ficam maiores para melhor usabilidade em toque
+Botão “Enviar Mensagem” ocupa largura total
+
+Essa abordagem garante:
+Código limpo
+Nenhuma quebra no desktop
+Boa experiência em dispositivos móveis
+
+Observações
+Nenhum ajuste visual adicional foi necessário após a adaptação mobile
+A seção ficou alinhada com o padrão visual do site
+Código pronto para futuras integrações (JS, backend, validações)
+
+✔️ Seção “Entre em Contato” finalizada visualmente
+✔️ Desktop e mobile funcionando corretamente
+✔️ Padrão de código mantido em todo o projeto
+
+!!!!!!!!!!!! Definição sobre o Formulário de Contato (Funcionalidade futura) !!!!!!!!!!!!
+
+Nesta etapa do projeto, o formulário da seção Entre em Contato foi desenvolvido apenas no nível visual (HTML + CSS), sem envio real de dados.
+
+A decisão foi separar claramente duas fases do projeto:
+Fase 1 – Visual do site (atual)
+Foco total em layout, responsividade, identidade visual e experiência do usuário.
+Fase 2 – Funcionamento do site (futuro)
+Implementação da lógica de envio do formulário e integração com serviços externos.
+
+Solução definida para o envio do formulário
+Ficou definido que, na fase de funcionamento do site, o formulário será integrado utilizando EmailJS.
+
+Motivos da escolha:
+Não exige backend próprio neste momento
+Funciona diretamente com JavaScript
+Envia os dados do formulário diretamente para o email da empresa
+Solução simples, moderna e muito usada em sites institucionais
+Funcionamento planejado (futuro)
+
+Fluxo esperado do formulário:
+Usuário preenche os campos do formulário
+JavaScript captura os dados
+EmailJS envia as informações
+
+A empresa recebe um email com:
+Nome
+Email
+Telefone
+Assunto
+Mensagem
+O código será implementado posteriormente, mantendo o HTML atual e adicionando apenas a lógica em JavaScript.
+
+Observação importante
+Nenhuma funcionalidade de envio foi implementada nesta fase de propósito, para:
+não misturar layout com lógica
+manter o código organizado
+facilitar a manutenção e evolução do projeto
+
+✔️ Decisão registrada
+✔️ Estratégia definida
+✔️ Implementação adiada conscientemente para a fase correta do desenvolvimento
+
+################# FOOTER #################
+
+Estrutura do Footer
+1- Criação do rodapé dividido em 4 colunas principais:
+Identidade da empresa (logo + descrição)
+Links Rápidos
+Serviços
+Redes Sociais
+Inclusão do texto institucional reforçando a marca Nordeste Ferramentas
+Separação visual clara entre o conteúdo principal do footer e o copyright
+
+2- Estilização (CSS)
+
+Conversão do CSS original que utilizava variáveis (:root) para valores fixos, mantendo o padrão do restante do projeto
+Definição de:
+Fundo azul institucional
+Texto branco e cinza claro para leitura confortável
+Ícones sociais circulares com efeito hover
+Ajuste de espaçamentos para evitar que o footer ficasse excessivamente grande
+Redes Sociais
+Correção do layout para que os ícones fiquem lado a lado
+Aplicação de efeitos visuais no hover (cor e leve elevação)
+
+3- Responsividade (Mobile)
+
+Footer adaptado para layout em coluna
+Centralização de todo o conteúdo no mobile
+Redução de espaçamentos e tamanhos para manter o footer compacto
+
+Manutenção das redes sociais alinhadas horizontalmente
+Pendências (Planejado para Funcionalidade)
+Os links de “Links Rápidos” e “Serviços” ainda não fazem navegação interna
+Esses links serão conectados futuramente com JavaScript, permitindo:
+Scroll suave para as seções corretas da página
+Navegação controlada sem recarregar a página
+
+O botão “Portal de Locação” permanece apenas visual neste momento, sem redirecionamento
+
+🔧 Observação:
+Nesta etapa o foco foi visual e responsividade.
+A funcionalidade dos links será implementada na fase de desenvolvimento com JavaScript.
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+(Dia 4)
+
+################# FUNCIONALIDADE #################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Essencial para RESPONSIVIDADE:
+         ajusta o layout à largura do dispositivo (mobile/tablet) -->
+    <meta name="description"
+          content="Equipamentos de qualidade para seu negócio. Blog com dicas, instruções e novidades sobre ferramentas e equipamentos.">
+    <!-- Descrição do site para Google (SEO) -->
+    <title>Nordeste Ferramentas</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicon (ícone da aba) -->
+    <link rel="icon" href="Icon/Sgv/favicon-simple.svg">
+
+    <!-- Ícones (Font Awesome) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          rel="stylesheet">
+    <!-- Fonte Inter (Google Fonts) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+    <script src="script.js"></script>
+
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
+<header class="header">
+    <!-- Cabeçalho principal do site -->
+
+    <div class="container header-content">
+        <!-- Container limita largura
+             header-content controla layout flex -->
+
+        <!-- BLOCO DA MARCA (logo + nome + slogan) -->
+        <div class="brand">
+            <!-- Logo da empresa -->
+            <img src="images/logo.png"
+                 alt="Nordeste Ferramentas"
+                 class="logo-img">
+
+            <!-- Texto da marca -->
+            <div class="logo-text">
+                <h1 class="company-name">
+                    Nordeste Ferramentas
+                </h1>
+
+                <p class="company-tagline">
+                    Sua parceira em ferramentas e locação
+                </p>
+            </div>
+        </div>
+
+
+        <!--
+         IMPORTANTE:
+         Não usamos a classe .active nos links do menu.
+         Todos os botões ficam neutros por padrão e
+         só recebem estilos quando o mouse passa (hover).
+         Isso evita estados visuais "presos" como o do inicio.
+        -->
+
+        <!--
+         FUTURO (NÃO IMPLEMENTADO AINDA):
+         Os links do menu (Início, Blog, Sobre, Contato)
+         serão conectados às seções da página usando âncoras:
+
+         Início   -> #hero
+         Blog     -> #blog
+         Sobre    -> #sobre
+         Contato  -> #contato
+ 
+         Cada seção do site receberá um atributo id
+         correspondente para permitir navegação por scroll.
+
+         Base de codigo no html:
+         <a href="#blog">Blog</a>
+         <section id="blog">...</section>
+
+          Quando todas as seções estiverem prontas,
+          o scroll será suave via CSS ou JavaScript.
+         -->
+
+        <nav class="nav">
+         <button class="nav-btn">Início</button>
+         <button class="nav-btn">Blog</button>
+         <button class="nav-btn">Sobre</button>
+         <button class="nav-btn">Contato</button>
+
+        <!-- Botão de acesso ao portal -->
+        <a href="login.html" target="_blank"> <!-- Link para login -->
+         <button class="btn-primary btn-portal" type="button">
+         <i class="fa-solid fa-right-from-bracket"></i>
+         <b>Portal de Locação</b>
+         </button>
+        </a>
+        </nav>
+
+    </div>
+</header>
+
+<!-- =====================================================
+     HERO
+     ===================================================== -->
+<section class="hero">
+    <div class="container hero-grid">
+
+        <!-- COLUNA ESQUERDA — TEXTO -->
+        <div class="hero-text">
+            <h1>
+                Equipamentos de <span>qualidade</span> para seu negócio
+            </h1>
+
+            <p>
+               Oferecemos as melhores ferramentas e equipamentos para construção,
+               manutenção e projetos industriais. Especialistas em aluguel e conserto,
+               entregamos qualidade, suporte técnico e dicas exclusivas para cada obra
+               no Nordeste.
+            </p>
+        </div>
+
+        <!-- COLUNA DIREITA — IMAGEM -->
+        <div class="hero-image">
+            <img 
+                src="images/Ferramentas web.png" 
+                alt="Equipe Nordeste Ferramentas">
+        </div>
+
+        <!-- BOTAÃO DO HERO -->
+         <div class="hero-butons">
+            <!-- Botão principal: Ver Equipamentos -->
+             <button class="btn-primary hero-btn">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                Ver Equipamentos
+             </button>
+
+             <!-- FUTURO:
+             Este botão levará à seção de equipamentos (#equipamentos)
+             quando a navegação por scroll for implementada com JS ou âncoras.
+             -->
+
+         </div>
+
+    </div>
+</section>
+
+<!-- =====================================================
+     BLOG
+     ===================================================== -->
+<!-- =====================================================
+     BLOG
+     ===================================================== -->
+<div class="blog">
+    <h1>Nordeste Ferramentas Blog</h1>
+
+    <div class="blog_box">
+
+        <div class="blog_card">
+            <div class="blog_img">
+                <img src="images/Blog_img_1.png">
+            </div>
+            <div class="blog_tag">
+                <h2>
+                    <a href="blog.html" target="_blank">
+                        Como escolher a ferramenta certa para cada tipo de obra
+                    </a>
+                </h2>
+                <p>
+                    Cada obra tem sua própria exigência, e usar a ferramenta certa faz toda a diferença no resultado final.
+                    Seja madeira, concreto ou manutenção geral, escolher o equipamento adequado garante mais segurança,
+                    eficiência e economia no trabalho.
+                </p>
+                <div class="blog_icon">
+                    <i class="fa-solid fa-calendar"></i>
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="blog_card">
+            <div class="blog_img">
+                <img src="images/Blog_img_2.png">
+            </div>
+            <div class="blog_tag">
+                <h2>
+                    <a href="blog.html" target="_blank">
+                        Ferramentas essenciais para construção civil
+                    </a>
+                </h2>
+                <p>
+                    Na construção civil, produtividade e resistência caminham juntas. Conhecer as ferramentas essenciais
+                    para cada etapa da obra ajuda a evitar improvisos, reduzir erros e manter o ritmo do serviço do começo ao fim.
+                </p>
+                <div class="blog_icon">
+                    <i class="fa-solid fa-calendar"></i>
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="blog_card">
+            <div class="blog_img">
+                <img src="images/Blog_img_3.png">
+            </div>
+            <div class="blog_tag">
+                <h2>
+                    <a href="blog.html" target="_blank">
+                        Diferença entre ferramentas profissionais e domésticas
+                    </a>
+                </h2>
+                <p>
+                    Nem toda ferramenta é feita para uso intenso. Entender a diferença entre ferramentas profissionais
+                    e domésticas evita desgaste prematuro, aumenta a durabilidade dos equipamentos e garante um trabalho
+                    bem feito, seja em pequenos reparos ou grandes projetos.
+                </p>
+                <div class="blog_icon">
+                    <i class="fa-solid fa-calendar"></i>
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTÃO FORA DO GRID -->
+    <div class="blog-actions">
+        <a href="blog.html" target="_blank" class="btn btn-primary blog-btn">
+            <i class="fa-solid fa-blog"></i>
+            Ver todos os posts
+        </a>
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     EQUIPAMENTOS
+     ===================================================== -->
+    <section class="equipamentos" id="equipamentos">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Nossos Equipamentos</h2>
+                <p class="section-subtitle">Ferramentas e máquinas para todos os tipos de projeto</p>
+            </div>
+            
+            <div class="equipamentos-grid">
+                <div class="equipamento-card">
+                    <div class="equipamento-icon">
+                        <i class="fas fa-hammer"></i>
+                    </div>
+                    <h3>Ferramentas Manuais</h3>
+                    <p>Martelos, chaves, alicates e muito mais</p>
+                </div>
+                
+                <div class="equipamento-card">
+                    <div class="equipamento-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Máquinas Elétricas</h3>
+                    <p>Furadeiras, serras, lixadeiras profissionais</p>
+                </div>
+                
+                <div class="equipamento-card">
+                    <div class="equipamento-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Equipamentos Pesados</h3>
+                    <p>Betoneiras, compressores, geradores</p>
+                </div>
+                
+                <div class="equipamento-card">
+                    <div class="equipamento-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>EPIs e Segurança</h3>
+                    <p>Equipamentos de proteção individual</p>
+                </div>
+            </div>
+            
+       <!-- 
+        FUTURO (NÃO IMPLEMENTADO AINDA):
+        Este botão será usado para BAIXAR automaticamente
+        o catálogo de ferramentas da empresa (PDF ou outro formato).
+
+        Quando o catálogo estiver pronto:
+        1. Colocar o arquivo dentro da pasta do projeto (ex: /catalogo/)
+        2. Atualizar o atributo href com o caminho correto
+        3. O atributo 'download' força o navegador a baixar o arquivo
+        
+        Exemplo final esperado:
+        href="catalogo/catalogo-nordeste-ferramentas.pdf"
+        -->
+
+            <div class="equipamentos-actions">
+                <a href="portal/" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    Ver Catálogo Completo
+                </a>
+            </div>
+        </div>
+    </section>
+
+<!-- =====================================================
+     SOBRE
+     ===================================================== -->
+<section class="sobre" id="sobre">
+        <div class="container">
+            <div class="sobre-content">
+                <div class="sobre-text">
+                    <h2 class="section-title">Sobre a Nordeste Ferramentas</h2>
+                    <p class="sobre-description">
+                        Somos uma empresa especializada em locação de ferramentas e equipamentos 
+                        para construção, manutenção e projetos industriais. Com anos de experiência 
+                        no mercado, oferecemos soluções completas para suas necessidades.
+                    </p>
+                    
+                    <div class="sobre-features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Equipamentos de qualidade</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Suporte técnico especializado</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Entrega e retirada no local</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Preços competitivos</span>
+                        </div>
+                    </div>
+                    
+                    <a href="#contato" class="btn btn-outline"> <!--O botão tem que levar direto pao whats da empresa-->
+                        <i class="fas fa-phone"></i>
+                        Fale Conosco
+                    </a>
+                </div>
+                
+                <div class="sobre-image">
+                    <img src="images/img_sobre_equipe.png" alt="Equipe Nordeste Ferramentas" class="sobre-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- =====================================================
+     CONTATO
+     ===================================================== -->
+<section class="contato" id="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Entre em Contato</h2>
+                <p class="section-subtitle">Estamos aqui para ajudar com suas necessidades</p>
+            </div>
+            
+            <div class="contato-content">
+                <div class="contato-info">
+                    <div class="contato-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Telefone</h4>
+                            <p>(81) 99560-7222</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contato-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>contato@nordesteferramentas.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contato-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Endereço</h4>
+                            <p>Av. Barão de Souza Leão, 1496 <br>Recife-PE</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contato-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Horário de Funcionamento</h4>
+                            <p>Segunda a Sexta: 8h às 18h<br>Sábado: 8h às 12h</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contato-form">
+                    <form id="contato-form">
+                        <div class="form-group">
+                            <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Seu email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="tel" id="telefone" name="telefone" placeholder="Seu telefone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <select id="assunto" name="assunto" required>
+                                <option value="">Selecione o assunto</option>
+                                <option value="orcamento">Orçamento</option>
+                                <option value="duvida">Dúvida</option>
+                                <option value="sugestao">Sugestão</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea id="mensagem" name="mensagem" placeholder="Sua mensagem" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Enviar Mensagem
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- =====================================================
+   FOOTER
+   ===================================================== -->
+   <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="images/logo.png" alt="Nordeste Ferramentas" class="footer-logo-img">
+                        <h3>Nordeste Ferramentas</h3>
+                    </div>
+                    <p>Sua parceira em ferramentas e locação. Qualidade e confiança para seu negócio.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Links Rápidos</h4> <!-- Edição para links rapidos no js-->
+                    <ul class="footer-links">
+                        <li><a href="#inicio">Início</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                        <li><a href="#sobre">Sobre</a></li>
+                        <li><a href="#contato">Contato</a></li>
+                        <li><a href="portal/">Portal de Locação</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Serviços</h4>
+                    <ul class="footer-links">
+                        <li><a href="#equipamentos">Ferramentas Manuais</a></li>
+                        <li><a href="#equipamentos">Máquinas Elétricas</a></li>
+                        <li><a href="#equipamentos">Equipamentos Pesados</a></li>
+                        <li><a href="#equipamentos">EPIs e Segurança</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Redes Sociais</h4>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Nordeste Ferramentas. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
