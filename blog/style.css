@@ -1,0 +1,110 @@
+/*
+#ff6b35 laranja 
+#1e3a8a azul
+*/
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0px;
+    margin: 0px;
+    background: #f6f6f6;
+    font-family: 'Lora', serif;
+}
+
+header {
+    background: #ff6b35;  /* Cor de fundo do header */
+    height: 66px;
+}
+
+header * {
+    color: white;
+}
+
+header .logo {
+    float: left;
+    height: inherit;
+    margin-left: 2em;
+}
+
+header .logo-text {
+    margin: 9px;
+    font-family: 'Candal', serif;
+}
+
+header .logo-text span {
+    color: #000000;
+}
+
+/* ================= MENU ================= */
+
+header ul {
+    float: right;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    /* REMOVIDO border que causava problema */
+}
+
+header ul li {
+    float: left;
+    position: relative;
+}
+
+header ul li a {
+    display: block;
+    padding: 21px;
+    font-size: 1.1em;
+    text-decoration: none;
+}
+
+header ul li a:hover {
+    background: #9c2c03; /* Houver das opc do header */
+    transition: 0.5s;
+}
+
+/* ================= DROPDOWN ADM ================= */
+
+header ul li ul {
+    position: absolute;
+    top: 66px;
+    right: 0; /* ESSENCIAL para não criar scroll */
+    width: 180px;
+    background: white;
+    display: none; /* Esconde inicialmente */
+}
+
+header ul li:hover ul {
+    display: block; /* Mostra no hover */
+}
+
+header ul li ul li {
+    width: 100%;
+}
+
+header ul li ul li a {
+    padding: 10px;
+    background: white;
+    color: #444; /* Houver das opc do header DENTRO DA OPC ADM */
+}
+
+header ul li ul li a.Logout {
+    color: red;
+}
+
+/* CORREÇÃO DO HOVER */
+header ul li ul li a:hover {
+    background: #d5d6d6;
+}
+
+/* ================= MENU TOGGLE ================= */
+
+header .menu-toggle {
+    display: none;
+}

@@ -1127,19 +1127,4 @@ button {
     .cards {
         grid-template-columns: 1fr;
     }
-
-/* =====================================================
-   RESPONSIVIDADE – MOBILE PEQUENO
-   Até 480px
-   ===================================================== */
-@media (max-width: 480px) {
-
-    .hero h1 {
-        font-size: 26px;          /* Título menor */
-    }
-
-    .company-tagline {
-        font-size: 12px;
-    }
-}
 }
