@@ -159,4 +159,65 @@ nav button {
 /* ======= Fim Nav ======= */
 
 
-/* ======== Featured posts ======== */
+/* ======== Category button (botões de categoria) ======== */
+.category__buttons {
+    background-color: #ECECEC;
+    color: #E67E22;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: var(--card-border-radius-2);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.category__buttons:hover {
+    background-color: #E67E22;
+    color: #ECECEC;
+    transition: var(--transition);
+}
+/* ======== Fim category button  ======== */
+
+/* ======== General post ======== */
+.post__thumbnail { /* ======== Borda da imagem ======== */
+    border-radius: var(--card-border-radius-2) 0;
+    margin-bottom: 1.6rem;
+    border: 1rem solid #1d1d1d;
+}
+
+.post__thumbnail img:hover {
+    filter: saturate(0);
+    transition: filter 500ms ease;
+}
+
+.post__author {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.2rem;
+}
+
+.post__author-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--card-border-radius-3);
+    overflow: hidden;
+}
+
+/* ======== Fim general post ======== */
+
+/* ======== Featured ======== */
+
+.featured {
+    margin-top: 8rem;
+}
+
+.featured__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.featured .post__thumbnail {
+    height: fit-content;
+}
