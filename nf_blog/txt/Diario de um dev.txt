@@ -1,0 +1,252 @@
+Dia 1 
+1. Começando o projeto
+Hoje comecei a estruturar o NF Blog, um blog voltado para ferramentas, construção e bricolagem. A ideia era criar uma interface simples, moderna e com uma identidade visual que combinasse com o tema.
+
+Primeiro montei a estrutura básica do HTML com:
+Navbar
+Featured Post (post em destaque)
+Área do autor
+Categorias
+Avatar do usuário
+
+A estrutura principal ficou assim:
+<nav>
+<section class="featured">
+
+2. Escolhendo as cores do projeto
+Uma das primeiras dúvidas foi definir a identidade visual.
+Eu sabia que queria algo relacionado a ferramentas e construção, então decidi seguir uma combinação de:
+Branco para o fundo
+Preto para títulos e navbar
+Laranja para destaques
+
+Os links ficaram assim:
+a {
+    color: #E67E22;
+}
+
+E a navbar:
+nav {
+    background-color: #1A1A1A;
+}
+
+
+O resultado ficou bem mais profissional do que usar apenas preto e branco.
+
+
+3. Problema na navbar
+
+Em determinado momento tentei mudar a cor da navbar e nada acontecia.
+
+Depois de investigar, percebi que estava usando:
+
+color: #1A1A1A; (achando que isso mudaria o fundo)
+
+Mas color altera apenas o texto.
+
+
+A correção foi:
+
+background-color: #1A1A1A;
+
+
+Depois disso a navbar ficou exatamente como eu queria.
+
+
+4. Avatar e menu de perfil
+
+Adicionei um avatar na navbar e resolvi deixar ele mais destacado usando a cor principal do projeto.
+
+.avatar {
+    border: 0.3rem solid #E67E22;
+}
+
+
+Também implementei um menu suspenso para o perfil.
+
+
+Inicialmente ele fica escondido:
+visibility: hidden;
+opacity: 0;
+
+
+E aparece quando o mouse passa sobre o avatar:
+.nav__profile:hover > ul {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+Foi uma das primeiras partes que realmente começaram a deixar o site com cara de projeto de verdade.
+
+
+5. Destaque do botão Logout
+
+Achei que o botão de logout precisava chamar mais atenção.
+
+Então usei uma cor laranja mais avermelhada:
+
+.nav__profile ul li:last-child a {
+    background: #D35400;
+}
+
+
+Ficou bem mais fácil identificar a ação de sair da conta.
+
+
+6. Criando os botões de categoria
+
+Depois comecei a trabalhar nas categorias dos posts.
+
+Criei a classe:
+
+.category__buttons {
+    background-color: #ECECEC;
+    color: #E67E22;
+}
+
+
+E também um hover:
+
+.category__buttons:hover {
+    background-color: #E67E22;
+    color: #ECECEC;
+}
+
+
+A ideia era fazer parecer uma etiqueta de categoria.
+
+
+7. Problema que me fez perder um tempinho
+
+Mesmo depois de criar o CSS, as categorias não mudavam de cor.
+
+Atualizei a página várias vezes e nada.
+
+Depois descobri o motivo:
+
+No CSS eu tinha:
+
+.category__bottons
+
+
+Mas no HTML estava:
+
+class="category__button"
+
+
+Um simples "s" faltando.... uma vontade de jogar o pc da janela...
+
+
+
+8. Construindo a seção Featured Post
+
+Comecei a montar o post principal da página.
+
+Estrutura:
+<section class="featured">
+
+Dentro dela:
+
+<div class="featured__container">
+
+Com:
+Imagem
+Categoria
+Título
+Texto
+Autor
+
+Foi nessa etapa que o site começou a parecer realmente um blog.
+
+
+9. O problema que mais me deu dor de cabeça
+
+Em um momento percebi que o layout não estava ficando como eu imaginava.
+
+A imagem e o texto não estavam organizados corretamente.
+
+Fui revisar o CSS e encontrei isso:
+
+grid-template-columns: repeat(1fr, 1fr);
+
+
+O problema é que essa sintaxe está errada.
+
+A correção foi:
+
+grid-template-columns: 1fr 1fr;
+
+
+Além disso adicionei:
+
+gap: 4rem;
+align-items: center;
+
+
+Depois dessa mudança o layout finalmente ficou organizado em duas colunas.
+
+Foi um daqueles momentos em que uma única linha de código resolve um problema enorme.
+
+
+10. Efeito hover na imagem
+
+Queria adicionar um pequeno efeito visual quando o usuário passasse o mouse na imagem.
+
+Usei:
+
+.post__thumbnail img:hover {
+    filter: saturate(0);
+}
+
+
+Agora a imagem perde a saturação quando recebe hover.
+
+É um detalhe simples, mas deixa o site mais interessante.
+
+
+11. Moldura da imagem
+
+Achei que a imagem precisava de mais destaque.
+
+Então adicionei:
+
+.post__thumbnail {
+    border: 1rem solid #1d1d1d;
+}
+
+
+O resultado ficou com uma aparência mais robusta, combinando com a temática de ferramentas e construção.
+
+Também apliquei:
+border-radius: var(--card-border-radius-2) 0;
+
+Isso ajudou a deixar o visual mais moderno sem perder a sensação de algo sólido e profissional.
+
+
+Algumas coisas que aprendi durante o primeiro dia:
+
+Um único caractere errado pode quebrar todo o CSS.
+Nem sempre o problema é complexo; às vezes é só um detalhe.
+O inspetor do navegador é um dos melhores amigos de quem programa.
+Grid é extremamente poderoso quando configurado corretamente.
+Pequenos ajustes de cor fazem uma diferença enorme na aparência final.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+Dia 2
+
+Um dia meio fraco
+
+!. Criação das categorias e temas dentro e cada uma
+
+2. Organização do material do html, fotos, avatar, banners
+
+3 (oque tomou mais tempo). Base dos posts criadas (e entendidas) para todos os posts
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
