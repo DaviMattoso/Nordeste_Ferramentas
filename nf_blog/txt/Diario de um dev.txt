@@ -250,3 +250,161 @@ Um dia meio fraco
 --------------------------------------------------------------------------------------------------------------------------------------
 
 
+Dia 3
+Começando e errando já
+
+1. Configurando os posts da página inicial
+Comecei criando o CSS para organizar os posts em sequência na página inicial:
+css
+.posts__container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5rem;
+}
+
+A questão é que não funcionou. E o motivo não era o CSS, mas sim o HTML.
+Eu tinha criado vários grids separados:
+
+html
+<section class="posts">
+    <div class="container posts__container">
+        <article class="post">
+            ...
+        </article>
+    </div>
+</section>
+
+<section class="posts">
+    <div class="container posts__container">
+        <article class="post">
+            ...
+        </article>
+    </div>
+</section>
+
+<section class="posts">
+    <div class="container posts__container">
+        <article class="post">
+            ...
+        </article>
+    </div>
+</section>
+
+O que, na prática, era a mesma coisa que:
+- 1 section
+    - 1 container
+        - 1 post
+- 1 section
+    - 1 container
+        - 1 post
+- 1 section
+    - 1 container
+        - 1 post
+
+E por que não funcionava?
+Porque o Grid só organiza os elementos que estão dentro dele.
+Por exemplo:
+
+html
+<div class="posts__container">
+    <article class="post"></article>
+    <article class="post"></article>
+    <article class="post"></article>
+</div>
+
+Nesse caso, o Grid cria três colunas para três itens.
+Já no meu código, cada grid possuía apenas um único post. Então era como se ele criasse: Post 1 | vazio | vazio
+
+Como resolvi?
+Transformando isto:
+html
+<section class="posts">
+    <div class="posts__container">
+        <article></article>
+    </div>
+</section>
+
+<section class="posts">
+    <div class="posts__container">
+        <article></article>
+    </div>
+</section>
+
+<section class="posts">
+    <div class="posts__container">
+        <article></article>
+    </div>
+</section>
+
+Nisto:
+html
+<section class="posts">
+    <div class="posts__container">
+
+        <article></article>
+        <article></article>
+        <article></article>
+        <article></article>
+        <article></article>
+        <article></article>
+
+    </div>
+</section>
+
+Agora existe:
+* 1 section
+* 1 container Grid
+* Vários posts dentro dele
+
+Em resumo, o CSS estava correto desde o início. O erro era estrutural no HTML: cada post estava dentro de um grid diferente. A solução foi colocar todos os `<article class="post">` dentro de um único `.posts__container`, permitindo que o CSS Grid organizasse os cards em três colunas.
+
+2. Criando a seção dos posts
+Essa parte foi tranquila. Utilizando as categorias e assuntos criados ontem, consegui montar alguns posts para servir de base para o layout do blog.
+Só teve um detalhe: as bordas das imagens estavam muito grossas, e os botões de categoria estavam muito afastados da imagem e muito próximos do título.
+Para corrigir as bordas, alterei isto:
+
+css
+.post__thumbnail { /* ======== Borda da imagem ======== */
+    border-radius: var(--card-border-radius-2) 0;
+    margin-bottom: 1.6rem;
+    border: 0.7rem solid #1d1d1d; /* antes era 1rem */
+}
+
+
+O valor de `1rem` deixava a borda exageradamente grossa. Com `0.7rem`, o resultado ficou mais equilibrado.
+
+Ajustando os botões de categoria
+Para melhorar o espaçamento dos botões, bastou adicionar `margin-top` e `margin-bottom`:
+css
+.category__buttons {
+    background-color: #ECECEC;
+    color: #E67E22;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: var(--card-border-radius-2);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 0.1rem;
+    margin-bottom: 1rem;
+}
+
+O detalhe importante é que essa alteração precisa ser feita diretamente na classe `.category__buttons`, porque assim todos os botões de categoria do blog serão atualizados automaticamente.
+
+
+Considerações finais
+Gostei bastante do progresso. Ainda falta muito trabalho pela frente, mas ver o layout começando a tomar forma é motivador.
+
+Maior aprendizado do dia
+* padding → controla o espaço dentro do elemento.
+* margin → controla o espaço fora do elemento.
+* border → controla a espessura da borda.
+* gap → controla o espaço entre itens de um Grid ou Flexbox.
+
+Hoje ficou claro que nem sempre o problema está no CSS. Muitas vezes a estrutura do HTML é que impede tudo de funcionar como esperado.
+E por hoje é só, crianças.
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+

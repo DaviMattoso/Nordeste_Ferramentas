@@ -169,6 +169,8 @@ nav button {
     font-size: 0.8rem;
     font-weight: 600;
     text-align: center;
+    margin-top: 0.1rem;
+    margin-bottom: 1rem;
 }
 
 .category__buttons:hover {
@@ -182,7 +184,7 @@ nav button {
 .post__thumbnail { /* ======== Borda da imagem ======== */
     border-radius: var(--card-border-radius-2) 0;
     margin-bottom: 1.6rem;
-    border: 1rem solid #1d1d1d;
+    border: 0.7rem solid #1d1d1d;
 }
 
 .post__thumbnail img:hover {
@@ -220,4 +222,12 @@ nav button {
 
 .featured .post__thumbnail {
     height: fit-content;
+}
+
+/* ======== Posts  ======== */
+.posts__container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5rem;
+    margin-bottom: 5rem;
 }
