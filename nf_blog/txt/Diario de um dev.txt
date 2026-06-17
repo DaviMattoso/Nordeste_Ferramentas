@@ -479,14 +479,70 @@ Vale ressaltar que esse CSS foi criado especificamente para essa seção de cate
 
 3. Construindo o Footer
 Na etapa seguinte, trabalhei na parte final do site: o footer.
-O código responsável pelo copyright ficou assim:
-css
+/* ======== Footer ======== */
+footer {
+    background: #1A1A1A; /* Cor de fundo do rodapé */
+    padding: 5rem 0 0;
+    box-shadow: inset 0 1.5rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+.footer__socials { /* ======== Posicao dos ícones ======== */
+    margin-inline: auto;
+    width: fit-content;
+    margin-bottom: 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.footer__socials a {  /* ======== Conf. vis. dos icones ======== */
+    font-size: 1.5rem; /* ======== Tamanho dos ícones ======== */
+    background: #1A1A1A; /* Cor de fundo dos ícones = cor de fundo do blog */
+    border-radius: 50%;
+    width: 2.3rem;
+    height: 2.3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer__socials a:hover {
+    background: #E67E22; /* Cor de fundo dos ícones ao passar o mouse */
+    color: #1A1A1A; /* Cor dos ícones ao passar o mouse */
+    transition: var(--transition);
+}
+
+.footer__container {
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+footer h4{
+    color: #E67E22; /* Cor dos títulos do rodapé */
+    margin-bottom: 0.6rem;
+}
+
+footer ul li{
+    padding: 0.3rem 0;
+}
+
+footer ul a{
+    opacity: 0.75;
+}
+
+footer ul a:hover{
+    letter-spacing: 0.2rem;
+    opacity: 1;
+}
+
 .footer__copyright {
-    grid-column: 1 / -1;
     text-align: center;
     margin-top: 3rem;
     color: #E67E22;
+    margin-bottom: 2rem;
 }
+
 
 
 
