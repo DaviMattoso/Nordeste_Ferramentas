@@ -406,5 +406,111 @@ E por hoje é só, crianças.
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
+Dia 4
+1. Corrigindo erros que apareceram enquanto eu tentava corrigir outro erro
+Já começamos o dia descobrindo três erros enquanto eu tentava resolver um problema completamente diferente.
+Na seção dos posts, o último <article> não estava fechado. Além disso, a <div> principal também não tinha fechamento, e a própria <section> dos posts estava aberta.
+Em resumo, o código estava assim:
+html
+<section class="posts">
+    <div class="container posts__container">
 
+        <!-- Post 1 -->
+        <article class="post">
+            <div class="post__thumbnail">
+                <img src="Images/post1t1.png">
+            </div>
+
+            ...
+
+                    <div class="post__author-info">
+                        <h5>Por: Davi Mattoso</h5>
+                        <small>Fevereiro 8, 2026 - 14:55</small>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+A correção foi simplesmente fechar as três tags que estavam faltando:
+html
+<h5>Por: Davi Mattoso</h5>
+<small>Fevereiro 8, 2026 - 14:55</small>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+É incrível como uma única tag não fechada pode gerar vários comportamentos estranhos na página e fazer você perder tempo procurando o erro no lugar errado.
+
+2. Criando a seção de categorias
+Em seguida, criei uma seção dedicada aos botões de categorias do blog:
+
+html
+<!-- ======== Categorias ======== -->
+<section class="category__buttons-section">
+
+    <div class="container category__buttons-container">
+        <a href="" class="category__buttons">Ferramentas</a>
+        <a href="" class="category__buttons">Construção</a>
+        <a href="" class="category__buttons">Marcenaria</a>
+        <a href="" class="category__buttons">Segurança no Trabalho</a>
+        <a href="" class="category__buttons">Dicas e Tutoriais</a>
+    </div>
+
+</section>
+
+Essa seção servirá para organizar os temas do blog e, futuramente, permitirá direcionar os usuários para conteúdos específicos de cada categoria.
+
+O CSS utilizado foi:
+css
+/* ======== Categorias ======== */
+
+.category__buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+
+Vale ressaltar que esse CSS foi criado especificamente para essa seção de categorias e não afeta outros elementos do projeto.
+
+3. Construindo o Footer
+Na etapa seguinte, trabalhei na parte final do site: o footer.
+O código responsável pelo copyright ficou assim:
+css
+.footer__copyright {
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 3rem;
+    color: #E67E22;
+}
+
+
+
+!!!!! Baugulho que me fez suar um pouco !!!!!
+
+Inicialmente, o texto do copyright não ficava centralizado corretamente, mesmo utilizando text-align: center.
+O problema era que o .footer__copyright estava dentro do .footer__container, que utiliza um Grid com quatro colunas.
+Por causa disso, o elemento ocupava apenas uma das colunas do Grid, e não toda a largura disponível.
+Para resolver, foi necessário "forçar" o elemento a ocupar da primeira até a última coluna:
+
+css
+.footer__copyright {
+    grid-column: 1 / -1; /* Adicionado */
+    text-align: center;
+    margin-top: 3rem;
+    color: #E67E22;
+}
+
+
+Com isso, o elemento passou a utilizar toda a largura do Grid e o alinhamento central funcionou exatamente como esperado.
+
+
+O que aprendemos hoje?
+Eu percebi mais uma vez que nem todo bug visual é culpa do CSS.
+Passei um tempo tentando entender o que estava acontecendo, mexendo aqui e ali, para no final descobrir que o problema era simplesmente uma tag que não tinha sido fechada.
+Moral da história: antes de ficar quebrando a cabeça no CSS, vale a pena dar uma olhada no HTML. Às vezes você acha que encontrou um bug super complicado, mas era só uma tag esquecida no meio do código fazendo a maior bagunça.
 

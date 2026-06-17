@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
+<!-- ======== Colocar o fav icon ======== -->
+
 <body>
     <!-- ======== Navbar ======== -->
     <nav>
@@ -40,6 +42,7 @@
 
 
     <!-- ======== Featured posts ======== -->
+    <!-- ======== Post base (posttop) ======== -->
 
 <!-- Seção do post em destaque -->
     <section class="featured">
@@ -51,7 +54,7 @@
         <div class="post__thumbnail">
 
             <!-- Imagem do post -->
-            <img src="./Images/post1t1.png" alt="Ferramentas">
+            <img src="Images/posttopt1.png">
 
         </div>
 
@@ -83,7 +86,7 @@
                 <div class="post__author-avatar">
 
                     <!-- Foto do autor -->
-                    <img src="./Images/avatar2.jpg" alt="Autor">
+                    <img src="./Images/avatar2.jpg">
 
                 </div>
 
@@ -110,32 +113,245 @@
 
      <!-- ======== Fim featured posts ======== -->
 
-     <section class="posts">
-        <div class="container posts__container">
-            <article class="post">
-                <div class="post__thumbnail">
-                    <img src="./Images/post2t1.png">
-                </div>
-                <div class="post__info">
-                    <a href="" class="category__buttons">Ferramentas</a>
-                    <h3 class="post__title"><a href="post.html">Ferramentas manuais que todo profissional deve ter</a></h3>
-                    <p class="post__body">
-                        Ter as ferramentas manuais certas faz toda a diferença na qualidade e na eficiência de qualquer trabalho. Neste artigo, você conhecerá os equipamentos essenciais que não podem faltar na caixa de ferramentas de um profissional, garantindo mais praticidade, segurança e produtividade no dia a dia.
-                    </p>
-                    <div class="post__author">
-                        <div class="post__author-avatar">
-                            <img src="./Images/avatar1.png">
-                        </div>
-                        <div class="post__author-info">
-                            <h5>Por: Davi Mattoso</h5>
-                            <small>Janeiro 25, 2026 - 13:20</small>
-                        </div>
+     <!-- ======== Posts ======== -->
+
+<section class="posts">
+    <div class="container posts__container">
+
+        <!-- Post 1 -->
+        <article class="post">
+            <div class="post__thumbnail">
+                <img src="Images/post1t1.png">
+            </div>
+
+            <div class="post__info">
+                <a href="" class="category__buttons">Ferramentas</a>
+
+                <h3 class="post__title">
+                    <a href="post.html">Ferramentas manuais que todo profissional deve ter</a>
+                </h3>
+
+                <p class="post__body">
+                    As ferramentas manuais são indispensáveis para qualquer profissional. Conheça os principais itens que não podem faltar na sua caixa de ferramentas e descubra como eles facilitam o trabalho no dia a dia.
+                </p>
+
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="./Images/avatar1.png">
+                    </div>
+
+                    <div class="post__author-info">
+                        <h5>Por: Davi Mattoso</h5>
+                        <small>Janeiro 15, 2026 - 13:20</small>
                     </div>
                 </div>
-            </article>
-        </div>
-     </section>
+            </div>
+        </article>
 
+        <!-- Post 2 -->
+        <article class="post">
+            <div class="post__thumbnail">
+                <img src="Images/post2t2.jpg">
+            </div>
+
+            <div class="post__info">
+                <a href="" class="category__buttons">Construção</a>
+                <h3 class="post__title">
+                    <a href="post.html">Etapas básicas de uma obra residencial</a>
+                </h3>
+                <p class="post__body">
+                    Construir ou reformar uma casa é o sonho de muita gente, mas olhar para um terreno vazio e imaginar o resultado final pode dar um nó na cabeça. Uma obra residencial de sucesso não nasce do acaso; ela segue um passo a passo lógico e estratégico.
+                </p>
+
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="./Images/avatar2.jpg">
+                    </div>
+
+                    <div class="post__author-info">
+                        <h5>Por: Rodrigo Miranda</h5>
+                        <small>Janeiro 20, 2026 - 14:00</small>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Post 3 -->
+        <article class="post">
+            <div class="post__thumbnail">
+                <img src="Images/post3t3.png">
+            </div>
+
+            <div class="post__info">
+                <a href="" class="category__buttons">Marcenaria</a>
+                <h3 class="post__title">
+                    <a href="post.html">Primeiros passos na marcenaria para iniciantes</a>
+                </h3>
+                <p class="post__body">
+                    A marcenaria é uma atividade que une criatividade e técnica. Com as ferramentas certas e conhecimentos básicos sobre madeira e medidas, qualquer iniciante pode começar a criar projetos práticos e desenvolver novas habilidades passo a passo.
+                </p>
+
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="./Images/avatar1.png">
+                    </div>
+
+                    <div class="post__author-info">
+                        <h5>Por: Davi Mattoso</h5>
+                        <small>Janeiro 25, 2026 - 16:00</small>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Post 4 -->
+        <article class="post">
+            <div class="post__thumbnail">
+                <img src="Images/post4t4.png">
+            </div>
+
+            <div class="post__info">
+                <a href="" class="category__buttons">Segurança no Trabalho</a>
+                <h3 class="post__title">
+                    <a href="post.html">Equipamentos de proteção individual (EPIs) essenciais</a>
+                </h3>
+                <p class="post__body">
+                    Os EPIs são fundamentais para garantir a segurança em qualquer atividade profissional. Conheça os equipamentos de proteção mais importantes e descubra como eles ajudam a prevenir acidentes e preservar sua saúde no trabalho.
+                </p>
+
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="./Images/avatar2.jpg" >
+                    </div>
+
+                    <div class="post__author-info">
+                        <h5>Por: Rodrigo Miranda</h5>
+                        <small>Janeiro 30, 2026 - 12:00</small>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Post 5 -->
+        <article class="post">
+            <div class="post__thumbnail">
+                <img src="Images/post5t5.png">
+            </div>
+
+            <div class="post__info">
+                <a href="" class="category__buttons">Dicas e Tutoriais</a>
+                <h3 class="post__title">
+                    <a href="post.html">Como trocar uma torneira sem chamar um profissional</a>
+                </h3>
+                <p class="post__body">
+                    Trocar uma torneira pode ser mais simples do que parece. Com algumas ferramentas básicas e seguindo os passos corretos, você pode fazer a substituição de forma rápida, segura e sem precisar contratar um profissional.
+                </p>
+
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="./Images/avatar1.png">
+                    </div>
+
+                    <div class="post__author-info">
+                        <h5>Por: Davi Mattoso</h5>
+                        <small>Fevereiro 1, 2026 - 17:00</small>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Post 6 -->
+        <article class="post">
+            <div class="post__thumbnail">
+                <img src="Images/post6t2.jpg">
+            </div>
+
+            <div class="post__info">
+                <a href="" class="category__buttons">Construção</a>
+                <h3 class="post__title">
+                    <a href="post.html">Materiais de construção mais utilizados atualmente</a>
+                </h3>
+                <p class="post__body">
+                    Os materiais de construção evoluem constantemente para oferecer mais resistência, economia e sustentabilidade. Conheça os materiais mais utilizados atualmente e descubra suas principais aplicações em obras e reformas.
+                </p>
+
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="./Images/avatar2.jpg" >
+                    </div>
+
+                    <div class="post__author-info">
+                        <h5>Por: Rodrigo Miranda</h5>
+                        <small>Fevereiro 6, 2026 - 20:00</small>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+                <!-- Post 7 -->
+        <article class="post">
+            <div class="post__thumbnail">
+                <img src="Images/post7t1.jpg" alt="">
+            </div>
+
+            <div class="post__info">
+                <a href="" class="category__buttons">Ferramentas</a>
+                <h3 class="post__title">
+                    <a href="post.html">Ferramentas elétricas: quais valem a pena comprar primeiro?</a>
+                </h3>
+                <p class="post__body">
+                    As ferramentas elétricas aumentam a produtividade e facilitam diversos tipos de trabalho. Descubra quais modelos oferecem o melhor custo-benefício e quais merecem estar entre suas primeiras compras.
+                </p>
+
+                <div class="post__author">
+                    <div class="post__author-avatar">
+                        <img src="./Images/avatar1.png" alt="">
+                    </div>
+
+                    <div class="post__author-info">
+                        <h5>Por: Davi Mattoso</h5>
+                        <small>Fevereiro 8, 2026 - 14:55</small>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- ======== Fim dos Posts ======== -->
+
+<!-- ======== Categorias btns ======== -->
+
+<section class="category__buttons-section">
+    
+    <div class="container category__buttons-container">
+        <a href="" class="category__buttons">Ferramentas</a>
+        <a href="" class="category__buttons">Construção</a>
+        <a href="" class="category__buttons">Marcenaria</a>
+        <a href="" class="category__buttons">Segurança no Trabalho</a>
+        <a href="" class="category__buttons">Dicas e Tutoriais</a>
+        <a href="" class="category__buttons">Maquinaria Pesada</a>
+    </div>
+
+</section>
+
+<!-- ======== Fim categorias btns ======== -->
+
+<!-- ======== Footer ======== -->
+<footer>
+
+</footer>
+    <div class="footer__socials">
+        <a href="https://www.youtube.com/" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+
+        <a href="https://www.facebook.com/?locale=pt_BR" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+
+        <a href="https://x.com/?lang=pt" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+
+        <a href="https://pt.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+
+        <a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+    </div>
 </body>
 
 </html>
