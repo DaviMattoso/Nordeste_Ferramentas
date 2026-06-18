@@ -570,3 +570,284 @@ Eu percebi mais uma vez que nem todo bug visual é culpa do CSS.
 Passei um tempo tentando entender o que estava acontecendo, mexendo aqui e ali, para no final descobrir que o problema era simplesmente uma tag que não tinha sido fechada.
 Moral da história: antes de ficar quebrando a cabeça no CSS, vale a pena dar uma olhada no HTML. Às vezes você acha que encontrou um bug super complicado, mas era só uma tag esquecida no meio do código fazendo a maior bagunça.
 
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Dia 5
+1.Falhando tentando criar o Media 
+
+O código era pra ser assim:
+/* Define uma Media Query: as regras dentro deste bloco só se aplicam 
+   se a tela do dispositivo tiver uma largura máxima de 1024px (tablets e celulares) */
+@media screen and (max-width: 1024px) {
+
+    /* Ajusta a largura do container principal usando a variável de largura para telas médias */
+    .container {
+        width: var(--container-width-md);
+    }
+
+    /* Reduz o espaçamento do topo das seções para se ajustar melhor a telas menores */
+    section {
+        margin-top: 2rem;
+    }
+
+    /* Diminui o tamanho da fonte do título H2 para não estourar na tela do celular */
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    /* Diminui o tamanho da fonte do título H3 */
+    h3 {
+        font-size: 1.2rem;
+    }
+
+    /* Diminui o tamanho da fonte do título H5 */
+    h5 {
+        font-size: 0.9rem;
+    }
+
+    /* Muda o layout do post em destaque de 2 colunas para 1 única coluna (empilhado) */
+    .featured__container {
+        grid-template-columns: 1fr;
+    }
+
+    /* Muda o layout da grade de posts de 3 colunas para 1 única coluna (um embaixo do outro) */
+    .posts__container {
+        grid-template-columns: 1fr;
+    }
+
+    /* ======== Nav ======== */
+    
+    /* Esconde a lista de itens da navegação por padrão nesta resolução */
+    .nav__items {
+        display: none;
+    }
+
+    /* Estiliza os botões de abrir e fechar o menu (hambúrguer e X) */
+    nav button {
+        display: inline-block; /* Faz os botões aparecerem (no desktop eles ficam sumidos) */
+        background: transparent; /* Remove qualquer cor de fundo padrão do botão */
+        font-size: 1.5rem; /* Aumenta o tamanho dos ícones dos botões */
+        color: #E67E22; /* Define a cor laranja para os ícones */
+        cursor: pointer; /* Transforma a seta do mouse na "mãozinha" de clique */
+    }
+
+    /* Garante que o botão de fechar (X) comece escondido (ele só aparece quando o menu abre) */
+    nav button#close__nav-btn {
+        display: none;
+    }
+
+    /* Transforma o container da nav em um ponto de referência para posicionar o menu suspenso */
+    .nav__container {
+        position: relative;
+    }
+
+    /* Configura o menu lateral suspenso (Obs: Esta regra sobrescreve a de cima se o menu for exibido) */
+    .nav__items {
+        position: absolute; /* Desprende o menu do fluxo normal para flutuar na tela */
+        top: 100%; /* Alinha o topo do menu exatamente onde termina a barra de navegação */
+        right: 0; /* Cola o menu na extremidade direita da tela */
+        left: 0; /* Cola o menu na esquerda (isso faz ele esticar de um lado ao outro se não tiver largura fixa) */
+        background: #1A1A1A; /* Define o fundo escuro para a caixa do menu */
+        width: 12rem; /* Define a largura fixa de 12rem para a caixinha do menu */
+        flex-direction: column; /* Organiza os links verticalmente (em coluna), um embaixo do outro */
+        align-items: flex-start; /* Alinha os textos dos links no início (à esquerda) */
+        justify-content: center; /* Centraliza o bloco de itens verticalmente */
+        padding: 1rem; /* Adiciona um espaçamento interno nas bordas do menu */
+        gap: 0; /* Remove qualquer espaço padrão entre os itens da lista */
+        box-shadow: 0 3rem 3rem rgba(0, 0, 0, 0.4); /* Adiciona uma sombra suave abaixo do menu */
+    }
+
+    /* Estiliza cada linha de link (<li>) dentro do menu suspenso */
+    .nav__items li {
+        width: 100%; /* Faz a linha ocupar toda a largura disponível (as 12rem do menu) */
+        height: 2.5rem; /* Define a altura de cada linha de link */
+        display: flex; /* Ativa o flexbox para alinhar o texto do link internamente */
+        align-items: center; /* Centraliza o texto do link verticalmente na linha */
+        box-shadow: -2rem 3rem 7rem rgba(0, 0, 0, 0.7); /* Adiciona uma sombra projetada para cada item */
+        background: gray; /* Define a cor de fundo cinza para as linhas */
+    }
+}
+
+
+SO QUE POR ALGUM MOTIVO A LISTA NA RENDERIZACAO MOBILE NAO APARECEEEEEEEEEE
+O que eu tentei fazer até agora para arrumar:
+
+Entendi o sumiço: Abrir o site no modo tablet/celular (Inspecionar > iPad Air), e o meu estava abrindo no modo computador. Por isso parecia tudo diferente.
+
+Ajustei o CSS: Fui lá na Media Query (@media) e limpei os bugs da classe .nav__items. Tirei o left: 0 que esticava o menu na tela toda, mudei a cor de cinza para o fundo escuro (#1A1A1A) e aumentei a altura das linhas para 4.5rem.
+
+Css mudado:
+/* ======== Media Queries (Medium Screens) ======== */
+
+@media screen and (max-width: 1024px) {
+
+    .container {
+        width: var(--container-width-md);
+    }
+
+    section {
+        margin-top: 2rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    h3 {
+        font-size: 1.2rem;
+    }
+
+    h5 {
+        font-size: 0.9rem;
+    }
+
+    .featured__container {
+        grid-template-columns: 1fr;
+    }
+
+    .posts__container {
+        grid-template-columns: 1fr;
+    }
+
+    /* ======== Nav ======== */
+    nav button {
+        display: inline-block;
+        background: transparent;
+        font-size: 1.5rem;
+        color: #E67E22;
+        cursor: pointer;
+    }
+
+    nav button#close__nav-btn {
+        display: none;
+    }
+
+    .nav__container {
+        position: relative;
+    }
+
+    .nav__items {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #1A1A1A; /* Fundo escuro igual ao vídeo */
+        width: 12rem;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 0;
+        box-shadow: 0 3rem 3rem rgba(0, 0, 0, 0.4);
+        
+        /* Escondido por padrão, o JavaScript vai controlar */
+        display: none; 
+    }
+
+    .nav__items li {
+        width: 100%;
+        height: 4.5rem; /* Altura idêntica à do vídeo */
+        display: flex;
+        align-items: center;
+        box-shadow: -2rem 3rem 7rem rgba(0, 0, 0, 0.7);
+        background: #1A1A1A;
+    }
+
+    .nav__items li a {
+        border-radius: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding-left: 2rem;
+        color: #ECECEC; /* Cor clara para o texto do menu */
+    }
+    
+    .nav__items li a:hover {
+        background: #2c2c2c; /* Efeito de hover nos links */
+    }
+}
+
+
+Criei a lógica (JS): Fiz o arquivo com o código para abrir e fechar o menu, mudando o display e trocando o ícone de barras pelo "X" quando eu clicasse.
+
+Codigo JS:
+// Seleção dos elementos do HTML
+const navItems = document.querySelector('.nav__items');
+const openNavBtn = document.querySelector('#open__nav-btn');
+const closeNavBtn = document.querySelector('#close__nav-btn');
+
+// Função para abrir o menu
+const openNav = () => {
+    navItems.style.display = 'flex';
+    openNavBtn.style.display = 'none';
+    closeNavBtn.style.display = 'inline-block';
+}
+
+// Função para fechar o menu
+const closeNav = () => {
+    navItems.style.display = 'none';
+    openNavBtn.style.display = 'inline-block';
+    closeNavBtn.style.display = 'none';
+}
+
+// Abre o menu ao clicar no botão de barras (hambúrguer)
+openNavBtn.addEventListener('click', openNav);
+
+// Fecha o menu ao clicar no botão de "X"
+closeNavBtn.addEventListener('click', closeNav);
+
+Cacei os erros de bobeira:
+Vi que o navegador estava travando o design antigo na memória, aí usei o Ctrl + F5 para limpar o cache.
+Percebi que eu tinha salvo o arquivo com o nome errado (mainjs sem o ponto), o que quebrava tudo, e mudei para main.js.
+
+E oque funcionou? nada..... e hj eu vou dormir triste pelo tempo sem avanço...
+
+ou será que nao HEHEHEHEHE
+
+O problema no final de tudo era no nav__ítems
+Como eu tinha o display:none era OBVIO que eu nunca ia ver porque a lista sempre ficaria escondida, para isso mudamos o nav__ítems para:
+.nav__items {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #1A1A1A;
+    width: 12rem;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 1rem;
+    gap: 0;
+    box-shadow: 0 3rem 3rem rgba(0, 0, 0, 0.4);
+}
+
+No final tambem adaptei o js mas deixei em comentario para primeirop so mexer no css
+Codigo Js:
+/* ======== Controle do menu mobile ========
+
+// Seleciona a lista de navegação
+const navItems = document.querySelector('.nav__items');
+
+// Seleciona o botão de abrir o menu
+const openNavBtn = document.querySelector('#open__nav-btn');
+
+// Seleciona o botão de fechar o menu
+const closeNavBtn = document.querySelector('#close__nav-btn');
+
+
+// ======== Abrir menu ========
+openNavBtn.addEventListener('click', () => {
+    navItems.style.display = 'flex';
+    openNavBtn.style.display = 'none';
+    closeNavBtn.style.display = 'inline-block';
+});
+
+
+// ======== Fechar menu ========
+closeNavBtn.addEventListener('click', () => {
+    navItems.style.display = 'none';
+    closeNavBtn.style.display = 'none';
+    openNavBtn.style.display = 'inline-block';
+});
+
+*/
+
