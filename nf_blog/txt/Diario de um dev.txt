@@ -671,7 +671,6 @@ O código era pra ser assim:
 
 SO QUE POR ALGUM MOTIVO A LISTA NA RENDERIZACAO MOBILE NAO APARECEEEEEEEEEE
 O que eu tentei fazer até agora para arrumar:
-
 Entendi o sumiço: Abrir o site no modo tablet/celular (Inspecionar > iPad Air), e o meu estava abrindo no modo computador. Por isso parecia tudo diferente.
 
 Ajustei o CSS: Fui lá na Media Query (@media) e limpei os bugs da classe .nav__items. Tirei o left: 0 que esticava o menu na tela toda, mudei a cor de cinza para o fundo escuro (#1A1A1A) e aumentei a altura das linhas para 4.5rem.
@@ -766,35 +765,6 @@ Css mudado:
     }
 }
 
-
-Criei a lógica (JS): Fiz o arquivo com o código para abrir e fechar o menu, mudando o display e trocando o ícone de barras pelo "X" quando eu clicasse.
-
-Codigo JS:
-// Seleção dos elementos do HTML
-const navItems = document.querySelector('.nav__items');
-const openNavBtn = document.querySelector('#open__nav-btn');
-const closeNavBtn = document.querySelector('#close__nav-btn');
-
-// Função para abrir o menu
-const openNav = () => {
-    navItems.style.display = 'flex';
-    openNavBtn.style.display = 'none';
-    closeNavBtn.style.display = 'inline-block';
-}
-
-// Função para fechar o menu
-const closeNav = () => {
-    navItems.style.display = 'none';
-    openNavBtn.style.display = 'inline-block';
-    closeNavBtn.style.display = 'none';
-}
-
-// Abre o menu ao clicar no botão de barras (hambúrguer)
-openNavBtn.addEventListener('click', openNav);
-
-// Fecha o menu ao clicar no botão de "X"
-closeNavBtn.addEventListener('click', closeNav);
-
 Cacei os erros de bobeira:
 Vi que o navegador estava travando o design antigo na memória, aí usei o Ctrl + F5 para limpar o cache.
 Percebi que eu tinha salvo o arquivo com o nome errado (mainjs sem o ponto), o que quebrava tudo, e mudei para main.js.
@@ -804,7 +774,7 @@ E oque funcionou? nada..... e hj eu vou dormir triste pelo tempo sem avanço...
 ou será que nao HEHEHEHEHE
 
 O problema no final de tudo era no nav__ítems
-Como eu tinha o display:none era OBVIO que eu nunca ia ver porque a lista sempre ficaria escondida, para isso mudamos o nav__ítems para:
+Como eu tinha o display:none era OBVIO que eu nunca ia ver porque a lista sempre ficaria escondida (mas parei pra pensar que isso vai ser pro js esconder a lista xd), para isso mudamos o nav__ítems para:
 .nav__items {
     display: flex;
     position: absolute;
@@ -820,34 +790,121 @@ Como eu tinha o display:none era OBVIO que eu nunca ia ver porque a lista sempre
     box-shadow: 0 3rem 3rem rgba(0, 0, 0, 0.4);
 }
 
-No final tambem adaptei o js mas deixei em comentario para primeirop so mexer no css
-Codigo Js:
-/* ======== Controle do menu mobile ========
 
+Depois de arrumar isso chegamos a mais um problema com o avatar dentro da lista do mobile, a imagem nao estava correta e passava do limite da linha... Nesse proceso o avatar ficou de maneiras que eu nem sabia como, mas no final a solucao foi: 
+/* Corrige o item do avatar no menu mobile */
+    .nav__items .nav__profile {
+        width: 100%;
+        height: auto;        /* Remove a altura travada de 2.5rem do 'li' */
+        display: flex;
+        justify-content: center; /* Centraliza horizontalmente dentro dos 12rem */
+        align-items: center;
+        padding: 1rem 0;     /* Dá um espaçamento confortável acima e abaixo do avatar */
+        background: transparent;
+    }
+
+    /* Remove estilos globais extras caso existam interferindo */
+    .nav__profile {
+        width: auto;
+        height: auto;
+        margin: 0;
+    }
+
+    /* Define o tamanho exato e comportamento do círculo do avatar */
+    .nav__profile .avatar {
+        width: 3.0rem;       /* Tamanho proporcional ideal para caber nos 12rem do menu */
+        height: 3.0rem;      /* Mantém a proporção idêntica para não achatar */
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #E67E22; /* Mantém a borda laranja elegante */
+        display: block;
+    }
+
+    /* Garante que a foto preencha o círculo sem distorcer */
+    .nav__profile .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+/* --------------------------------------- */
+
+Com o css pronto agora foi partir para o js fazer funcionar, coloquei comentarios pra entender melhor oque tava fazendo porque fiuei meio perdido:
 // Seleciona a lista de navegação
 const navItems = document.querySelector('.nav__items');
-
-// Seleciona o botão de abrir o menu
+// Seleciona o botão de abrir menu (☰)
 const openNavBtn = document.querySelector('#open__nav-btn');
-
-// Seleciona o botão de fechar o menu
+// Seleciona o botão de fechar menu (X)
 const closeNavBtn = document.querySelector('#close__nav-btn');
 
-
-// ======== Abrir menu ========
-openNavBtn.addEventListener('click', () => {
+// Função para abrir o menu mobile
+const openNav = () => {
+    // Exibe a lista de navegação
     navItems.style.display = 'flex';
+    // Esconde o botão de abrir
     openNavBtn.style.display = 'none';
+    // Exibe o botão de fechar
     closeNavBtn.style.display = 'inline-block';
-});
+}
 
-
-// ======== Fechar menu ========
-closeNavBtn.addEventListener('click', () => {
+// Função para fechar o menu mobile
+const closeNav = () => {
+    // Esconde a lista de navegação
     navItems.style.display = 'none';
+    // Esconde o botão de fechar
     closeNavBtn.style.display = 'none';
+    // Exibe novamente o botão de abrir
     openNavBtn.style.display = 'inline-block';
-});
+}
 
-*/
+// Executa a função openNav ao clicar no botão ☰
+openNavBtn.addEventListener('click', openNav);
+// Executa a função closeNav ao clicar no botão X
+closeNavBtn.addEventListener('click', closeNav);
+
+Pra finalizar e deixar mais bonitinho agrego uma animação na nav para abrir as opções:
+(agregamos a ani na li):
+.nav__items li {
+        width: 100%;
+        height: 2.5rem;
+        display:flex;
+        align-items:center;
+        background: #1A1A1A;
+        border-top: 1px solid #E67E22;
+        animation: animationDropdown 1s 0s ease forwards; /* Nav animation */
+        opacity: 0; /* Inicia com opacidade 0 para a animação */
+        transform-origin: top; /* Define a origem da transformação para o topo para a animação de dropdown */
+    }
+
+e criamos o @keyframes animationDropdown:    /* Nav animation */
+    @keyframes animationDropdown {
+        0% {
+            transform: rotateX(90deg);
+        }
+        100% {
+            transform: rotateX(0deg);
+            opacity: 1;
+        }
+    }
+
+ajustamos o delay de cada item:
+    .nav__items li:nth-child(2) {
+        animation-delay: 200ms; /* Atraso para o segundo item */
+    }
+    .nav__items li:nth-child(3) {
+        animation-delay: 400ms; /* Atraso para o terceiro item */
+    }
+    .nav__items li:nth-child(4) {
+        animation-delay: 600ms; /* Atraso para o quarto item */
+    }
+    .nav__items li:nth-child(5) {
+        animation-delay: 800ms; /* Atraso para o quinto item */
+    }
+
+
+Para finalizar o dia e nao sentir que foi tudo pro lixo agt arruma tambem o MDQ pra 600 px de uma vez... aqui foi so redimensionar tudo 
+
+E por hoje foi isso, me odiei no icinio achando que tava tudo perdido mas no final deu pra sentir que deu pra fazer alguma coisa hj
+GG
+
+--------------------------------------------------------------------------------------------------------------------------------------
 

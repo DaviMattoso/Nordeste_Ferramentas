@@ -312,7 +312,7 @@ footer ul a:hover{
     margin-bottom: 2rem;
 }
 
-/* ======== Media Queries (Medium Screens) ======== */
+/* ======== Media Queries (Medium Devices) ======== */
 
 @media screen and (max-width: 1024px) {
 
@@ -349,6 +349,7 @@ footer ul a:hover{
         display: none;
     }
 
+     /* ======== Btn da nav no mobile ======== */
     nav button {
         display: inline-block;
         background: transparent;
@@ -366,7 +367,7 @@ footer ul a:hover{
     }
 
     .nav__items {
-    display: flex;
+    display: none; /* Esconde a lista de navegação por padrão. */
     position: absolute;
     top: 100%;
     right: 0;
@@ -387,8 +388,36 @@ footer ul a:hover{
         align-items:center;
         background: #1A1A1A;
         border-top: 1px solid #E67E22;
+        animation: animationDropdown 1s 0s ease forwards; /* Nav animation */
+        opacity: 0; /* Inicia com opacidade 0 para a animação */
+        transform-origin: top; /* Define a origem da transformação para o topo para a animação de dropdown */
     }
 
+    .nav__items li:nth-child(2) {
+        animation-delay: 200ms; /* Atraso para o segundo item */
+    }
+    .nav__items li:nth-child(3) {
+        animation-delay: 400ms; /* Atraso para o terceiro item */
+    }
+    .nav__items li:nth-child(4) {
+        animation-delay: 600ms; /* Atraso para o quarto item */
+    }
+    .nav__items li:nth-child(5) {
+        animation-delay: 800ms; /* Atraso para o quinto item */
+    }
+
+    /* Nav animation */
+    @keyframes animationDropdown {
+        0% {
+            transform: rotateX(90deg);
+        }
+        100% {
+            transform: rotateX(0deg);
+            opacity: 1;
+        }
+    }
+
+    /* Config do itens da lista dentro do btn da nav */
     .nav__items li a {
         justify-content: center; /* Centraliza */
         border-radius: 0;
@@ -438,5 +467,54 @@ footer ul a:hover{
         height: 100%;
         object-fit: cover;
     }
-/* --------------------------------------- */
+
+    /* ======== Posts para tablets ======== */
+    .featured__container {
+    gap: 3rem;
+    }
+
+    .posts__container {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    }
+
+    /* ======== Footer para tablets ======== */
+    .footer__container {
+    grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ======== Media Queries (Small Devices) ======== */
+@media screen and (max-width: 600px) {
+    section {
+        margin-top: 2rem;
+    }
+
+    h1{
+        font-size: 2rem;
+    }
+
+    .featured {
+        margin-top: 6rem;
+    }
+
+    .featured__container {
+        grid-template-columns: 1fr;
+        gap:0;
+    }
+
+    .posts__container {
+        grid-template-columns: 1fr;
+    }
+
+    .category__buttons-container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer__container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        align-items: center;
+        gap: 2rem;
+    }
 }
