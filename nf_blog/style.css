@@ -316,6 +316,22 @@ footer ul a:hover{
 
 @media screen and (max-width: 1024px) {
 
+    /* ======== Config do primeiro post em 1024px ======== */
+    .featured__container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;          /* Diminui o espaço geral entre os blocos empilhados */
+        align-items: start;   /* CRUCIAL: Remove o alinhamento central vertical que criava o espaço vazio */
+    }
+
+    .featured .post__thumbnail {
+        margin-bottom: 0;     /* Remove a margem inferior da imagem apenas no destaque empilhado */
+    }
+    
+    .featured .post__info .category__buttons {
+        margin-top: 2em;   /* Controla exatamente a distância do botão para a imagem acima */
+    }
+    /* ================================================== */
+
     .container {
         width: var(--container-width-md);
     }
@@ -481,6 +497,9 @@ footer ul a:hover{
     /* ======== Footer para tablets ======== */
     .footer__container {
     grid-template-columns: 1fr 1fr;
+    text-align: center;
+    align-items: center;
+    gap: 2rem;
     }
 }
 

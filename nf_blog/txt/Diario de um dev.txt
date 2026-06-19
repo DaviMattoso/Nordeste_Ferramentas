@@ -908,3 +908,56 @@ GG
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
+Dia 6
+O que fazer hoje
+Hoje eu tenho que focar em criar o material de HTML e CSS, to precisando aprender mais como fazer e oque estou fazendo... mas nao vou abandonar o nf hoje por completo
+Assim que temos duas tarefas para hj que eu percebi ontem antes de terminar:
+arrumar o espaçamento do primeiro post no MDQ em 1024px
+arrumar o footer no MDQ em 1024px (centralizar assim como em 600px)
+
+1. footer no MDQ em 1024px
+Passamos disso:
+    .footer__container {
+    grid-template-columns: 1fr 1fr;
+    }
+
+Para isso:
+    .footer__container {
+    grid-template-columns: 1fr 1fr;
+    text-align: center;
+    align-items: center;
+    gap: 2rem;
+    }
+
+E pronto akkakaka tarefa um completa
+agora a tarefa dois 
+
+2. Espaçamento do primeiro post no MDQ em 1024px
+
+O espaço gigante que aparecia abaixo da imagem no modo tablet (1024px) era causado por um conflito de alinhamento do CSS Grid.
+
+No desktop, o container usava align-items: center para manter o texto e a imagem alinhados perfeitamente pelo meio na horizontal. Porém, ao reduzir a tela para 1024px e empilhar os elementos em uma única coluna (grid-template-columns: 1fr), o navegador continuava aplicando essa regra de centralização vertical. Como o bloco de texto ocupava menos espaço que a imagem, o Grid forçava um "vazio" artificial acima dele para tentar equilibrar o layout.
+
+Pra resolver tem que comportamento de alinhamento do Grid no momento em que os elementos são empilhados. Substituímos o alinhamento central pelo alinhamento no topo (align-items: start), fazendo com que o bloco de texto encostasse logo abaixo da imagem de forma natural.
+
+Além disso, removemos margens antigas que somavam espaços indesejados, deixando o controle da distância exclusivamente nas mãos do gap do container e do margin-top do botão de categoria.
+
+Código Corrigido:
+@media screen and (max-width: 1024px) {
+
+    .featured__container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;          /* Controla o espaço geral do empilhamento */
+        align-items: start;   /* SOLUÇÃO: Alinha o texto no topo, removendo o espaço vazio */
+    }
+
+    .featured .post__thumbnail {
+        margin-bottom: 0;     /* Remove a margem antiga para não somar espaço extra */
+    }
+    
+    .featured .post__info .category__buttons {
+        margin-top: 0.5rem;   /* Ajuste fino que você fez para cravar o espaçamento ideal */
+    }
+}
+
+E por hoje é só no blog hehe, nos vemos no outro repositorio
