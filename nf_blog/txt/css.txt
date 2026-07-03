@@ -484,10 +484,23 @@ footer ul a:hover{
         object-fit: cover;
     }
 
-    /* ======== Posts para tablets ======== */
-    .featured__container {
-    gap: 3rem;
-    }
+/* ======== Featured para tablets ======== */
+.featured__container {
+    gap: .3rem;
+}
+
+.featured .post__thumbnail {
+    margin-bottom: 0;
+}
+
+.featured .post__info {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.featured .category__buttons {
+    margin-top: 0;
+}
 
     .posts__container {
     grid-template-columns: 1fr 1fr;
