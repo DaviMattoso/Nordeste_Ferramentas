@@ -967,3 +967,58 @@ foi engraçado porque eu passei um tempinho procurando um problema complicado e 
 Fiquei smumido mais to voltando, bug arrumado hj amanha eu volto com as 4 horinhas pra o bagulho ficar doido.
 
 --------------------------------------------------------------------------------------------------------------------------------------
+
+Dia 7
+KAKAKAKAKAKKAKA
+No commit tudo se ve bem bonitinho né? apoi eu me fudi forte hoje... 
+
+1.
+Isso que da ficar sem estudar por mais de uma semana, Depois de criar a pagina dos posts e o sgn post eu dei F5 e ai eu queria me matar. Como eu tinha acabado de mexer no media query, minha primeira reação foi achar que tinha quebrado o css. comecei mexendo em margens, tamanhos e até no media query, mas nada resolvia. depois de revisar o código com mais calma descobri que o problema não era o css, era praticamente o html inteiro.
+
+o primeiro erro foi colocar a section do post antes da abertura do body. sem perceber eu tinha começado a página com a section e só depois aberto a tag body, quando o correto era deixar toda a estrutura da página dentro dela, com a navbar primeiro, depois o post e por último o footer.
+
+depois encontrei um erro que parecia pequeno, mas fazia o css simplesmente não funcionar. no html a classe era singlepost, enquanto no css eu tinha criado .single__post. como os nomes eram diferentes, o navegador nunca aplicava aquele estilo. bastou deixar os dois com o mesmo nome para a regra funcionar normalmente.
+
+logo em seguida apareceu mais um erro de digitação. escrevi baclkground em vez de background. foi literalmente uma palavra escrita errada, então o navegador simplesmente ignorava aquela propriedade e o fundo nunca aparecia.
+
+achei que já tinha acabado, mas ainda encontrei outro erro parecido. na div da imagem escrevi singlepost__tumbnail, sendo que o correto era singlepost__thumbnail. faltava apenas uma letra, mas isso já era suficiente para qualquer css criado para essa classe nunca funcionar.
+
+o maior problema de todos estava na estrutura do html. sem perceber, coloquei a imagem e todo o texto dentro da div do autor. na prática o código estava organizado assim:
+section
+└── container
+    ├── h2
+    └── post__author
+        ├── avatar
+        ├── informações
+        ├── imagem
+        └── texto
+
+o correto era deixar cada elemento separado, ficando assim:
+section
+└── container
+    ├── h2
+    ├── post__author
+    ├── singlepost__thumbnail
+    └── p
+
+depois disso também foi necessário reorganizar os fechamentos das divs, porque vários elementos estavam sendo fechados no lugar errado por causa dessa estrutura. bastou separar corretamente a div do autor, a div da imagem e o parágrafo do conteúdo para a página finalmente ficar organizada igual ao vídeo.
+
+no final percebi que passei um bom tempo tentando consertar um css que, na verdade, nem era o problema. praticamente tudo estava acontecendo por causa da estrutura do html. mais uma vez ficou a lição de que, antes de sair mexendo em margens, grids ou media queries, vale a pena conferir se o html está realmente organizado da forma correta. às vezes o navegador não está ignorando o css, ele só está tentando interpretar uma estrutura que ficou toda bagunçada.
+
+2.
+Hoje achei que tinha quebrado a navbar inteira. revisei html, css e javascript, procurei conflito de media query, conferi ids, revisei eventos do js e até comecei a desconfiar que o navegador estava entrando no modo responsivo sozinho. depois de quase enlouquecer, fechei o live server, abri tudo de novo e... simplesmente voltou a funcionar. no fim das contas o problema não era o código, era o cache. aprendi que às vezes o bug não está no projeto, mas sim na ferramenta que estamos usando.
+
+3.
+No final vi que os links da nav estavem meio trocados e resolvi arrumar pra eles levarem para os arquivos certos, ou pelomenos os arquivos certos que ja existem
+
+                <li><a href="blog.html">Posts</a></li>
+                <li><a href="about.html">Sobre</a></li>
+                <li><a href="services.html">Serviços</a></li>
+                <li><a href="contact.html">Contato</a></li>
+                <li><a href="signin.html">Signin</a></li>
+Na mesma pegada tambem adcionei o category-posts.html para o hrfe dos botoes de categoria em cada post
+
+Em resumo do dia e da volta foi criar a pagina dos posts, a pasgina solo dos posts, arrumar estrutura HTML porque tava um LIXO, adicionar os links do href.... e acho que so... gostei de hj, deu pra dar uama vancadinha hehe xd
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
