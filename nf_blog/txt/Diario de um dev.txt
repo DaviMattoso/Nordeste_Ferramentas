@@ -1022,3 +1022,147 @@ Em resumo do dia e da volta foi criar a pagina dos posts, a pasgina solo dos pos
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
+Dia 8
+
+Hoje finalmente consegui sair da parte mais complicada do projeto e começar a montar as páginas institucionais do blog. Depois da dor de cabeça que foi organizar a página dos posts, essa parte acabou sendo bem mais tranquila, porque praticamente toda a estrutura principal já estava pronta. A navbar, o footer, os botões e várias classes do css puderam ser reaproveitados, então agora foi mais questão de montar o conteúdo e manter tudo com a mesma identidade visual.
+
+1. Criando a página Sobre
+Comecei criando a página about.html. Como a navbar e o footer já existiam, bastou reutilizar toda a estrutura e criar apenas a parte do conteúdo principal.
+A estrutura começou assim:
+<section class="about">
+
+    <div class="container about__container">
+
+        <div class="about__content">
+
+            <h1>Sobre o NF Blog</h1>
+
+            ...
+
+        </div>
+
+    </div>
+
+</section>
+
+A ideia foi apresentar melhor o projeto e explicar qual é o objetivo do NF Blog.
+
+Aproveitei para escrever um texto mais profissional, falando sobre ferramentas, construção, manutenção, marcenaria e segurança no trabalho, deixando claro que o blog não é apenas um lugar para mostrar ferramentas, mas também para compartilhar conhecimento.
+Depois resolvi deixar a página um pouco menos parada.
+Criei uma área com três cards:
+<div class="about__cards">
+
+    <article class="about__card">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+    </article>
+
+    <article class="about__card">
+        <i class="fa-solid fa-book-open"></i>
+    </article>
+
+    <article class="about__card">
+        <i class="fa-solid fa-shield-halved"></i>
+    </article>
+
+</div>
+
+Cada um representa uma parte do blog:
+Conteúdo especializado
+Aprendizado
+Segurança
+
+No final ainda coloquei um vídeo ocupando parte da página para deixar o visual mais moderno.
+
+2. Criando a página de contato
+Depois fui para a contact.html.
+Aqui resolvi dividir a página em duas partes.
+Na esquerda ficaram as informações do blog.
+Na direita ficou um formulário.
+A estrutura ficou assim:
+
+<section class="contact">
+
+    <div class="container contact__container">
+
+        <div class="contact__left">
+            ...
+        </div>
+
+        <div class="contact__right">
+
+            <form class="contact__form">
+
+                <input>
+
+                <textarea>
+
+                <button class="btn">
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+Também aproveitei para colocar alguns ícones do Font Awesome.
+<i class="fa-solid fa-phone"></i>
+<i class="fa-solid fa-envelope"></i>
+<i class="fa-solid fa-location-dot"></i>
+
+Mesmo sendo só uma página de contato, esses detalhes ajudam bastante a deixar tudo com uma aparência mais profissional.
+
+3. Google Maps
+Como praticamente toda página de contato possui uma localização, resolvi já deixar uma seção preparada para isso.
+Utilizei um iframe:
+<iframe
+    src="https://www.google.com/maps/embed?..."
+    loading="lazy">
+</iframe>
+
+Por enquanto o mapa ainda é só um modelo, mas a estrutura já ficou pronta para quando eu colocar um endereço real.
+
+4. O css começou a crescer...
+Depois de criar as duas páginas, chegou a hora de organizar o css.
+Foi criada uma seção nova somente para as páginas institucionais.
+Começando por:
+.about{
+    margin-top:8rem;
+    margin-bottom:3rem;
+}
+
+.about__container{
+    display:flex;
+    flex-direction:column;
+}
+
+Depois vieram várias outras classes:
+.about__content
+.about__cards
+.about__card
+.about__video
+.contact
+.contact__container
+.contact__left
+.contact__right
+.contact__form
+.contact__map
+
+A quantidade de css começou a crescer bastante, mas como tudo ficou separado por comentários, ainda está bem fácil de encontrar cada parte.
+
+5. Organizando a navegação
+Como agora existem mais páginas, aproveitei para organizar de vez os links da navbar.
+Antes alguns ainda apontavam para páginas temporárias.
+Agora ficou assim:
+<li><a href="blog.html">Posts</a></li>
+<li><a href="about.html">Sobre</a></li>
+<li><a href="services.html">Serviços</a></li>
+<li><a href="contact.html">Contato</a></li>
+<li><a href="signin.html">Signin</a></li>
+
+Pode parecer um detalhe pequeno, mas navegar pelo projeto ficou muito mais natural.
+
+Hoje foi um daqueles dias em que quase não apareceram bugs gigantes. Depois da surra que o html me deu nos últimos dias, foi bom conseguir focar mais na construção das páginas do que em ficar caçando erro escondido. O legal é perceber que várias partes do projeto já estão prontas o suficiente para serem reutilizadas. Antes eu precisava criar tudo do zero, agora basta reaproveitar a navbar, o footer e boa parte do css, o que deixa o desenvolvimento muito mais rápido. Aos poucos o NF Blog vai deixando de parecer apenas uma página inicial e começa a ter cara de um site completo, com navegação organizada e páginas próprias para cada seção. Acho que esse foi o dia em que mais senti que o projeto realmente começou a tomar forma.
+
+--------------------------------------------------------------------------------------------------------------------------------------
