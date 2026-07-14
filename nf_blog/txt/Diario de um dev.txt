@@ -1166,3 +1166,33 @@ Pode parecer um detalhe pequeno, mas navegar pelo projeto ficou muito mais natur
 Hoje foi um daqueles dias em que quase não apareceram bugs gigantes. Depois da surra que o html me deu nos últimos dias, foi bom conseguir focar mais na construção das páginas do que em ficar caçando erro escondido. O legal é perceber que várias partes do projeto já estão prontas o suficiente para serem reutilizadas. Antes eu precisava criar tudo do zero, agora basta reaproveitar a navbar, o footer e boa parte do css, o que deixa o desenvolvimento muito mais rápido. Aos poucos o NF Blog vai deixando de parecer apenas uma página inicial e começa a ter cara de um site completo, com navegação organizada e páginas próprias para cada seção. Acho que esse foi o dia em que mais senti que o projeto realmente começou a tomar forma.
 
 --------------------------------------------------------------------------------------------------------------------------------------
+
+Dia..... nao sei KAKAKAKAKAKKA hj o dia vai ser bom
+os planos sao: 
+terminar de 'editar' (capcut xd) o video e colocar na pagina do about, assim eu sinto que completei as paginas de servicos da nav, ou pelo menos as que vao ser mais faceis. 
+Dai agt volta com o blog em 2 dias... no signin
+
+ai depois eu vou meter 3 aulas de html pra acelerar o material HEHEHEHEHEHEH
+
+vamo la
+
+1.
+Primeiro editar o video... ja coloquei o base na pasta dos arquivos pra testar se o html ta funcionando:
+    <!-- ======== Vídeo ======== -->
+    <div class="about__video">
+        <video autoplay muted loop playsinline>
+            <source src="./Images/AboutVD.mp4" type="video/mp4">
+        </video>
+    </div>
+
+Holy fucking sheat ta foda pra krl EHEHEHEHHEHEHEHE que ideia boa, tava sentndo o about muito vazio, e nao queria mais uma imagem
+Agr que agt sabe que tafuncionando vamos para o capcut (vou assinar com crtz, é tudo pra quem nao tem disigner )
+
+(chamei um amigo dsigner e MORRI DE RIR COM ELE TENTANDO ME ENSINAR KAKAKAKAKAKKAKAKAKA)
+
+consegui o video editado no cap, exportei e salvei na pagina, mudei o camino da tag do html e gg, o maximoooo que eu posso tentar depois é colocar som, mas acho que sei la, mo trampo dnv kakakakakkaka
+
+gg, nos vemos no rep do html
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
