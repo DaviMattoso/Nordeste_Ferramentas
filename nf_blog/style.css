@@ -780,8 +780,134 @@ para manter um bom contraste com o fundo laranja */
     display: inline-block;
 }
 
-
 /* ======== Fim Serviços ======== */ 
+
+/* ======== FORMULÁRIOS (Login e Cadastro) ======== */ 
+/* ======== Área principal da página ======== */
+/* Centraliza o formulário na tela e cria um espaçamento
+   para que ele não fique escondido atrás da navbar fixa. */
+.form__section{
+    display: grid;
+    place-items: center;
+    padding: 8rem 0 3rem;
+}
+
+/* ======== Container do formulário ======== */
+/* Caixa principal onde ficam todos os elementos do formulário. */
+.form__section-container{
+    width: var(--form-width);
+    background: #F0F0F0;
+    padding: 2rem;
+    border-radius: var(--card-border-radius-3);
+}
+
+
+/* ==========================================================
+   MENSAGENS DE ALERTA
+   ========================================================== */
+
+/* Estilo base utilizado por qualquer mensagem de alerta. */
+.alert__message{
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    border-radius: var(--card-border-radius-2);
+}
+
+/* Mensagem de erro */
+.alert__message.error{
+    background: hsl(346, 87%, 46%, 15%);
+    color: hsl(346, 87%, 46%);
+}
+
+/* Mensagem de sucesso */
+.alert__message.success{
+    background: hsl(142, 71%, 45%);
+    color: #FFFFFF;
+}
+
+
+/* ==========================================================
+   FORMULÁRIO
+   ========================================================== */
+
+/* Organiza todos os campos em coluna com espaçamento uniforme.
+   O seletor foi limitado à .form__section para não alterar
+   outros formulários do site, como a barra de pesquisa. */
+.form__section form{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Organiza grupos como Label + Input (Avatar). */
+.form__control{
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+
+/* ==========================================================
+   CAMPOS DO FORMULÁRIO
+   ========================================================== */
+
+/* Aplica o estilo apenas aos campos dos formulários de Login
+   e Cadastro, evitando modificar inputs de outras páginas. */
+.form__section input,
+.form__section textarea,
+.form__section select{
+
+    padding: .8rem;
+
+    border: 1px solid #D9D9D9;
+    border-radius: var(--card-border-radius-2);
+
+    font-family: inherit;
+    font-size: .95rem;
+
+    transition: var(--transition);
+}
+
+/* Destaque do campo quando recebe foco. */
+.form__section input:focus,
+.form__section textarea:focus,
+.form__section select:focus{
+
+    outline: none;
+    border-color: #E67E22;
+}
+
+
+/* ==========================================================
+   LINKS DO FORMULÁRIO
+   ========================================================== */
+
+/* Texto abaixo do botão (Login / Cadastro). */
+.form__section small{
+    display: block;
+    margin-top: .2rem;
+
+    font-size: .8rem;
+    color: #E67E22;
+}
+
+/* Link destacado. */
+.form__section small a{
+    color: #111111;
+    text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 /* ======== Media Queries (Medium Devices) ======== */
 @media screen and (max-width: 1024px) {
@@ -1018,6 +1144,11 @@ para manter um bom contraste com o fundo laranja */
         width: 90%;
         max-width: 800px;
     }
+
+    .form__section-container{
+     width: 60%;
+    }
+
 
 /* ======== Media Queries (Small Devices) ======== */
 @media screen and (max-width: 600px) {

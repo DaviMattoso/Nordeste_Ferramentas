@@ -1196,3 +1196,49 @@ gg, nos vemos no rep do html
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
+Dia 10 (eu acho)
+
+DEMOREIII pra voltar mais voltei, valeu a pena focar em outras coisas, e o trab ta foda
+EM FIM, hoje consegui finalizar as páginas de Login e Cadastro do blog. A princípio parecia que seria uma tarefa simples, mas, como já virou tradição nesse projeto, alguns detalhes acabaram tomando mais tempo do que eu imaginava. Comecei montando toda a estrutura dos formulários com os campos de cadastro, mensagens de erro e sucesso, upload de avatar e os links para alternar entre login e cadastro. Durante esse processo apareceu uma sugestão do próprio VS Code para adicionar o atributo enctype="multipart/form-data" na tag <form>. Antes eu provavelmente só teria aceitado a sugestão, mas dessa vez fui entender para que ela servia. Descobri que esse atributo é obrigatório quando o formulário possui um campo do tipo file, pois é ele quem permite que arquivos sejam enviados para o servidor quando eu começar a trabalhar com PHP.
+
+Depois comecei a organizar todo o CSS dos formulários. Em vez de simplesmente fazer funcionar, aproveitei para deixar o código mais limpo e bem comentado. Também percebi um erro que estava afetando outras páginas do site. Eu havia utilizado um seletor muito genérico:
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+No começo isso parecia correto, mas acabei descobrindo que a barra de pesquisa da página de posts também utiliza uma tag <form>, então ela passou a herdar esse estilo e ficou completamente deformada. A solução foi limitar o CSS apenas aos formulários de Login e Cadastro:
+.form__section form{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+Pouco tempo depois aconteceu exatamente a mesma situação com os campos do formulário. Eu estava estilizando todos os input do projeto:
+input,
+textarea,
+select{
+    ...
+}
+
+Isso fez com que o campo de pesquisa do blog recebesse uma borda cinza e várias propriedades que deveriam existir apenas nos formulários de autenticação. Novamente a solução foi restringir o CSS:
+.form__section input,
+.form__section textarea,
+.form__section select{
+    ...
+}
+
+Foi um aprendizado interessante, porque comecei a entender que quanto maior o projeto fica, mais importante é evitar seletores genéricos que acabam modificando páginas completamente diferentes.
+
+Também enfrentei novamente alguns problemas de estrutura do HTML. O menu mobile simplesmente deixou de funcionar nas páginas de Login e Cadastro. No começo imaginei que fosse algum erro no CSS ou no JavaScript, mas depois de revisar o código encontrei o verdadeiro problema: eu havia esquecido de fechar a tag <ul> da navbar. Com isso, os botões do menu (open__nav-btn e close__nav-btn) ficaram dentro da lista de navegação, quebrando completamente a estrutura da página. Bastou fechar corretamente a lista para que tudo voltasse a funcionar. Esse foi mais um daqueles bugs que reforçaram uma lição que já apareceu várias vezes durante o desenvolvimento do blog.
+
+Outro detalhe foi o rodapé, que em determinado momento ficou completamente centralizado e estreito. Depois de investigar percebi que o erro não estava no CSS, mas sim porque eu havia deixado o <footer> dentro da <section> do formulário. Assim que organizei corretamente a estrutura do HTML, o layout voltou ao normal.
+
+Também fiz alguns ajustes de responsividade nos formulários para que eles se comportassem melhor em tablets e celulares, deixando o container centralizado e com espaçamento mais agradável em diferentes tamanhos de tela.
+
+No fim do dia percebi que aprendi muito mais sobre organização do código do que sobre novas propriedades de CSS. Descobri que muitos bugs não aparecem porque o CSS está errado, mas porque a estrutura do HTML foi montada de forma incorreta ou porque um seletor acabou afetando elementos que não deveriam receber aquele estilo. A partir de agora quero criar o hábito de sempre revisar a estrutura do HTML antes de começar a alterar o CSS ou suspeitar do JavaScript. Até agora, essa simples mudança de pensamento já resolveu boa parte dos problemas que apareceram no projeto.
+
+É nozess, falta pouco pra terminar todo o foront end, depois é ir pro back e termianr cortando umas pontas soltas
+
+--------------------------------------------------------------------------------------------------------------------------------------
