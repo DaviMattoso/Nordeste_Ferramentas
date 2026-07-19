@@ -1242,3 +1242,48 @@ No fim do dia percebi que aprendi muito mais sobre organização do código do q
 É nozess, falta pouco pra terminar todo o foront end, depois é ir pro back e termianr cortando umas pontas soltas
 
 --------------------------------------------------------------------------------------------------------------------------------------
+
+DOMINGOU DE CODIGO BHEHEHHEHEHE 
+Um extra pra tentar acelerar o front do blog logo
+Os planos para johe sao:
+1- ajustar o margim do h2 dos sng`s (feito)
+2- Logo e fav no lbog e no site pirncipal (feito) 
+Aqui foi fazer a marca, criar o ico com base na amrca
+Depois mudar o footer e o head de cada pagina index (pagar o preco por querer fazer isso agora e nao antes animal)
+3- Mudar as informacoes de contato que estao no site principal pro blog.... tinha esquecido que tinha essas informacoes e tambem colocar o link do maps (feito) 
+4- arrumar os links do footer do blog 
+(E o css tambem de umas coisinhas tipo )
+O footer já estava funcionando perfeitamente, todos os links estavam configurados e a estrutura estava pronta, mas visualmente ainda existia um espaço muito grande entre as colunas de links e a área de direitos autorais.
+Depois de analisar o CSS percebi que esse espaço era causado pela margem superior do copyright.
+
+Antes:
+.footer__copyright{
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 3rem;
+    color: #E67E22;
+    margin-bottom: 2rem;
+}
+
+Como os links já estavam bem distribuídos, esses 3rem acabavam deixando um vazio desnecessário no final do rodapé.
+
+A solução foi simplesmente diminuir essa margem para aproximar o texto das colunas acima.
+Depois:
+.footer__copyright{
+    grid-column: 1 / -1;
+    text-align: center;
+
+    margin-top: .5rem;
+    margin-bottom: 0;
+
+    color: #E67E22;
+}
+
+Foi uma alteração pequena, mas fez bastante diferença no resultado final. O footer ficou mais compacto, melhor distribuído e com uma aparência muito mais equilibrada. É o tipo de ajuste que dificilmente alguém percebe quando vê o site pronto, mas quando não existe, dá aquela sensação de que "tem alguma coisa estranha" no layout.
+E os links da nov e footer da pagina principal (feito)
+
+Eu ia colocar todas al alteracoes aqui mas foi basicamente adicionar alguns arquivos ao rep e mudar varios "href ``", ent vai la nos commit ver oque foi feito, vai ter tudo de boquinha naoHEHHEHEHEHE 
+
+Gostei de hj, acho que arrumei tudo que ia ter ficado pra depois, nao fiz nada novo mas foi bom amarrar essas pontas soltas hehe
+
+--------------------------------------------------------------------------------------------------------------------------------------

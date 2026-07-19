@@ -578,10 +578,74 @@ A funcionalidade dos links será implementada na fase de desenvolvimento com Jav
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-(Dia 4)
+################# Votei pra caaaaaa #################
 
-################# FUNCIONALIDADE #################
+Domingao de `Amarrando as pontas soltas`
+Depois de alguns dias focando em construir o site, hoje foi aquele dia de fazer o que muita gente nem percebe quando vê um projeto pronto: revisar, testar e corrigir pequenos detalhes. Não foi um dia de criar páginas novas, mas sim de transformar um projeto funcional em um projeto muito mais organizado e profissional.
+Comecei revisando todo o HTML do site institucional da Nordeste Ferramentas. A ideia era conferir se todos os links, botões e seções estavam funcionando corretamente antes de considerar essa etapa encerrada. Durante essa revisão encontrei alguns pequenos problemas que acabaram rendendo boas lições.
+O primeiro deles foi o botão Início, que simplesmente parou de levar o usuário ao topo da página. A princípio achei que o problema estava no próprio link da âncora, mas depois de investigar percebi que o destino dela era o <header>, que estava com position: fixed. Isso fazia o navegador entender que ele já estava no topo.
+Antes:
+<header class="header" id="inicio">
 
+Depois:
+<body id="inicio">
+<header class="header">
+
+Uma mudança pequena, mas que resolveu completamente a navegação.
+Também aproveitei para integrar de vez o site institucional com o NF Blog. Todos os acessos ao blog agora são abertos em uma nova aba, permitindo que o usuário continue com o site principal aberto enquanto navega pelo conteúdo.
+Antes:
+<a href="../nf_blog/index.html">
+    BLOG
+</a>
+
+Depois:
+<a href="../nf_blog/index.html"
+   target="_blank"
+   rel="noopener noreferrer">
+    BLOG
+</a>
+
+Além de melhorar a experiência do usuário, essa alteração segue uma boa prática de segurança ao utilizar target="_blank".
+Enquanto revisava os botões percebi que alguns possuíam uma borda preta enquanto outros não. O visual ficava estranho porque cada botão parecia pertencer a um estilo diferente. A solução foi padronizar todos eles no CSS.
+
+Antes:
+.blog-btn{
+    border: 2px solid #000;
+}
+.equipamentos-actions .btn-primary{
+    border: 2px solid #000;
+}
+
+Depois:
+.btn-primary,
+.btn-secondary,
+button{
+    border: none;
+    outline: none;
+}
+
+Com isso todos passaram a seguir exatamente o mesmo padrão visual.
+Quando achei que estava tudo pronto apareceu um detalhe curioso. O botão BLOG da barra de navegação ficava roxo depois de ser clicado. Demorei alguns minutos até perceber que ele nem sequer utilizava a mesma classe dos outros links da navbar.
+Antes:
+<a href="../nf_blog/index.html" class="btn">
+    BLOG
+</a>
+
+Depois:
+<a href="../nf_blog/index.html"
+   class="nav-btn">
+    BLOG
+</a>
+
+Pra terminar foi colocar os outos links do footer e gg
+
+Resultado: todos os botões da navegação passaram a ter exatamente o mesmo comportamento.
+Outra parte importante foi organizar o próprio código. Aproveitei para revisar comentários antigos, remover pequenos trechos desnecessários e deixar vários pontos preparados para o futuro utilizando comentários TODO. Assim, quando chegar a hora de implementar o Portal de Locação, o catálogo em PDF e os links oficiais, basta substituir os endereços temporários sem precisar procurar pelo projeto inteiro.
+Também conferi todas as âncoras internas do site, revisei o footer, confirmei os caminhos das imagens, reorganizei alguns estilos do CSS e deixei toda a estrutura muito mais consistente para futuras manutenções.
+
+Hoje foi dahora porque eu tinha que fazer essa revisao no site pricipal fazia TEMPOOOOO, agora so vou votar pra ca para fazer o portal, a pag de login e o catalogo, daí colocar os links de novo como fiz agora
+
+------------------------------------------------------------------------------------------------------------------------------------
 
 
 

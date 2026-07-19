@@ -109,9 +109,28 @@ nav button {
     border: 0.3rem solid #E67E22; /* Cor da borda do avatar */
 }
 
-.nav__logo {
-    font-weight: 600;
-    font-size: 1.2rem;
+/* ======= Nav ======= */
+.nav__logo{
+    display:flex;
+    align-items:center;
+    gap:.8rem;
+    font-size:1.2rem;
+    font-weight:600;
+    color:#E67E22;
+}
+
+.nav__logo-image{
+    width:5rem;
+    height:3rem;
+    object-fit:contain;
+    display:block;
+    flex-shrink:0;
+}
+
+.nav__logo span{
+
+    color:#E67E22;
+    letter-spacing:.4rem;
 }
 
 .nav__items {
@@ -281,9 +300,13 @@ footer {
     transition: var(--transition);
 }
 
-.footer__container {
-    display:grid;
-    grid-template-columns: repeat(4, 1fr);
+.footer__container{
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    justify-content: center;
+    align-items: start;
+    gap: 8rem;
+    row-gap: 2.5rem;
 }
 
 footer h4{
@@ -304,12 +327,12 @@ footer ul a:hover{
     opacity: 1;
 }
 
-.footer__copyright {
-    grid-column: 1 / -1;
-    text-align: center;
-    margin-top: 3rem;
+.footer__copyright{
+    grid-column:1/-1;
+    margin-top:.5rem;
+    margin-bottom:0;
+    text-align:center;
     color: #E67E22;
-    margin-bottom: 2rem;
 }
 
 /* ======== Barra de pesquisa ======== */ 
@@ -878,7 +901,7 @@ para manter um bom contraste com o fundo laranja */
 
 /* Link destacado. */
 .form__section small a{
-    color: #111111;
+    color: #1a1a1a;
     text-decoration: underline;
 }
 
@@ -895,6 +918,15 @@ para manter um bom contraste com o fundo laranja */
     height: 12rem;
     aspect-ratio:1/1;
     border-radius:50%;
+}
+
+/* ======== h2 dos formulários ======== */
+.form__section h2{
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: left;
 }
 
 /* ======== Media Queries (Medium Devices) ======== */

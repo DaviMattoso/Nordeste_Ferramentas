@@ -7,6 +7,15 @@
     box-sizing: border-box;    /* Inclui padding/borda no tamanho */
 }
 
+a{
+    text-decoration: none;
+    outline: none;
+}
+
+button{
+    outline: none;
+}
+
 /* =====================================================
    BASE DO SITE
    Afeta TODO o HTML
@@ -88,7 +97,7 @@ body {
 
 /* Imagem do logo */
 .logo-img {
-    width: 150px;
+    width: 250px;
     height: auto;
     object-fit: contain;
 }
@@ -131,9 +140,7 @@ body {
     color: #1f2937;               /* Cor padrão do texto */
     cursor: pointer;              /* Cursor de clique */
     transition:
-        background-color 0.3s ease,
-        color 0.3s ease,
-        transform 0.3s ease;
+    color 0.3s ease,
 }
 
 /* Hover dos botões do menu */
@@ -148,12 +155,16 @@ body {
    ===================================================== */
 .btn-primary,
 .btn-secondary,
-button {
-    cursor: pointer;              /* Cursor de mão */
-    transition: 0.3s;             /* Animação */
-    border-radius: 8px;           /* Bordas arredondadas */
+button{
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 8px;
     text-decoration: none;
     display: inline-block;
+
+    /* Remove qualquer borda padrão */
+    border: none;
+    outline: none;
 }
 
 /* Botão principal (Portal de Locação)(laranja) */
@@ -316,7 +327,6 @@ button {
     padding: 14px 28px;
     font-size: 16px;
     font-weight: 600;
-    border: 2px solid #000000; /* Mesmo padrão dos outros botões */
 }
 
 /* Corrige cor dos títulos clicáveis do blog */
@@ -417,10 +427,6 @@ button {
 /* Card destacado */
 .highlight {
     border: 2px solid #ff6b35;
-}
-
-.equipamentos-actions .btn-primary {
-    border: 2px solid #000000;   /* Borda preta */
 }
 
 /* =====================================================

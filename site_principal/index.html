@@ -4,103 +4,71 @@
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Essencial para RESPONSIVIDADE:
-         ajusta o layout à largura do dispositivo (mobile/tablet) -->
+    <!-- Essencial para RESPONSIVIDADE: ajusta o layout à largura do dispositivo (mobile/tablet) -->
     <meta name="description"
-          content="Equipamentos de qualidade para seu negócio. Blog com dicas, instruções e novidades sobre ferramentas e equipamentos.">
+    content="Equipamentos de qualidade para seu negócio. Blog com dicas, instruções e novidades sobre ferramentas e equipamentos.">
     <!-- Descrição do site para Google (SEO) -->
     <title>Nordeste Ferramentas</title>
     <link rel="stylesheet" href="style.css">
-
     <!-- Favicon (ícone da aba) --> <!-- ======== MUDAR ======== -->
-    <link rel="icon" href="icon/Sgv/favicon.svg">
-
+    <link rel="icon" href="./images/favicon.png">
     <!-- Ícones (Font Awesome) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-          rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Fonte Inter (Google Fonts) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet">
 </head>
 
-<body>
-
-    <script src="script.js"></script>
-
+<body id="inicio">
+<script src="script.js"></script>
 <!-- =====================================================
      HEADER
      ===================================================== -->
 <header class="header">
     <!-- Cabeçalho principal do site -->
-
     <div class="container header-content">
-        <!-- Container limita largura
-             header-content controla layout flex -->
-
+        <!-- Container limita largura header-content controla layout flex -->
         <!-- BLOCO DA MARCA (logo + nome + slogan) -->
         <div class="brand">
             <!-- Logo da empresa -->
-            <img src="images/logo.png"
-                 alt="Nordeste Ferramentas"
-                 class="logo-img">
-
+            <img src="images/logo_.png"alt="Nordeste Ferramentas" class="logo-img">
             <!-- Texto da marca -->
             <div class="logo-text">
                 <h1 class="company-name">
                     Nordeste Ferramentas
                 </h1>
-
                 <p class="company-tagline">
                     Sua parceira em ferramentas e locação
                 </p>
             </div>
         </div>
 
-
         <!--
-         IMPORTANTE:
-         Não usamos a classe .active nos links do menu.
+         IMPORTANTE: Não usamos a classe .active nos links do menu.
          Todos os botões ficam neutros por padrão e
          só recebem estilos quando o mouse passa (hover).
          Isso evita estados visuais "presos" como o do inicio.
         -->
-
-        <!--
-         FUTURO (NÃO IMPLEMENTADO AINDA):
-         Os links do menu (Início, Blog, Sobre, Contato)
-         serão conectados às seções da página usando âncoras:
-
-         Início   -> #hero
-         Blog     -> #blog
-         Sobre    -> #sobre
-         Contato  -> #contato
- 
-         Cada seção do site receberá um atributo id
-         correspondente para permitir navegação por scroll.
-
-         Base de codigo no html:
-         <a href="#blog">Blog</a>
-         <section id="blog">...</section>
-
-          Quando todas as seções estiverem prontas,
-          o scroll será suave via CSS ou JavaScript.
-         -->
-
         <nav class="nav">
-         <button class="nav-btn">Início</button>
-         <button class="nav-btn">Blog</button>
-         <button class="nav-btn">Sobre</button>
-         <button class="nav-btn">Contato</button>
+            <!-- Volta para o topo do site -->
+            <a href="#inicio" class="nav-btn">Início</a>
+            <!-- Abre o Blog -->
+            <a href="../nf_blog/index.html" target="_blank" rel="noopener noreferrer" class="nav-btn">Blog</a>
+            <!-- Vai para a seção Sobre -->
+            <a href="#sobre" class="nav-btn">Sobre</a>
+            <!-- Vai para a seção Contato -->
+             <a href="#contato" class="nav-btn">Contato</a>
 
-        <!-- Botão de acesso ao portal -->
-        <a href="login.html" target="_blank"> <!-- Link para login -->
-         <button class="btn-primary btn-portal" type="button">
-         <i class="fa-solid fa-right-from-bracket"></i>
-         <b>Portal de Locação</b>
-         </button>
-        </a>
+        <!-- ======================================================
+         TODO:
+         Alterar este link quando o Portal de Locação estiver
+         finalizado.
+         ====================================================== -->
+            <a href="#" class="btn-primary btn-portal">
+                <i href="#" target="blank" class="fa-solid fa-right-from-bracket"></i>
+                <b>Portal de Locação</b>
+            </a>
         </nav>
-
     </div>
 </header>
 
@@ -115,7 +83,6 @@
             <h1>
                 Equipamentos de <span>qualidade</span> para seu negócio
             </h1>
-
             <p>
                Oferecemos as melhores ferramentas e equipamentos para construção,
                manutenção e projetos industriais. Especialistas em aluguel e conserto,
@@ -134,18 +101,12 @@
         <!-- BOTAÃO DO HERO -->
          <div class="hero-butons">
             <!-- Botão principal: Ver Equipamentos -->
-             <button class="btn-primary hero-btn">
-                <i class="fa-solid fa-screwdriver-wrench"></i>
-                Ver Equipamentos
-             </button>
-
-             <!-- FUTURO:
-             Este botão levará à seção de equipamentos (#equipamentos)
-             quando a navegação por scroll for implementada com JS ou âncoras.
-             -->
-
+             <!-- ======================================================
+            Inserir o link para download do catálogo quando
+            o PDF estiver pronto.
+            ====================================================== -->
+            <a href="#equipamentos" class="btn-primary hero-btn"><i class="fa-solid fa-screwdriver-wrench"></i>Ver Equipamentos</a>
          </div>
-
     </div>
 </section>
 
@@ -154,9 +115,7 @@
      ===================================================== -->
 <div class="blog">
     <h1>Nordeste Ferramentas Blog</h1>
-
     <div class="blog_box">
-
         <div class="blog_card">
             <div class="blog_img">
                 <img src="images/Blog_img_1.png">
@@ -221,17 +180,15 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- BOTÃO FORA DO GRID -->
     <div class="blog-actions">
-        <a href="blog.html" target="_blank" class="btn btn-primary blog-btn">
+        <a href="../nf_blog/index.html" target="_blank" class="btn btn-primary blog-btn">
             <i class="fa-solid fa-blog"></i>
             Ver todos os posts
         </a>
     </div>
-
 </div>
 
 
@@ -244,7 +201,7 @@
                 <h2 class="section-title">Nossos Equipamentos</h2>
                 <p class="section-subtitle">Ferramentas e máquinas para todos os tipos de projeto</p>
             </div>
-            
+
             <div class="equipamentos-grid">
                 <div class="equipamento-card">
                     <div class="equipamento-icon">
@@ -346,7 +303,7 @@
                 </div>
             </div>
         </div>
-    </section>
+</section>
 
 <!-- =====================================================
      CONTATO
@@ -429,12 +386,12 @@
                 </div>
             </div>
         </div>
-    </section>
+</section>
 
 <!-- =====================================================
    FOOTER
    ===================================================== -->
-   <footer class="footer">
+<footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
@@ -447,23 +404,35 @@
                 
                 <div class="footer-section">
                     <h4>Links Rápidos</h4> <!-- Edição para links rapidos no js-->
-                    <ul class="footer-links">
-                        <li><a href="#inicio">Início</a></li>
-                        <li><a href="#blog">Blog</a></li>
-                        <li><a href="#sobre">Sobre</a></li>
-                        <li><a href="#contato">Contato</a></li>
-                        <li><a href="portal/">Portal de Locação</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Serviços</h4>
-                    <ul class="footer-links">
-                        <li><a href="#equipamentos">Ferramentas Manuais</a></li>
-                        <li><a href="#equipamentos">Máquinas Elétricas</a></li>
-                        <li><a href="#equipamentos">Equipamentos Pesados</a></li>
-                        <li><a href="#equipamentos">EPIs e Segurança</a></li>
-                    </ul>
+                        <ul class="footer-links">
+                            <li>
+                                <a href="#inicio">
+                                    Início
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../nf_blog/index.html" target="_blank">
+                                    Blog
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#sobre">
+                                    Sobre
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#contato">
+                                    Contato
+                                </a>
+                            </li>
+                            <li>
+                                <!-- TODO:
+                                    Inserir o link oficial do Portal de Locação. -->
+                                <a href="#" target="blank">
+                                    Portal de Locação
+                                </a>
+                            </li>
+                        </ul>
                 </div>
                 
                 <div class="footer-section">
@@ -481,7 +450,7 @@
                 <p>&copy; 2026 Nordeste Ferramentas. Todos os direitos reservados.</p>
             </div>
         </div>
-    </footer>
+</footer>
 
 </body>
 </html>

@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NF Ferramentas</title>
+    <title>NF Blog</title>
+    <!-- Fav icon -->
+    <link rel="icon" href="./Images/favicon.ico">
     <!-- Custom style css -->
     <link rel="stylesheet" href="./style.css">
     <!-- Font-awesome cdn -->
@@ -12,11 +14,12 @@
 
 <!-- ======== Colocar o fav icon ======== -->
 
-<body>
-    <!-- ======== Navbar ======== -->
     <nav>
         <div class="container nav__container">
-            <a href="index.html" class="nav__logo">NF BLOG</a>
+            <a href="index.html" class="nav__logo">
+                <img src="./Images/logo.png"alt="Logo NFB"class="nav__logo-image">
+                <span>NF BLOG</span>
+            </a>
             <ul class="nav__items">
                 <li><a href="blog.html">Posts</a></li>
                 <li><a href="about.html">Sobre</a></li>
@@ -46,58 +49,41 @@
     <div class="container contact__container">
 
         <div class="contact__left">
-
             <h2>Entre em contato</h2>
-
             <p>
                 Ficou com alguma dúvida, tem uma sugestão ou deseja entrar em contato com nossa equipe? Preencha o formulário ao lado ou utilize um dos nossos
                 canais de atendimento.
             </p>
-
             <div class="contact__info">
-
                 <article>
                     <i class="fa-solid fa-location-dot"></i>
-                    <span>XXX - xx</span>
+                    <span>Av. Barão de Souza Leão, 1496 / Recife-PE</span>
                 </article>
-
                 <article>
                     <i class="fa-solid fa-phone"></i>
-                    <span>(yy) xxxxx-xxxxx</span>
+                    <span>(81) 99560-7222</span>
                 </article>
-
                 <article>
                     <i class="fa-solid fa-envelope"></i>
-                    <span>contato@nfferramentas.com</span>
+                    <span>contato@nordesteferramentas.com</span>
                 </article>
-
                 <article>
                     <i class="fa-solid fa-clock"></i>
-                    <span>Seg. a Sex. • 08:00 às 18:00</span>
+                    <span>Segunda a Sexta: 8h às 18h / Sábado: 8h às 12h</span>
                 </article>
-
             </div>
-
         </div>
 
         <div class="contact__right">
-
             <form class="contact__form">
-
                 <input type="text" placeholder="Seu nome" required>
-
                 <input type="email" placeholder="Seu e-mail" required>
-
                 <input type="text" placeholder="Assunto">
-
                 <textarea rows="8" placeholder="Digite sua mensagem..." required></textarea>
-
                 <button class="btn" type="submit">
                     Enviar mensagem
                 </button>
-
             </form>
-
         </div>
 
     </div>
@@ -115,9 +101,7 @@
         <div class="map">
 
             <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18..."
-                loading="lazy"
-                allowfullscreen>
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3949.691938339674!2d-34.91611942410925!3d-8.132811881422867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x7ab1e313787f57f%3A0xb59209daaa482f3e!2sR.%20Bar%C3%A3o%20de%20Souza%20Le%C3%A3o%2C%201496%20-%20Boa%20Viagem%2C%20Recife%20-%20PE%2C%2051030-300%2C%20Brasil!5e0!3m2!1spt-BR!2spe!4v1784494716898!5m2!1spt-BR!2spe" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></src=>
             </iframe>
 
         </div>
@@ -141,6 +125,11 @@
 
     <div class="container footer__container">
         <article> 
+            <!-- ======================================================
+                TODO:
+                Adicionar os links das categorias quando as páginas
+                individuais estiverem prontas.
+            ====================================================== -->
             <h4>Categorias</h4>
             <ul> 
                 <li><a href="">Ferramentas</a></li>
@@ -155,32 +144,21 @@
         <article> 
             <h4>Suporte</h4>
             <ul> 
-                <li><a href="">Suporte Online</a></li>
-                <li><a href="">Numeros</a></li>
-                <li><a href="">Email</a></li>
-                <li><a href="">Localização</a></li>
+                <li><a href="https://wa.me/5581995607222" target="_blank" rel="noopener noreferrer"> Suporte Online</a></li>
+                <li><a href="contact.html">Numeros</a></li>
+                <li><a href="contact.html">Email</a></li>
+                <li><a href="contact.html">Localização</a></li>
             </ul>
         </article>
 
         <article> 
-            <h4>Blog</h4>
+            <h4>Navegação</h4>
             <ul> 
-                <li><a href="">Segurança</a></li>
-                <li><a href="">Reparar</a></li>
-                <li><a href="">Recentes</a></li>
-                <li><a href="">Populares</a></li>
-                <li><a href="">Categorias</a></li>
-            </ul>
-        </article>
-
-        <article> 
-            <h4>Links de viagem</h4>
-            <ul> 
-                <li><a href="">Home</a></li>
-                <li><a href="">Blog</a></li>
-                <li><a href="">Sobre</a></li>
-                <li><a href="">Serviços</a></li>
-                <li><a href="">Contato</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">Sobre</a></li>
+                <li><a href="services.html">Serviços</a></li>
+                <li><a href="contact.html">Contato</a></li>
             </ul>
         </article>
 
@@ -193,9 +171,9 @@
     </div>
 </footer>
 
-
     <!-- ======== JS ======== -->
     <script src="./main.js"></script>
+    
 </body>
 
 </html>
