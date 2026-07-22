@@ -1287,3 +1287,19 @@ Eu ia colocar todas al alteracoes aqui mas foi basicamente adicionar alguns arqu
 Gostei de hj, acho que arrumei tudo que ia ter ficado pra depois, nao fiz nada novo mas foi bom amarrar essas pontas soltas hehe
 
 --------------------------------------------------------------------------------------------------------------------------------------
+
+Dia.... 21/07
+que dia de merda..... eu odeio meu trabalho
+hj eu quero terminar o html e css de tudo referente as paginas que vao ter ligacao com o PHP (Página de Adição de Categoria, Página de Adição de Postagem, Página de Adição de Usuário)
+ent vamo la... (krl que sono)
+
+...
+
+man nao deu nem 30 min eu teminei as 2 pag sem bug... valei a pena rever o codigo domingo
+foi tao rapido que eu vou passar pras paginas de edicao que vai respaldar as paginas de adicao
+
+no final foi um crtl c crtl v forte kakakak mas necesario pra o dashborad do blog...
+sem muitos comentarios hoje, tambem nao vou ficar muito tempo, que sono boy... 
+proxima parte vai ser criar o modelo de tabelas pra o menu de manege
+
+dsclp a mim mesmo por ser tao  fraco

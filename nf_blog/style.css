@@ -859,7 +859,12 @@ para manter um bom contraste com o fundo laranja */
 .form__control{
     display: flex;
     flex-direction: column;
-    gap: .5rem;
+    gap: .6rem;
+}
+
+.form__control.inline {
+    flex-direction: row;
+    align-items: center;
 }
 
 /* ======== Campos dos formulários ======== */
