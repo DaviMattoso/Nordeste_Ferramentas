@@ -31,6 +31,9 @@ body {
     overflow-x: hidden;
     background-color: rgb(255, 255, 255); /* Cor de fundo */
     font-size: 0.9rem;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
 }
 
 .container {
@@ -385,6 +388,20 @@ footer ul a:hover{
     transition: var(--transition);
     color: white;
 
+}
+
+.btn.sm{
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+}
+
+.btn.danger{
+    background: #DC3545;
+}
+
+.btn.danger:hover {
+    background: red;
+    color: white;
 }
 /* ======== Fim do estilo do botao de pesquisa ======== */ 
 
@@ -934,6 +951,145 @@ para manter um bom contraste com o fundo laranja */
     text-align: left;
 }
 
+/* -------- Dashboard -------- */
+    /* Espaçamento da navbar */
+    .dashboard{
+        margin-top: 6rem;
+        margin-bottom: 5rem;
+    }
+
+    /* -------- Container -------- */
+    .dashboard__container{
+        /* Divide o painel em menu lateral e conteúdo */
+        display: grid;
+        grid-template-columns: 14rem auto;
+        /* Espaço entre as colunas */
+        gap: 1rem;
+        background: #F8F9FA;
+        /* Espaçamento interno */
+        padding: 2rem;
+    }
+
+    /* -------- Menu lateral -------- */
+    .dashboard aside{
+        background: #E67E22;
+        border-radius: var(--card-border-radius-2);
+        overflow: hidden;
+        /* Impede o menu de esticar até a altura do conteúdo */
+        align-self: start;
+    }
+
+    .dashboard aside ul{
+        width: 100%;
+    }
+
+    .dashboard aside a{
+        /* Alinha ícone e texto lado a lado */
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        /* Faz o link ocupar toda a largura */
+        width: 100%;
+        padding: 1.6rem;
+        color: white;
+        transition: var(--transition);
+    }
+
+    .dashboard aside a h5{
+        color: white;
+        font-weight: 500;
+    }
+
+    .dashboard aside a i{
+        font-size: 1rem;
+    }
+
+    /* Linha entre os itens */
+    .dashboard aside ul li:not(:last-child) a{
+        border-bottom: 1px solid rgba(255,255,255,.15);
+    }
+
+    /* Hover */
+    .dashboard aside a:hover{
+        background: #D35400;
+    }
+
+    /* Página atual */
+    .dashboard aside li.active a{
+        background: #C85A00;
+    }
+
+    /* -------- Conteúdo -------- */
+    .dashboard__content{
+        background: white;
+        border-radius: var(--card-border-radius-2);
+        padding: 2rem;
+        /* Sombra do painel */
+        box-shadow: 0 .8rem 2rem rgba(0,0,0,.08);
+    }
+
+    .dashboard__content h2{
+        margin-bottom: 2rem;
+    }
+
+    /* -------- Tabela -------- */
+    .dashboard table{
+        /* Ocupa toda a largura do painel */
+        width: 100%;
+        /* Remove espaços entre as células */
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    /* Cabeçalho */
+    .dashboard thead th{
+        padding: .9rem;
+        background: #E67E22;
+        color: white;
+    }
+
+    /* Células */
+    .dashboard tbody td{
+        padding: .9rem;
+        border-bottom: 1px solid #ECECEC;
+    }
+
+
+    /* Linhas pares */
+    .dashboard tbody tr:nth-child(even){
+        background: #FAFAFA;
+    }
+
+    /* Hover da tabela */
+    .dashboard tbody tr:hover{
+        background: #F2F2F2;
+    }
+
+    /* Destaque da linha */
+    .dashboard table tbody tr:hover td{
+        background: #1A1A1A;
+        color: white;
+        cursor: default;
+        transition: var(--transition);
+    }
+
+    /* -------- Botões -------- */
+    .dashboard .btn.sm{
+        padding: .5rem 1rem;
+        font-size: .85rem;
+    }
+
+    /* Botão excluir */
+    .dashboard .danger{
+        background: #DC3545;
+    }
+
+    /* Hover botão excluir */
+    .dashboard .danger:hover{
+        background: #BB2D3B;
+    }
+
+
 /* ======== Media Queries (Medium Devices) ======== */
 @media screen and (max-width: 1024px) {
 
@@ -1130,10 +1286,15 @@ para manter um bom contraste com o fundo laranja */
 
 /* ======== Footer para tablets ======== */
     .footer__container {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     text-align: center;
     align-items: center;
     gap: 2rem;
+    }
+
+    .footer__container article:last-of-type{
+    grid-column: 1 / 3;
+    justify-self: center;
     }
 
 /* ======== Blog ======== */
@@ -1179,6 +1340,36 @@ para manter um bom contraste com o fundo laranja */
         width:8rem;
         height:8rem;
     }
+
+/* -------- Tablet (1024px) -------- */
+    .dashboard__container{
+
+        /* Diminui o menu lateral */
+        grid-template-columns: 12rem auto;
+
+        padding: 1.5rem;
+    }
+
+    .dashboard aside a{
+        padding: 1.2rem;
+    }
+
+    .dashboard aside a h5{
+        font-size: .9rem;
+    }
+
+    .dashboard__content{
+        padding: 1.5rem;
+    }
+
+    .dashboard table{
+        font-size: .9rem;
+    }
+
+    .dashboard .btn.sm{
+        padding: .45rem .8rem;
+    }
+
 
 
 /* ======== Media Queries (Small Devices) ======== */
@@ -1259,5 +1450,42 @@ para manter um bom contraste com o fundo laranja */
         width:6.8rem;
         height:6.8rem;
         border-width:.25rem;
+    }
+        .dashboard{
+        margin-top: 5rem;
+    }
+
+    .dashboard__container{
+        /* Menu acima do conteúdo */
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+
+    .dashboard aside{
+        margin-bottom: 1rem;
+    }
+
+    .dashboard aside a{
+        padding: 1rem;
+    }
+
+    .dashboard__content{
+        padding: 1rem;
+        /* Permite rolar a tabela horizontalmente */
+        overflow-x: auto;
+    }
+
+    .dashboard table{
+        min-width: 550px;
+    }
+
+    .dashboard thead th,
+    .dashboard tbody td{
+        padding: .75rem;
+    }
+
+    .dashboard .btn.sm{
+        font-size: .75rem;
+        padding: .45rem .7rem;
     }
 }

@@ -1303,3 +1303,177 @@ sem muitos comentarios hoje, tambem nao vou ficar muito tempo, que sono boy...
 proxima parte vai ser criar o modelo de tabelas pra o menu de manege
 
 dsclp a mim mesmo por ser tao  fraco
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+No dia passado eu coloquei a data? JAJAJAJAKAKKAKAKA ta bom ta bom 
+
+Hoje agt termina todo o front, é feriado e sai mais cedo do trabalho, vamo avancar logo
+O foco de hoje foi finalizar completamente o painel administrativo do blog. Foram criadas e ajustadas as páginas de Dashboard, Gerenciar Categorias e Gerenciar Usuários, todas seguindo o mesmo padrão visual e estrutural. Como essas páginas possuem praticamente o mesmo layout, aproveitei para padronizar a estrutura HTML e reutilizar o mesmo CSS, mudando apenas o conteúdo principal e o item ativo do menu lateral.
+
+Uma das primeiras coisas que fiz foi entender melhor como funciona a classe active. No começo achei que ela estava relacionada ao efeito de hover do mouse, mas descobri que seu verdadeiro objetivo é indicar em qual página o usuário está. Cada arquivo HTML possui apenas um item com essa classe.
+Antes:
+<li>
+    <a href="manage-categories.html">
+
+Depois:
+<li class="active">
+    <a href="manage-categories.html">
+
+Foi interessante perceber que, apesar de hoje isso precisar ser alterado manualmente em cada página, no futuro o próprio back-end fará essa identificação automaticamente, destacando apenas a seção correspondente.
+
+Depois comecei a organizar o layout do Dashboard. Ao invés de deixar tudo solto na página, resolvi utilizar CSS Grid para dividir o painel em duas áreas principais: um menu lateral fixo e uma área de conteúdo onde ficam as tabelas e formulários.
+.dashboard__container{
+    display: grid;
+    grid-template-columns: 14rem auto;
+    gap: 1rem;
+}
+
+Visualmente isso deixou o painel muito mais organizado e, principalmente, facilitou a reutilização da estrutura nas outras páginas administrativas.
+Durante essa etapa apareceu um bug curioso. O menu lateral estava ficando enorme, acompanhando toda a altura da tabela, deixando um espaço vazio enorme abaixo do último item. Achei que seria algum problema complicado envolvendo o Grid, mas a solução acabou sendo muito mais simples do que imaginei.
+Antes:
+.dashboard aside{
+    background: #E67E22;
+}
+
+Depois:
+.dashboard aside{
+    background: #E67E22;
+    align-self: start;
+}
+
+Com apenas uma linha o menu passou a ocupar somente a altura necessária para o seu conteúdo. É aquele tipo de problema que faz perder vários minutos procurando uma solução e depois acaba sendo resolvido com uma única propriedade.
+
+Também aproveitei para deixar o painel mais profissional visualmente. Em vez de colocar apenas uma tabela sobre um fundo cinza, criei um card branco com bordas arredondadas e uma sombra bem discreta.
+.dashboard__content{
+    background: white;
+    padding: 2rem;
+    border-radius: var(--card-border-radius-2);
+    box-shadow: 0 .8rem 2rem rgba(0,0,0,.08);
+}
+
+A diferença foi enorme. Antes parecia apenas uma tabela jogada na página. Agora realmente lembra um painel administrativo moderno.
+
+Outra parte importante foi a estilização das tabelas. Padronizei o cabeçalho utilizando o laranja da identidade visual do projeto, alternei as cores das linhas para melhorar a leitura e ainda adicionei um efeito de destaque quando o usuário passa o mouse sobre qualquer linha.
+.dashboard table tbody tr:hover td{
+    background: #1A1A1A;
+    color: white;
+}
+
+Esse pequeno detalhe deixou a navegação pelas tabelas muito mais agradável.
+
+Também padronizei todos os botões administrativos. O botão de editar continuou utilizando o laranja do projeto, enquanto o botão de excluir recebeu um vermelho próprio, ficando muito mais intuitivo identificar ações destrutivas.
+Antes:
+.btn.danger{
+    background: red;
+}
+Depois:
+.btn.danger{
+    background: #DC3545;
+}
+
+.btn.danger:hover{
+    background: #BB2D3B;
+}
+
+Além da aparência mais profissional, essa alteração manteve uma consistência visual melhor em todo o painel.
+
+Outro objetivo do dia era organizar o CSS de forma definitiva. Em vez de deixar grandes blocos de código sem separação, comecei a utilizar pequenos comentários indicando cada seção.
+/* -------- Dashboard -------- */
+/* -------- Container -------- */
+/* -------- Menu lateral -------- */
+/* -------- Conteúdo -------- */
+/* -------- Tabela -------- */
+/* -------- Botões -------- */
+
+Também comecei a comentar apenas as propriedades realmente importantes, explicando principalmente aquelas que podem gerar dúvidas no futuro. A ideia não é comentar tudo, mas deixar claro o motivo das partes mais complexas do código.
+Depois vieram os testes de responsividade. No tablet, reduzi a largura do menu lateral, diminui alguns espaçamentos e ajustei o tamanho das fontes para que tudo continuasse confortável de utilizar.
+
+Já na versão para celulares, precisei alterar completamente a estrutura do Dashboard. O Grid passou de duas colunas para apenas uma.
+Antes:
+grid-template-columns: 14rem auto;
+Depois:
+grid-template-columns: 1fr;
+
+Assim o menu passou a ficar acima do conteúdo principal.
+
+Outro problema encontrado nessa etapa foi a tabela. Em telas pequenas ela simplesmente não cabia na largura disponível. Em vez de diminuir exageradamente o conteúdo, preferi permitir uma rolagem horizontal apenas quando necessário.
+.dashboard__content{
+    overflow-x: auto;
+}
+
+.dashboard table{
+    min-width: 550px;
+}
+
+Esse comportamento é utilizado em praticamente todos os sistemas administrativos atuais.
+
+Quando achei que tudo estava finalizado, ainda encontrei um detalhe no Footer durante os testes em tablets. A seção de Navegação quebrava para a linha de baixo, mas ficava completamente desalinhada em relação às outras colunas.
+Antes:
+grid-template-columns: repeat(3,1fr);
+
+Depois:
+grid-template-columns: repeat(2,1fr);
+
+E a seção de Navegação passou a ocupar as duas colunas.
+.footer__container article:last-of-type{
+    grid-column: 1 / 3;
+    justify-self: center;
+}
+
+Com isso o Footer passou a manter uma aparência muito mais equilibrada em todas as resoluções.
+
+E assi acabamos com todas as paginas do bog, UHULLLL TEMOS O FRONT completo
+Na prxima etapa agt comeca o backend, tenho alguma coisa organizada como:
+- Preparação do ambiente
+Nesta etapa será feita a instalação e configuração do ambiente de desenvolvimento, utilizando o XAMPP para fornecer o servidor Apache, PHP e MySQL. Também serão instaladas algumas extensões do Visual Studio Code que irão facilitar o desenvolvimento e a depuração da aplicação.
+Além disso, será criada uma nova estrutura de pastas para separar corretamente arquivos públicos, configurações, banco de dados e funções reutilizáveis, deixando o projeto mais organizado e preparado para crescer.
+
+- Configuração do banco de dados
+Depois do ambiente configurado, será criado o banco de dados do projeto juntamente com um usuário próprio para a aplicação.
+Em seguida, o sistema será conectado ao banco através do PHP, permitindo que todas as informações deixem de ser fixas no HTML e passem a ser armazenadas de forma permanente.
+
+- Sistema de usuários
+A primeira funcionalidade real será o gerenciamento de usuários.
+Nessa etapa serão desenvolvidas funcionalidades como:
+criação da tabela de usuários;
+cadastro de novos usuários;
+sistema de login;
+controle de acesso;
+diferenciação entre administradores e autores;
+listagem dos usuários cadastrados;
+edição das informações;
+exclusão de usuários.
+
+- Sistema de categorias
+Depois será desenvolvido todo o gerenciamento das categorias utilizadas pelo blog.
+Essa etapa inclui:
+criação da tabela de categorias;
+cadastro de novas categorias;
+exibição das categorias no painel administrativo;
+edição;
+exclusão.
+
+- Sistema de postagens
+Após concluir usuários e categorias, será implementada a parte principal do projeto: as postagens.
+Serão desenvolvidas funcionalidades como:
+criação da tabela de posts;
+publicação de novos artigos;
+upload de imagens;
+edição de postagens;
+exclusão de conteúdos;
+exibição automática das postagens dentro do Dashboard.
+
+- Integração do blog
+Com todas as informações armazenadas no banco de dados, será feita a integração completa entre o painel administrativo e o site.
+As páginas passarão a carregar automaticamente os dados cadastrados pelos administradores.
+Entre as funcionalidades previstas estão:
+exibição automática das postagens na página inicial;
+página individual para cada artigo;
+listagem de postagens por categoria;
+carregamento automático dos autores;
+exibição das imagens armazenadas no servidor.
+
+- Sistema de pesquisa
+Para finalizar, será desenvolvido um mecanismo de busca, permitindo que o usuário pesquise artigos utilizando palavras-chave.
+Esse sistema consultará diretamente o banco de dados e retornará apenas as postagens relacionadas ao termo pesquisado, tornando a navegação muito mais prática.
