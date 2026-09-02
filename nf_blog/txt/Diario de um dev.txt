@@ -1477,3 +1477,109 @@ exibição das imagens armazenadas no servidor.
 - Sistema de pesquisa
 Para finalizar, será desenvolvido um mecanismo de busca, permitindo que o usuário pesquise artigos utilizando palavras-chave.
 Esse sistema consultará diretamente o banco de dados e retornará apenas as postagens relacionadas ao termo pesquisado, tornando a navegação muito mais prática.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+Dia... 01/09/2026 — VOLTAMOS KAKAKAKAKK
+
+Depois de um bom tempo com o projeto parado, hoje eu voltei para o Nordeste Ferramentas. Mas antes de começar a corrigir coisa, inventar página nova ou finalmente entrar no back-end, resolvi fazer uma coisa que eu já tinha feito em outro projeto e que ajuda MUITO: organizar a escrita do código inteiro.
+
+O projeto foi crescendo durante vários dias diferentes, então cada parte acabou sendo escrita de um jeito. Tinha HTML com indentação diferente, atributo enorme inteiro na mesma linha, comentário perdido, CSS com blocos organizados de formas diferentes e JavaScript sem uma separação visual muito clara.
+
+Não era necessariamente uma mudança no site. A ideia de hoje era só fazer o código conversar com ele mesmo KAKAKAKK
+
+Então usei o mesmo padrão de organização que já tinha aplicado no projeto da SoluTech:
+
+- quatro espaços para cada nível de indentação;
+- elementos filhos organizados dentro dos elementos pais;
+- atributos longos quebrados em várias linhas;
+- propriedades do CSS alinhadas e separadas corretamente;
+- blocos do JavaScript divididos por responsabilidade;
+- comentários de seção mais fáceis de encontrar;
+- espaços e linhas vazias seguindo o mesmo padrão em todos os arquivos.
+
+Comecei pela pasta nf_blog.
+
+Foram organizados todos os arquivos HTML, o style.css e o main.js. No total, 18 páginas HTML receberam a padronização. O category-post.html não mudou porque ele ainda está vazio.
+
+No JavaScript também deixei as partes principais separadas com títulos como:
+
+/* ==========================================
+   MENU MOBILE
+========================================== */
+
+/* ==========================================
+   ABRIR MENU MOBILE
+========================================== */
+
+/* ==========================================
+   FECHAR MENU MOBILE
+========================================== */
+
+/* ==========================================
+   EVENTOS DO MENU MOBILE
+========================================== */
+
+Assim fica muito mais fácil abrir o arquivo daqui a alguns meses e entender onde cada parte começa sem precisar ficar caçando função no meio do código.
+
+Depois fiz a mesma coisa na pasta site_principal.
+
+O index.html, o style.css e o script.js também foram completamente padronizados. Agora tanto o site principal quanto o blog usam a mesma lógica de escrita, o que deixa o projeto inteiro muito mais agradável de ler e manter.
+
+Uma coisa MUITO importante: hoje eu não corrigi nenhum erro do projeto.
+
+O objetivo era exclusivamente organizar a escrita. Durante a formatação apareceram alguns problemas que já existiam no HTML, mas eu preservei todos eles para corrigir com calma no próximo dia. O navegador é tolerante com muita coisa errada e tenta montar a página mesmo assim, mas o formatador não deixa passar KAKAKAKAKK
+
+Os erros observados foram:
+
+1. add-category.html
+
+Existe uma div com a classe form__control que é aberta dentro do formulário, mas não é fechada antes da tag </form>.
+
+2. edit-category.html
+
+O mesmo problema aparece novamente: a form__control é aberta, o botão é colocado dentro dela, mas o fechamento da div está faltando antes do final do formulário.
+
+3. signin.html
+
+Também existe uma form__control sem fechamento. Nela ficam o botão de entrar e o link para cadastro, mas a estrutura chega ao </form> antes de fechar a div.
+
+4. contact.html
+
+O iframe do Google Maps termina com uma parte inválida:
+
+</src=>
+
+Isso não é uma tag válida e faz o analisador perder a estrutura correta do restante do documento. Esse arquivo ainda indicou uma inconsistência estrutural perto do fechamento do body, então vai precisar de uma revisão completa das tags quando começarmos a etapa de correção.
+
+Para conseguir organizar esses arquivos sem transformar a organização em uma correção escondida, os problemas foram contornados apenas durante a formatação e depois restaurados exatamente como estavam. Assim hoje ficou somente a mudança visual da escrita, como planejado.
+
+Depois da organização eu ainda validei o JavaScript e conferi as chaves do CSS. O style.css do blog terminou com a mesma quantidade de chaves abrindo e fechando:
+
+233 {
+233 }
+
+E o CSS do site principal também ficou equilibrado:
+
+167 {
+167 }
+
+Ou seja, nenhum bloco de CSS ficou aberto ou fechado errado durante a padronização.
+
+Hoje não teve mudança visual, página nova nem funcionalidade diferente. Mesmo assim foi um dia importante porque agora temos uma base muito mais limpa para continuar o projeto. Corrigir os erros e começar o back-end em cima de um código organizado vai ser MUITO melhor do que tentar fazer isso no meio daquela bagunça antiga KAKAKAKK
+
+No próximo dia o plano é começar justamente pelos erros que apareceram hoje:
+
+- revisar e fechar corretamente as form__control;
+- corrigir o iframe do Google Maps;
+- validar a estrutura completa do contact.html;
+- verificar se existem outros erros HTML escondidos;
+- só depois continuar o desenvolvimento do Nordeste Ferramentas.
+
+Por hoje foi basicamente faxina de código. Não construímos um cômodo novo, mas pelo menos agora dá para andar na obra sem tropeçar nas ferramentas (que piada bosta KAKAKAKKAKA)
+
+É nozess, próximo dia a gente começa a arrumar os BO de verdade.
+
+--------------------------------------------------------------------------------------------------------------------------------------

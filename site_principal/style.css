@@ -2,17 +2,17 @@
    RESET BÁSICO
    ===================================================== */
 * {
-    margin: 0;                 /* Remove margens padrão */
-    padding: 0;                /* Remove espaçamentos padrão */
-    box-sizing: border-box;    /* Inclui padding/borda no tamanho */
+    margin: 0; /* Remove margens padrão */
+    padding: 0; /* Remove espaçamentos padrão */
+    box-sizing: border-box; /* Inclui padding/borda no tamanho */
 }
 
-a{
+a {
     text-decoration: none;
     outline: none;
 }
 
-button{
+button {
     outline: none;
 }
 
@@ -21,10 +21,10 @@ button{
    Afeta TODO o HTML
    ===================================================== */
 body {
-    font-family: 'Inter', sans-serif; /* Fonte principal */
-    font-size: 16px;                  /* Tamanho base */
-    line-height: 1.6;                 /* Altura das linhas */
-    background-color: #ffffff;        /* Fundo branco */
+    font-family: "Inter", sans-serif; /* Fonte principal */
+    font-size: 16px; /* Tamanho base */
+    line-height: 1.6; /* Altura das linhas */
+    background-color: #ffffff; /* Fundo branco */
 }
 
 /* 
@@ -35,12 +35,11 @@ body {
     padding-top: 140px; /* valor inicial (desktop) */
 }
 
-
 /* Container padrão usado em várias seções */
 .container {
-    width: 90%;           /* Usa 90% da largura */
-    max-width: 1000px;    /* Limita largura máxima */
-    margin: auto;         /* Centraliza */
+    width: 90%; /* Usa 90% da largura */
+    max-width: 1000px; /* Limita largura máxima */
+    margin: auto; /* Centraliza */
 }
 
 /* Classe utilitária para centralizar texto */
@@ -53,46 +52,46 @@ body {
    <header class="header">
    ===================================================== */
 .header {
-    border-bottom: 1px solid #eee;/* Linha inferior */
-    position: fixed;          /* Fixa no topo */
-    top: 0;                   /* Começa no topo */
+    border-bottom: 1px solid #eee; /* Linha inferior */
+    position: fixed; /* Fixa no topo */
+    top: 0; /* Começa no topo */
     left: 0;
-    width: 100%;              /* Ocupa toda largura */
-    z-index: 9999;            /* Fica acima de tudo */
+    width: 100%; /* Ocupa toda largura */
+    z-index: 9999; /* Fica acima de tudo */
     transition: top 0.3s ease; /* Animação suave */
-    background: #ffffff;      /* Fundo branco */
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Pequena sombra */
+    background: #ffffff; /* Fundo branco */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Pequena sombra */
 }
 
 /* Estrutura interna do header !! */
 .header-content {
-    display: flex;                  /* Layout flexível */
+    display: flex; /* Layout flexível */
     justify-content: space-between; /* Logo à esquerda, menu à direita */
-    align-items: center;            /* Centraliza verticalmente */
-    padding: 20px 0;                /* Espaço vertical */
+    align-items: center; /* Centraliza verticalmente */
+    padding: 20px 0; /* Espaço vertical */
     gap: 20px;
 }
 
 /* Container do texto da marca */
 .logo-text {
-    display: flex;              /* Organiza os textos */
-    flex-direction: column;     /* Nome em cima, slogan embaixo */
-    justify-content: center;    /* Centraliza verticalmente */
+    display: flex; /* Organiza os textos */
+    flex-direction: column; /* Nome em cima, slogan embaixo */
+    justify-content: center; /* Centraliza verticalmente */
 }
 
 /* Nome da empresa */
 .company-name {
-    font-size: 24px;            /* Tamanho do nome */
-    font-weight: 700;           /* Negrito */
-    line-height: 1.2;           /* Espaçamento entre linhas */
-    color: #1e3a8a;             /* Azul principal */
-    white-space: nowrap;        /* ⬅ Impede quebra de linha oque soluciona o problema do espaçamento entre logo e menu*/
+    font-size: 24px; /* Tamanho do nome */
+    font-weight: 700; /* Negrito */
+    line-height: 1.2; /* Espaçamento entre linhas */
+    color: #1e3a8a; /* Azul principal */
+    white-space: nowrap; /* ⬅ Impede quebra de linha oque soluciona o problema do espaçamento entre logo e menu*/
 }
 
 /* Slogan da empresa */
 .company-tagline {
-    font-size: 14px;            /* Texto menor */
-    color: #6b7280;             /* Cinza */
+    font-size: 14px; /* Texto menor */
+    color: #6b7280; /* Cinza */
 }
 
 /* Imagem do logo */
@@ -104,15 +103,15 @@ body {
 
 /* Nome da empresa */
 .company-name {
-    color: #1e3a8a;               /* Azul da marca */
-    font-weight: 700;             /* Negrito */
+    color: #1e3a8a; /* Azul da marca */
+    font-weight: 700; /* Negrito */
     font-size: 22px;
 }
 
 /* Slogan da empresa */
 .company-tagline {
-    color: #6b7280;               /* Cinza */
-    font-size: 14px;              /* Texto menor */
+    color: #6b7280; /* Cinza */
+    font-size: 14px; /* Texto menor */
 }
 
 /* 
@@ -124,30 +123,29 @@ body {
 /* Definições de estilo dos botoes do header*/
 /* Container do menu */
 .nav {
-    display: flex;                 /* Links lado a lado */
-    gap: 20px;                     /* Espaço entre botões */
-    align-items: center;           /* Alinhamento vertical */
+    display: flex; /* Links lado a lado */
+    gap: 20px; /* Espaço entre botões */
+    align-items: center; /* Alinhamento vertical */
 }
 
 /* Links do menu – estado normal */
 .nav-btn {
-    background: transparent;      /* Botão sem fundo */
-    border: none;                 /* Remove borda padrão */
-    padding: 8px 14px;            /* Área clicável */
-    border-radius: 6px;           /* Cantos arredondados */
-    font-family: inherit;         /* Usa a fonte do site */
-    font-size: 16px;              /* Tamanho do texto */
-    color: #1f2937;               /* Cor padrão do texto */
-    cursor: pointer;              /* Cursor de clique */
-    transition:
-    color 0.3s ease,
+    background: transparent; /* Botão sem fundo */
+    border: none; /* Remove borda padrão */
+    padding: 8px 14px; /* Área clicável */
+    border-radius: 6px; /* Cantos arredondados */
+    font-family: inherit; /* Usa a fonte do site */
+    font-size: 16px; /* Tamanho do texto */
+    color: #1f2937; /* Cor padrão do texto */
+    cursor: pointer; /* Cursor de clique */
+    transition: color 0.3s ease;
 }
 
 /* Hover dos botões do menu */
 .nav-btn:hover {
-    background-color: #f1f5f9;    /* Fundo cinza claro */
-    color: #ff6b35;               /* Texto laranja */
-    transform: translateY(-2px);  /* Leve subida */
+    background-color: #f1f5f9; /* Fundo cinza claro */
+    color: #ff6b35; /* Texto laranja */
+    transform: translateY(-2px); /* Leve subida */
 }
 
 /* =====================================================
@@ -155,7 +153,7 @@ body {
    ===================================================== */
 .btn-primary,
 .btn-secondary,
-button{
+button {
     cursor: pointer;
     transition: 0.3s;
     border-radius: 8px;
@@ -204,8 +202,8 @@ button{
 .hero-grid {
     display: grid;
     grid-template-columns: 1fr 1fr; /* 2 colunas iguais */
-    align-items: center;            /* Alinha verticalmente */
-    gap: 60px;                      /* Espaço entre texto e imagem */
+    align-items: center; /* Alinha verticalmente */
+    gap: 60px; /* Espaço entre texto e imagem */
 }
 
 /* TEXTO */
@@ -236,17 +234,17 @@ button{
 
 /* Botões do hero */
 .hero-buttons {
-    margin-top: 30px;          /* Espaço entre texto e botões */
+    margin-top: 30px; /* Espaço entre texto e botões */
     display: flex;
-    gap: 20px;                 /* Espaço entre botões */
-    flex-wrap: wrap;           /* Evita quebrar layout no mobile */
+    gap: 20px; /* Espaço entre botões */
+    flex-wrap: wrap; /* Evita quebrar layout no mobile */
 }
 
 /* Botão específico do hero */
 .hero-btn {
     display: inline-flex;
     align-items: center;
-    gap: 10px;                 /* Espaço entre ícone e texto */
+    gap: 10px; /* Espaço entre ícone e texto */
     font-size: 16px;
     font-weight: 600;
 }
@@ -254,61 +252,61 @@ button{
 /* =====================================================
    Blog
    ===================================================== */
-.blog{
+.blog {
     width: 100%;
     height: auto;
     margin: 25px 0;
 }
 
-.blog h1{
+.blog h1 {
     text-align: center;
     font-size: 50px;
     margin-bottom: 30px;
     color: #1e3a8a;
 }
 
-.blog .blog_box{
+.blog .blog_box {
     width: 95%;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 }
 
-.blog .blog_box .blog_card{
+.blog .blog_box .blog_card {
     margin: 0 auto;
     width: 450px;
     height: auto;
     box-shadow: 0 0 8px rgba(255, 94, 0, 0.5);
 }
 
-.blog .blog_box .blog_card .blog_img{
+.blog .blog_box .blog_card .blog_img {
     width: 450px;
     height: 300px;
     overflow: hidden;
 }
 
-.blog .blog_box .blog_card .blog_img img{
+.blog .blog_box .blog_card .blog_img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
 }
 
-.blog .blog_box .blog_card .blog_tag{
+.blog .blog_box .blog_card .blog_tag {
     padding: 20px;
 }
 
-.blog .blog_box .blog_card .blog_tag h2{
+.blog .blog_box .blog_card .blog_tag h2 {
     color: #ff6b35;
 }
 
-.blog .blog_box .blog_card .blog_tag p{
+.blog .blog_box .blog_card .blog_tag p {
     margin-top: 10px;
     text-align: justify;
     line-height: 22px;
 }
 
-.blog .blog_box .blog_card .blog_tag .blog_icon{
+.blog .blog_box .blog_card .blog_tag .blog_icon {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -331,38 +329,37 @@ button{
 
 /* Corrige cor dos títulos clicáveis do blog */
 .blog .blog_box .blog_card .blog_tag h2 a {
-    color: #ff6b35;          /* mantém o laranja */
-    text-decoration: none;  /* remove sublinhado */
+    color: #ff6b35; /* mantém o laranja */
+    text-decoration: none; /* remove sublinhado */
 }
 
 /* Hover opcional (fica lindo) */
 .blog .blog_box .blog_card .blog_tag h2 a:hover {
-    color: #e85a28;          /* laranja um pouco mais escuro */
+    color: #e85a28; /* laranja um pouco mais escuro */
 }
-
 
 /* =====================================================
    Ferramentas
    ===================================================== */
 /* Cabeçalho da seção Ferramentas */
 .section-header {
-    text-align: center;      /* Centraliza tudo */
-    margin-bottom: 3rem;     /* Espaço antes dos cards */
+    text-align: center; /* Centraliza tudo */
+    margin-bottom: 3rem; /* Espaço antes dos cards */
 }
 
 .section-title {
-    font-size: 50px;        
-    color: #1e3a8a;          
+    font-size: 50px;
+    color: #1e3a8a;
     margin-bottom: 30px;
 }
 
 .section-subtitle {
     font-size: 18px;
-    color: #4b5563;          /* Cinza suave */
+    color: #4b5563; /* Cinza suave */
 }
 
 .equipamentos {
-    padding: 4rem 0; 
+    padding: 4rem 0;
 }
 
 /* Grid dos cards */
@@ -374,47 +371,47 @@ button{
 
 /* Card individual */
 .equipamento-card {
-    background: #ffffff;   
-    padding: 3rem;         
-    border-radius: 12px;   
+    background: #ffffff;
+    padding: 3rem;
+    border-radius: 12px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid transparent;
 }
 
 /* Hover do card */
 .equipamento-card:hover {
-    border-color: #ff6b35; 
+    border-color: #ff6b35;
     transform: translateY(-5px);
-    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15); 
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* Ícone circular */
 .equipamento-icon {
     width: 80px;
     height: 80px;
-    background: #ff6b35;   
-    color: #ffffff;       
+    background: #ff6b35;
+    color: #ffffff;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.5rem; 
+    margin: 0 auto 1.5rem;
     font-size: 2rem;
 }
 
 /* Título do card */
 .equipamento-card h3 {
     font-size: 1.3rem;
-    font-weight: 600;     
-    color: #334155;      
-    margin-bottom: 1rem; 
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 1rem;
 }
 
 /* Texto do card */
 .equipamento-card p {
-    color: #64748b;      
+    color: #64748b;
     line-height: 1.6;
 }
 
@@ -581,7 +578,7 @@ button{
     padding: 14px 16px;
     border: 2px solid #f8fafc;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-size: 15px;
     transition: all 0.3s ease;
     background: #ffffff;
@@ -705,7 +702,7 @@ button{
 .footer-bottom {
     text-align: center;
     padding-top: 16px;
-    border-top: 1px solid rgba(255,255,255,0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     font-size: 13px;
     color: #d1d5db;
 }
@@ -714,16 +711,16 @@ button{
    RESPONSIVIDADE – TABLET
    Até 1024px
    ===================================================== */
-   /* Bloco da marca (logo + nome) */
+/* Bloco da marca (logo + nome) */
 .brand {
     display: flex;
-    align-items: center;   /* alinha verticalmente */
-    gap: 12px;             /* espaço entre logo e texto */
+    align-items: center; /* alinha verticalmente */
+    gap: 12px; /* espaço entre logo e texto */
 }
 
 /* Logo */
 .logo-img {
-    width: 60px;           /* tamanho equilibrado */
+    width: 60px; /* tamanho equilibrado */
     height: auto;
 }
 
@@ -733,25 +730,26 @@ button{
     flex-direction: column;
 }
 
-@media (max-width: 1024px) {  /* MEDIA QUERIES */
+@media (max-width: 1024px) {
+    /* MEDIA QUERIES */
     .logo-img {
-    width: 56px;
+        width: 56px;
     }
 
     .company-name {
-    font-size: 18px;
+        font-size: 18px;
     }
 
     .header-content {
         height: 100%;
         display: flex;
         align-items: center;
-       justify-content: space-between;
-       gap: 20px; 
+        justify-content: space-between;
+        gap: 20px;
     }
 
     .hero h1 {
-        font-size: 40px;          /* Reduz título */
+        font-size: 40px; /* Reduz título */
     }
 
     .hero p {
@@ -764,7 +762,6 @@ button{
    Até 768px
    ===================================================== */
 @media (max-width: 768px) {
-
     /* =====================================================
        COMPENSAÇÃO DO HEADER FIXO (MOBILE)
        ===================================================== */
@@ -776,19 +773,19 @@ button{
        HEADER
        ===================================================== */
     .header-content {
-        flex-direction: column;   /* Logo em cima, menu embaixo */
+        flex-direction: column; /* Logo em cima, menu embaixo */
         text-align: center;
         gap: 12px;
     }
 
     .brand {
         display: flex;
-        align-items: center;       /* Logo ao lado do nome */
+        align-items: center; /* Logo ao lado do nome */
         gap: 10px;
     }
 
     .logo-img {
-        width: 60px;              /* Logo proporcional no mobile */
+        width: 60px; /* Logo proporcional no mobile */
         height: auto;
     }
 
@@ -816,26 +813,26 @@ button{
     /* =====================================================
        HERO
        ===================================================== */
-       .hero-grid{
+    .hero-grid {
         grid-template-columns: 1fr; /* 1 coluna */
-       }
+    }
 
-       .hero-text p{
+    .hero-text p {
         margin: 0 auto;
-       }
+    }
 
-       .hero-image {
+    .hero-image {
         margin: 30px auto 0;
-       }
+    }
 
-       /*Botão do hero*/
-       .hero-buttons {
+    /*Botão do hero*/
+    .hero-buttons {
         justify-content: center;
-       }
-       .hero-btn {
+    }
+    .hero-btn {
         width: 100%;
         justify-content: center;
-       }
+    }
 
     /* ===============================
     BLOG – MOBILE
@@ -847,7 +844,7 @@ button{
 
     /* Título do blog */
     .blog h1 {
-        font-size: 32px;       /* Menor que no desktop */
+        font-size: 32px; /* Menor que no desktop */
         margin-bottom: 20px;
         padding: 0 10px;
         text-align: center;
@@ -889,20 +886,20 @@ button{
 
     /* Botão de acesso ao Blog */
     .blog-actions {
-    width: 100%;                 /* garante largura total */
-    display: flex;
-    justify-content: center;     /* centraliza horizontalmente */
-    margin: 50px 0 20px;         /* espaço acima e abaixo */
+        width: 100%; /* garante largura total */
+        display: flex;
+        justify-content: center; /* centraliza horizontalmente */
+        margin: 50px 0 20px; /* espaço acima e abaixo */
     }
 
     .blog-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;                   /* espaço entre ícone e texto */
-    padding: 14px 32px;
-    font-size: 16px;
-    font-weight: 600;
-    border: 2px solid #000000;   /* padrão do site */
+        display: inline-flex;
+        align-items: center;
+        gap: 10px; /* espaço entre ícone e texto */
+        padding: 14px 32px;
+        font-size: 16px;
+        font-weight: 600;
+        border: 2px solid #000000; /* padrão do site */
     }
 
     .blog-actions {
@@ -931,7 +928,7 @@ button{
     }
 
     .section-title {
-        font-size: 28px;          /* Menor que desktop */
+        font-size: 28px; /* Menor que desktop */
     }
 
     .section-subtitle {
@@ -970,47 +967,47 @@ button{
     /* =====================================================
    SOBRE – MOBILE
    ===================================================== */
-   .sobre-content {
-    grid-template-columns: 1fr; /*Vira coluna*/
-    gap: 30px;
-    text-align: center;
-   }
+    .sobre-content {
+        grid-template-columns: 1fr; /*Vira coluna*/
+        gap: 30px;
+        text-align: center;
+    }
 
-   .sobre-text .section-title {
-    font-size: 30px;
-   }
+    .sobre-text .section-title {
+        font-size: 30px;
+    }
 
-   .sobre-description {
-    font-size: 16px;
-   }
+    .sobre-description {
+        font-size: 16px;
+    }
 
-   .feature {
-    justify-content: flex-start; /* alinha tudo pela esquerda */
-    text-align: left;
-    width: 100%;
-   }
+    .feature {
+        justify-content: flex-start; /* alinha tudo pela esquerda */
+        text-align: left;
+        width: 100%;
+    }
 
-   /* Alinhamento correto dos itens da lista no mobile */
+    /* Alinhamento correto dos itens da lista no mobile */
     .sobre-features {
-    align-items: flex-start;
+        align-items: flex-start;
     }
 
     .feature i {
-    width: 22px;
-    min-width: 22px;
-    text-align: center;
+        width: 22px;
+        min-width: 22px;
+        text-align: center;
     }
 
-   .btn-outline {
-    width: 100%;
-    justify-content: center;
-   }
+    .btn-outline {
+        width: 100%;
+        justify-content: center;
+    }
 
-   .sobre-image {
-    margin-top: 20px;
-   }
+    .sobre-image {
+        margin-top: 20px;
+    }
 
-   /* =====================================================
+    /* =====================================================
    CONTATO – MOBILE
    ===================================================== */
     /* Grid vira coluna única */
@@ -1061,7 +1058,7 @@ button{
     /* =====================================================
    FOOTER – MOBILE
    ===================================================== */
-   .footer {
+    .footer {
         padding: 40px 0 20px;
         text-align: center;
     }

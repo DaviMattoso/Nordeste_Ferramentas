@@ -1,249 +1,279 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NF Blog</title>
-    <!-- Fav icon -->
-    <link rel="icon" href="./Images/favicon.ico">
-    <!-- Custom style css -->
-    <link rel="stylesheet" href="./style.css">
-    <!-- Font-awesome cdn -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>NF Blog</title>
+        <!-- Fav icon -->
+        <link rel="icon" href="./Images/favicon.ico" />
+        <!-- Custom style css -->
+        <link rel="stylesheet" href="./style.css" />
+        <!-- Font-awesome cdn -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
+    </head>
 
-<!-- ======== Colocar o fav icon ======== -->
+    <!-- ======== Colocar o fav icon ======== -->
 
-<body>
-    <!-- ======== Navbar ======== -->
-    <nav>
-        <div class="container nav__container">
-            <a href="index.html" class="nav__logo">
-                <img src="./Images/logo.png"alt="Logo NFB"class="nav__logo-image">
-                <span>NF BLOG</span>
-            </a>
-            <ul class="nav__items">
-                <li><a href="blog.html">Posts</a></li>
-                <li><a href="about.html">Sobre</a></li>
-                <li><a href="services.html">Serviços</a></li>
-                <li><a href="contact.html">Contato</a></li>
-                <li><a href="signin.html">Signin</a></li>
-                <li class="nav__profile">
-                    <div class="avatar">
-                        <img src="./Images/avatar2.jpg" alt="">
-                    </div>
-                    <ul>
-                        <li><a href="dashboard.html">Dashboard</a></li>
-                        <li><a href="logout">Logout</a></li>
-                    </ul>
-                </li>
-            </ul>
-            
-            <button id="open__nav-btn"><i class="fa-solid fa-bars"></i></button>
-            <button id="close__nav-btn"><i class="fa-solid fa-x"></i></button>
-        </div>
-    </nav>
-<!-- ======== Fim da navbar ======== -->
+    <body>
+        <!-- ======== Navbar ======== -->
+        <nav>
+            <div class="container nav__container">
+                <a href="index.html" class="nav__logo">
+                    <img
+                        src="./Images/logo.png"
+                        alt="Logo NFB"
+                        class="nav__logo-image"
+                    />
+                    <span>NF BLOG</span>
+                </a>
+                <ul class="nav__items">
+                    <li><a href="blog.html">Posts</a></li>
+                    <li><a href="about.html">Sobre</a></li>
+                    <li><a href="services.html">Serviços</a></li>
+                    <li><a href="contact.html">Contato</a></li>
+                    <li><a href="signin.html">Signin</a></li>
+                    <li class="nav__profile">
+                        <div class="avatar">
+                            <img src="./Images/avatar2.jpg" alt="" />
+                        </div>
+                        <ul>
+                            <li><a href="dashboard.html">Dashboard</a></li>
+                            <li><a href="logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
 
-<!-- ======== Serviços ======== -->
-
-<section class="services">
-
-    <div class="container services__container">
-        <div class="services__title">
-            <h1>Nossos Serviços</h1>
-
-            <p>
-                O NF Ferramentas vai além de apresentar produtos. Nosso objetivo é ensinar,
-                orientar e ajudar profissionais e iniciantes a utilizarem as ferramentas
-                corretas com segurança e eficiência.
-            </p>
-        </div>
-
-        <!-- ======== Ícones ======== -->
-
-        <div class="services__top">
-            <article>
-                <i class="fa-solid fa-screwdriver-wrench"></i>
-                <h3>Ferramentas</h3>
-                <p>
-                    Reviews completos, comparativos e recomendações das principais
-                    ferramentas do mercado.
-                </p>
-            </article>
-
-            <article>
-                <i class="fa-solid fa-helmet-safety"></i>
-                <h3>Segurança</h3>
-                <p>
-                    Conteúdos voltados para boas práticas, EPIs e prevenção de acidentes
-                    durante qualquer tipo de trabalho.
-                </p>
-            </article>
-
-            <article>
-                <i class="fa-solid fa-house"></i>
-                <h3>Projetos</h3>
-                <p>
-                    Tutoriais e projetos passo a passo para colocar a mão na massa com
-                    confiança.
-                </p>
-            </article>
-        </div>
-
-        <!-- ======== Destaque ======== -->
-
-        <div class="services__middle">
-            <div class="services__image">
-                <img src="./Images/Servicos.png" alt="Serviços do NF Blog">
+                <button id="open__nav-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <button id="close__nav-btn">
+                    <i class="fa-solid fa-x"></i>
+                </button>
             </div>
+        </nav>
+        <!-- ======== Fim da navbar ======== -->
 
-            <div class="services__content">
-                <h2>Conhecimento que faz diferença</h2>
-                <p>
-                    Nosso conteúdo é desenvolvido para quem deseja aprender desde o básico
-                    até técnicas mais avançadas no universo das ferramentas, construção,
-                    marcenaria e manutenção.
-                </p>
-                <div class="services__list">
+        <!-- ======== Serviços ======== -->
+
+        <section class="services">
+            <div class="container services__container">
+                <div class="services__title">
+                    <h1>Nossos Serviços</h1>
+
+                    <p>
+                        O NF Ferramentas vai além de apresentar produtos. Nosso
+                        objetivo é ensinar, orientar e ajudar profissionais e
+                        iniciantes a utilizarem as ferramentas corretas com
+                        segurança e eficiência.
+                    </p>
+                </div>
+
+                <!-- ======== Ícones ======== -->
+
+                <div class="services__top">
                     <article>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Reviews imparciais</span>
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        <h3>Ferramentas</h3>
+                        <p>
+                            Reviews completos, comparativos e recomendações das
+                            principais ferramentas do mercado.
+                        </p>
                     </article>
 
                     <article>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Guias completos</span>
+                        <i class="fa-solid fa-helmet-safety"></i>
+                        <h3>Segurança</h3>
+                        <p>
+                            Conteúdos voltados para boas práticas, EPIs e
+                            prevenção de acidentes durante qualquer tipo de
+                            trabalho.
+                        </p>
                     </article>
 
                     <article>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Dicas de manutenção</span>
-                    </article>
-
-                    <article>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Projetos DIY</span>
-                    </article>
-
-                    <article>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Segurança no trabalho</span>
-                    </article>
-
-                    <article>
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>Comparativos entre marcas</span>
+                        <i class="fa-solid fa-house"></i>
+                        <h3>Projetos</h3>
+                        <p>
+                            Tutoriais e projetos passo a passo para colocar a
+                            mão na massa com confiança.
+                        </p>
                     </article>
                 </div>
+
+                <!-- ======== Destaque ======== -->
+
+                <div class="services__middle">
+                    <div class="services__image">
+                        <img
+                            src="./Images/Servicos.png"
+                            alt="Serviços do NF Blog"
+                        />
+                    </div>
+
+                    <div class="services__content">
+                        <h2>Conhecimento que faz diferença</h2>
+                        <p>
+                            Nosso conteúdo é desenvolvido para quem deseja
+                            aprender desde o básico até técnicas mais avançadas
+                            no universo das ferramentas, construção, marcenaria
+                            e manutenção.
+                        </p>
+                        <div class="services__list">
+                            <article>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Reviews imparciais</span>
+                            </article>
+
+                            <article>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Guias completos</span>
+                            </article>
+
+                            <article>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Dicas de manutenção</span>
+                            </article>
+
+                            <article>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Projetos DIY</span>
+                            </article>
+
+                            <article>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Segurança no trabalho</span>
+                            </article>
+
+                            <article>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Comparativos entre marcas</span>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ======== Estatísticas ======== -->
+                <div class="services__numbers">
+                    <article>
+                        <h2>500+</h2>
+                        <small>Artigos publicados</small>
+                    </article>
+
+                    <article>
+                        <h2>120+</h2>
+                        <small>Ferramentas avaliadas</small>
+                    </article>
+
+                    <article>
+                        <h2>50+</h2>
+                        <small>Guias completos</small>
+                    </article>
+
+                    <article>
+                        <h2>1000+</h2>
+                        <small>Leitores mensais</small>
+                    </article>
+                </div>
+
+                <!-- ======== CTA ======== -->
+                <div class="services__cta">
+                    <h2>Pronto para aprender mais?</h2>
+                    <p>
+                        Explore nossos artigos e descubra conteúdos preparados
+                        para profissionais, estudantes e apaixonados por
+                        ferramentas.
+                    </p>
+
+                    <a href="blog.html" class="btn"> Explorar Posts </a>
+                </div>
             </div>
-        </div>
+        </section>
+        <!-- ======== Fim Serviços ======== -->
 
-        <!-- ======== Estatísticas ======== -->
-        <div class="services__numbers">
-            <article>
-                <h2>500+</h2>
-                <small>Artigos publicados</small>
-            </article>
+        <!-- ======== Footer ======== -->
+        <footer>
+            <div class="footer__socials">
+                <a href="https://www.youtube.com/" target="_blank"
+                    ><i class="fa-brands fa-youtube"></i
+                ></a>
 
-            <article>
-                <h2>120+</h2>
-                <small>Ferramentas avaliadas</small>
-            </article>
+                <a href="https://www.facebook.com/?locale=pt_BR" target="_blank"
+                    ><i class="fa-brands fa-facebook"></i
+                ></a>
 
-            <article>
-                <h2>50+</h2>
-                <small>Guias completos</small>
-            </article>
+                <a href="https://x.com/?lang=pt" target="_blank"
+                    ><i class="fa-brands fa-twitter"></i
+                ></a>
 
-            <article>
-                <h2>1000+</h2>
-                <small>Leitores mensais</small>
-            </article>
-        </div>
+                <a href="https://pt.linkedin.com/" target="_blank"
+                    ><i class="fa-brands fa-linkedin"></i
+                ></a>
 
-        <!-- ======== CTA ======== -->
-        <div class="services__cta">
-            <h2>Pronto para aprender mais?</h2>
-            <p>
-                Explore nossos artigos e descubra conteúdos preparados para profissionais,
-                estudantes e apaixonados por ferramentas.
-            </p>
+                <a href="https://www.instagram.com/" target="_blank"
+                    ><i class="fa-brands fa-instagram"></i
+                ></a>
+            </div>
 
-            <a href="blog.html" class="btn">
-                Explorar Posts
-            </a>
-        </div>
-    </div>
-
-</section>
-<!-- ======== Fim Serviços ======== -->
-
-<!-- ======== Footer ======== -->
-<footer>
-        <div class="footer__socials">
-        <a href="https://www.youtube.com/" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-
-        <a href="https://www.facebook.com/?locale=pt_BR" target="_blank"><i class="fa-brands fa-facebook"></i></a>
-
-        <a href="https://x.com/?lang=pt" target="_blank"><i class="fa-brands fa-twitter"></i></a>
-
-        <a href="https://pt.linkedin.com/" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
-
-        <a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-    </div>
-
-    <div class="container footer__container">
-        <article> 
-            <!-- ======================================================
+            <div class="container footer__container">
+                <article>
+                    <!-- ======================================================
                 TODO:
                 Adicionar os links das categorias quando as páginas
                 individuais estiverem prontas.
             ====================================================== -->
-            <h4>Categorias</h4>
-            <ul> 
-                <li><a href="">Ferramentas</a></li>
-                <li><a href="">Construção</a></li>
-                <li><a href="">Marcenaria</a></li>
-                <li><a href="">Seg. no Trabalho</a></li>
-                <li><a href="">Dicas e Tutoriais</a></li>
-                <li><a href="">Maquinaria Pesada</a></li>
-            </ul>
-        </article>
+                    <h4>Categorias</h4>
+                    <ul>
+                        <li><a href="">Ferramentas</a></li>
+                        <li><a href="">Construção</a></li>
+                        <li><a href="">Marcenaria</a></li>
+                        <li><a href="">Seg. no Trabalho</a></li>
+                        <li><a href="">Dicas e Tutoriais</a></li>
+                        <li><a href="">Maquinaria Pesada</a></li>
+                    </ul>
+                </article>
 
-        <article> 
-            <h4>Suporte</h4>
-            <ul> 
-                <li><a href="https://wa.me/5581995607222" target="_blank" rel="noopener noreferrer"> Suporte Online</a></li>
-                <li><a href="contact.html">Numeros</a></li>
-                <li><a href="contact.html">Email</a></li>
-                <li><a href="contact.html">Localização</a></li>
-            </ul>
-        </article>
+                <article>
+                    <h4>Suporte</h4>
+                    <ul>
+                        <li>
+                            <a
+                                href="https://wa.me/5581995607222"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Suporte Online</a
+                            >
+                        </li>
+                        <li><a href="contact.html">Numeros</a></li>
+                        <li><a href="contact.html">Email</a></li>
+                        <li><a href="contact.html">Localização</a></li>
+                    </ul>
+                </article>
 
-        <article> 
-            <h4>Navegação</h4>
-            <ul> 
-                <li><a href="index.html">Home</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="about.html">Sobre</a></li>
-                <li><a href="services.html">Serviços</a></li>
-                <li><a href="contact.html">Contato</a></li>
-            </ul>
-        </article>
+                <article>
+                    <h4>Navegação</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="about.html">Sobre</a></li>
+                        <li><a href="services.html">Serviços</a></li>
+                        <li><a href="contact.html">Contato</a></li>
+                    </ul>
+                </article>
 
-        <div class="footer__copyright">
-            <small> 
-                &copy; 2026 NF Ferramentas - Todos os direitos reservados
-            </small>
-        </div>
+                <div class="footer__copyright">
+                    <small>
+                        &copy; 2026 NF Ferramentas - Todos os direitos
+                        reservados
+                    </small>
+                </div>
+            </div>
+        </footer>
 
-    </div>
-</footer>
-
-    <!-- ======== JS ======== -->
-    <script src="./main.js"></script>
-    
-</body>
-
+        <!-- ======== JS ======== -->
+        <script src="./main.js"></script>
+    </body>
 </html>
