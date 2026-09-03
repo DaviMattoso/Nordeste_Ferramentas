@@ -236,6 +236,8 @@ Pequenos ajustes de cor fazem uma diferença enorme na aparência final.
 --------------------------------------------------------------------------------------------------------------------------------------
 
 
+
+
 Dia 2
 
 Um dia meio fraco
@@ -1581,5 +1583,133 @@ No próximo dia o plano é começar justamente pelos erros que apareceram hoje:
 Por hoje foi basicamente faxina de código. Não construímos um cômodo novo, mas pelo menos agora dá para andar na obra sem tropeçar nas ferramentas (que piada bosta KAKAKAKKAKA)
 
 É nozess, próximo dia a gente começa a arrumar os BO de verdade.
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+Dia 03/09/2026 — DIA DE ARRUMAR OS BO 
+
+Salve salve rapeize, voltamos exatamente de onde paramos.
+
+No último dia eu organizei a escrita do projeto inteiro, mas deixei alguns erros de HTML anotados porque a proposta daquele dia era SOMENTE formatar o código. Hoje finalmente voltei para corrigir tudo de uma vez e conferir se não tinha mais nenhuma bomba escondida esperando a gente KAKAKAKK
+
+A lista era essa:
+
+- revisar e fechar corretamente as form__control;
+- corrigir o iframe do Google Maps;
+- validar a estrutura completa do contact.html;
+- verificar se existiam outros erros HTML escondidos.
+
+Comecei passando novamente todos os arquivos HTML do nf_blog pelo analisador. Ele confirmou os quatro problemas que tinham aparecido durante a organização: add-category.html, edit-category.html, signin.html e contact.html.
+
+O primeiro tipo de erro estava nas três páginas com formulário.
+
+Nos arquivos add-category.html, edit-category.html e signin.html existia uma div com a classe form__control sendo aberta, mas ela nunca era fechada antes do final do formulário.
+
+A estrutura estava basicamente assim:
+
+<form>
+    <div class="form__control">
+        <button>...</button>
+</form>
+
+Quando o navegador encontrava o </form>, ainda existia uma div aberta. Como o navegador tenta consertar muita coisa sozinho, a página podia até aparecer normalmente, mas a árvore do HTML ficava incorreta e o formatador retornava:
+
+Unexpected closing tag "form"
+
+A correção nas três páginas foi fechar a form__control no lugar certo:
+
+<form>
+    <div class="form__control">
+        <button>...</button>
+    </div>
+</form>
+
+No signin.html essa div também envolve o texto com o link para a página de cadastro, então o fechamento foi colocado depois do <small> e antes do </form>. Agora cada elemento termina dentro do mesmo bloco em que começou.
+
+Depois fui para o contact.html e corrigi o iframe do Google Maps.
+
+No final da abertura do iframe tinha aparecido isso:
+
+</src=>
+
+Essa sequência não existe no HTML. src é um atributo da tag <iframe>, não uma tag que precisa ser fechada. O iframe já possuía o fechamento correto logo depois:
+
+</iframe>
+
+Então removi somente o </src=> inválido e mantive o endereço completo do Google Maps, as dimensões, o carregamento lazy e os outros atributos.
+
+Também adicionei um título descritivo ao mapa:
+
+title="Localização da Nordeste Ferramentas no Google Maps"
+
+Isso ajuda leitores de tela a entenderem o que existe dentro do iframe e deixa a incorporação mais completa.
+
+MAS É CLARO QUE TINHA MAIS UMA COISA KAKAKAKAKK
+
+Depois de corrigir o iframe, rodei o analisador outra vez. Antes ele parava no </src=> e não conseguia interpretar corretamente o restante da página. Quando esse primeiro bloqueio sumiu, apareceu um novo erro no final do contact.html:
+
+Unexpected closing tag "body"
+
+Fui olhar a estrutura e descobri que o arquivo possuía um </body> no final, mas não tinha a tag <body> sendo aberta depois do </head>.
+
+Estava assim:
+
+</head>
+
+<nav>
+    ...
+
+</body>
+</html>
+
+Ou seja, todo o conteúdo visual da página começava diretamente depois do head. Mais uma vez o navegador tentava adivinhar o que a gente queria, mas o documento estava estruturalmente errado.
+
+A correção foi adicionar a abertura no lugar correto:
+
+</head>
+
+<body>
+    <nav>
+        ...
+
+</body>
+</html>
+
+Esse era exatamente o tipo de erro escondido que eu queria encontrar hoje. Ele não apareceu na primeira validação porque o problema do iframe interrompia a leitura antes.
+
+Depois das correções, formatei novamente os quatro arquivos e rodei a verificação em TODOS os HTMLs do blog. Dessa vez o resultado foi:
+
+All matched files use Prettier code style!
+
+Além disso, conferi individualmente a estrutura-base dos 17 arquivos HTML que possuem conteúdo. Todos agora apresentam exatamente:
+
+1 abertura de <html> e 1 fechamento;
+1 abertura de <head> e 1 fechamento;
+1 abertura de <body> e 1 fechamento.
+
+Também procurei IDs repetidos dentro de cada página e nenhum ID duplicado foi encontrado.
+
+O category-post.html continua vazio. Ele foi ignorado na validação estrutural porque ainda não existe documento para analisar, então isso não é um erro novo causado pelas correções de hoje. É apenas uma página que ainda será construída quando o sistema de categorias for integrado ao back-end.
+
+Um validador mais rigoroso também mostrou sugestões futuras de acessibilidade e padronização, como textos alternativos em algumas imagens, tipos explícitos em botões e descrições para links que hoje possuem apenas ícones. Essas sugestões não representam tags quebradas e não fizeram parte da lista de erros estruturais de hoje, então não saí alterando o projeto inteiro fora do objetivo planejado. Quando chegar o dia de revisar acessibilidade, já sabemos onde olhar.
+
+No final, os problemas resolvidos foram:
+
+- form__control fechada corretamente no add-category.html;
+- form__control fechada corretamente no edit-category.html;
+- form__control fechada corretamente no signin.html;
+- remoção do </src=> inválido no iframe;
+- adição de um title descritivo ao Google Maps;
+- abertura da tag <body> que faltava no contact.html;
+- nova formatação dos quatro arquivos corrigidos;
+- validação estrutural de todas as páginas preenchidas;
+- verificação de IDs duplicados.
+
+Hoje foi menos sobre criar coisa nova e mais sobre parar de depender da boa vontade do navegador KAKAKAKAKK
+
+Agora o HTML do blog está estruturalmente consistente e podemos seguir para a próxima etapa sem aqueles erros antigos escondidos no caminho. Pequena vitória, mas ver todos os arquivos passando na validação depois de encontrar aquele body desaparecido foi BOM DEMAIS.
+
+É nozess. Os BO anotados no diário foram oficialmente abatidos.
 
 --------------------------------------------------------------------------------------------------------------------------------------
