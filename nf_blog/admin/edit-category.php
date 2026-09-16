@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>NF Blog</title>
         <!-- Fav icon -->
-        <link rel="icon" href="./Images/favicon.ico" />
+        <link rel="icon" href="../Images/favicon.ico" />
         <!-- Custom style css -->
-        <link rel="stylesheet" href="./style.css" />
+        <link rel="stylesheet" href="../css/style.css" />
         <!-- Font-awesome cdn -->
         <link
             rel="stylesheet"
@@ -19,27 +19,27 @@
         <!-- ======== Navbar ======== -->
         <nav>
             <div class="container nav__container">
-                <a href="index.html" class="nav__logo">
+                <a href="../index.php" class="nav__logo">
                     <img
-                        src="./Images/logo.png"
+                        src="../Images/logo.png"
                         alt="Logo NFB"
                         class="nav__logo-image"
                     />
                     <span>NF BLOG</span>
                 </a>
                 <ul class="nav__items">
-                    <li><a href="blog.html">Posts</a></li>
-                    <li><a href="about.html">Sobre</a></li>
-                    <li><a href="services.html">Serviços</a></li>
-                    <li><a href="contact.html">Contato</a></li>
-                    <li><a href="signin.html">Signin</a></li>
+                    <li><a href="../blog.php">Posts</a></li>
+                    <li><a href="../about.php">Sobre</a></li>
+                    <li><a href="../services.php">Serviços</a></li>
+                    <li><a href="../contact.php">Contato</a></li>
+                    <li><a href="../signin.php">Signin</a></li>
                     <li class="nav__profile">
                         <div class="avatar">
-                            <img src="./Images/avatar2.jpg" alt="" />
+                            <img src="../Images/avatar2.jpg" alt="" />
                         </div>
                         <ul>
-                            <li><a href="dashboard.html">Dashboard</a></li>
-                            <li><a href="logout">Logout</a></li>
+                            <li><a href="dashboard.php">Dashboard</a></li>
+                            <li><a href="../logout.php">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -56,17 +56,12 @@
         <!-- ======== Formulário de Login ======== -->
         <section class="form__section">
             <div class="container form__section-container">
-                <h2>Adicionar categoria</h2>
-                <div class="alert__message error">
-                    <p>Erro: tente novamente</p>
-                </div>
+                <h2>Editar categoria</h2>
                 <form action="" enctype="multipart/form-data">
                     <input type="text" placeholder="Título" />
                     <textarea rows="4" placeholder="Descrição"></textarea>
                     <div class="form__control">
-                        <button type="submit" class="btn">
-                            Adicionar categoria
-                        </button>
+                        <button type="submit" class="btn">Editar</button>
                     </div>
                 </form>
             </div>
@@ -126,20 +121,20 @@
                                 Suporte Online</a
                             >
                         </li>
-                        <li><a href="contact.html">Numeros</a></li>
-                        <li><a href="contact.html">Email</a></li>
-                        <li><a href="contact.html">Localização</a></li>
+                        <li><a href="../contact.php">Numeros</a></li>
+                        <li><a href="../contact.php">Email</a></li>
+                        <li><a href="../contact.php">Localização</a></li>
                     </ul>
                 </article>
 
                 <article>
                     <h4>Navegação</h4>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="about.html">Sobre</a></li>
-                        <li><a href="services.html">Serviços</a></li>
-                        <li><a href="contact.html">Contato</a></li>
+                        <li><a href="../index.php">Home</a></li>
+                        <li><a href="../blog.php">Blog</a></li>
+                        <li><a href="../about.php">Sobre</a></li>
+                        <li><a href="../services.php">Serviços</a></li>
+                        <li><a href="../contact.php">Contato</a></li>
                     </ul>
                 </article>
 
@@ -153,6 +148,6 @@
         </footer>
 
         <!-- ======== JS ======== -->
-        <script src="./main.js"></script>
+        <script src="../js/main.js"></script>
     </body>
 </html>

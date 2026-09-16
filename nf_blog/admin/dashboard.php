@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>NF Blog</title>
         <!-- Fav icon -->
-        <link rel="icon" href="./Images/favicon.ico" />
+        <link rel="icon" href="../Images/favicon.ico" />
         <!-- Custom style css -->
-        <link rel="stylesheet" href="./style.css" />
+        <link rel="stylesheet" href="../css/style.css" />
         <!-- Font-awesome cdn -->
         <link
             rel="stylesheet"
@@ -19,27 +19,27 @@
         <!-- ======== Navbar ======== -->
         <nav>
             <div class="container nav__container">
-                <a href="index.html" class="nav__logo">
+                <a href="../index.php" class="nav__logo">
                     <img
-                        src="./Images/logo.png"
+                        src="../Images/logo.png"
                         alt="Logo NFB"
                         class="nav__logo-image"
                     />
                     <span>NF BLOG</span>
                 </a>
                 <ul class="nav__items">
-                    <li><a href="blog.html">Posts</a></li>
-                    <li><a href="about.html">Sobre</a></li>
-                    <li><a href="services.html">Serviços</a></li>
-                    <li><a href="contact.html">Contato</a></li>
-                    <li><a href="signin.html">Signin</a></li>
+                    <li><a href="../blog.php">Posts</a></li>
+                    <li><a href="../about.php">Sobre</a></li>
+                    <li><a href="../services.php">Serviços</a></li>
+                    <li><a href="../contact.php">Contato</a></li>
+                    <li><a href="../signin.php">Signin</a></li>
                     <li class="nav__profile">
                         <div class="avatar">
-                            <img src="./Images/avatar2.jpg" alt="" />
+                            <img src="../Images/avatar2.jpg" alt="" />
                         </div>
                         <ul>
-                            <li><a href="dashboard.html">Dashboard</a></li>
-                            <li><a href="logout">Logout</a></li>
+                            <li><a href="dashboard.php">Dashboard</a></li>
+                            <li><a href="../logout.php">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -59,42 +59,42 @@
                 <aside>
                     <ul>
                         <li>
-                            <a href="add-post.html">
+                            <a href="add-post.php">
                                 <i class="fa-solid fa-pen"></i>
                                 <h5>Adicionar Publicação</h5>
                             </a>
                         </li>
 
                         <li class="active">
-                            <a href="dashboard.html">
+                            <a href="dashboard.php">
                                 <i class="fa-solid fa-file-image"></i>
                                 <h5>Dashboard</h5>
                             </a>
                         </li>
 
                         <li>
-                            <a href="add-user.html">
+                            <a href="add-user.php">
                                 <i class="fa-solid fa-user-plus"></i>
                                 <h5>Adicionar Usuário</h5>
                             </a>
                         </li>
 
                         <li>
-                            <a href="manage-users.html">
+                            <a href="manage-users.php">
                                 <i class="fa-solid fa-user"></i>
                                 <h5>Gerenciar Usuário</h5>
                             </a>
                         </li>
 
                         <li>
-                            <a href="add-category.html">
+                            <a href="add-category.php">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <h5>Adicionar Categoria</h5>
                             </a>
                         </li>
 
                         <li>
-                            <a href="manage-categories.html">
+                            <a href="manage-categories.php">
                                 <i class="fa-solid fa-list"></i>
                                 <h5>Gerenciar Categorias</h5>
                             </a>
@@ -117,13 +117,14 @@
                                 <td>Começando no mundo das ferramentas</td>
                                 <td>Ferramentas</td>
                                 <td>
-                                    <a href="edit-post.html" class="btn sm"
+                                    <a href="edit-post.php" class="btn sm"
                                         >Editar</a
                                     >
                                 </td>
                                 <td>
+                                    <!-- TODO: implementar exclusão de post -->
                                     <a
-                                        href="delete-category.html"
+                                        href="#"
                                         class="btn sm danger"
                                         >Excluir</a
                                     >
@@ -136,13 +137,14 @@
                                 </td>
                                 <td>Ferramentas</td>
                                 <td>
-                                    <a href="edit-post.html" class="btn sm"
+                                    <a href="edit-post.php" class="btn sm"
                                         >Editar</a
                                     >
                                 </td>
                                 <td>
+                                    <!-- TODO: implementar exclusão de post -->
                                     <a
-                                        href="delete-category.html"
+                                        href="#"
                                         class="btn sm danger"
                                         >Excluir</a
                                     >
@@ -152,13 +154,14 @@
                                 <td>Etapas básicas de uma obra residencial</td>
                                 <td>Construção</td>
                                 <td>
-                                    <a href="edit-post.html" class="btn sm"
+                                    <a href="edit-post.php" class="btn sm"
                                         >Editar</a
                                     >
                                 </td>
                                 <td>
+                                    <!-- TODO: implementar exclusão de post -->
                                     <a
-                                        href="delete-category.html"
+                                        href="#"
                                         class="btn sm danger"
                                         >Excluir</a
                                     >
@@ -171,13 +174,14 @@
                                 </td>
                                 <td>Segurança do trabalho</td>
                                 <td>
-                                    <a href="edit-post.html" class="btn sm"
+                                    <a href="edit-post.php" class="btn sm"
                                         >Editar</a
                                     >
                                 </td>
                                 <td>
+                                    <!-- TODO: implementar exclusão de post -->
                                     <a
-                                        href="delete-category.html"
+                                        href="#"
                                         class="btn sm danger"
                                         >Excluir</a
                                     >
@@ -243,20 +247,20 @@
                                 Suporte Online</a
                             >
                         </li>
-                        <li><a href="contact.html">Numeros</a></li>
-                        <li><a href="contact.html">Email</a></li>
-                        <li><a href="contact.html">Localização</a></li>
+                        <li><a href="../contact.php">Numeros</a></li>
+                        <li><a href="../contact.php">Email</a></li>
+                        <li><a href="../contact.php">Localização</a></li>
                     </ul>
                 </article>
 
                 <article>
                     <h4>Navegação</h4>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="about.html">Sobre</a></li>
-                        <li><a href="services.html">Serviços</a></li>
-                        <li><a href="contact.html">Contato</a></li>
+                        <li><a href="../index.php">Home</a></li>
+                        <li><a href="../blog.php">Blog</a></li>
+                        <li><a href="../about.php">Sobre</a></li>
+                        <li><a href="../services.php">Serviços</a></li>
+                        <li><a href="../contact.php">Contato</a></li>
                     </ul>
                 </article>
 
@@ -270,6 +274,6 @@
         </footer>
 
         <!-- ======== JS ======== -->
-        <script src="./main.js"></script>
+        <script src="../js/main.js"></script>
     </body>
 </html>

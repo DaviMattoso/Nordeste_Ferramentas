@@ -7,7 +7,7 @@
         <!-- Fav icon -->
         <link rel="icon" href="./Images/favicon.ico" />
         <!-- Custom style css -->
-        <link rel="stylesheet" href="./style.css" />
+        <link rel="stylesheet" href="./css/style.css" />
         <!-- Font-awesome cdn -->
         <link
             rel="stylesheet"
@@ -19,7 +19,7 @@
         <!-- ======== Navbar ======== -->
         <nav>
             <div class="container nav__container">
-                <a href="index.html" class="nav__logo">
+                <a href="index.php" class="nav__logo">
                     <img
                         src="./Images/logo.png"
                         alt="Logo NFB"
@@ -28,10 +28,10 @@
                     <span>NF BLOG</span>
                 </a>
                 <ul class="nav__items">
-                    <li><a href="blog.html">Posts</a></li>
-                    <li><a href="about.html">Sobre</a></li>
-                    <li><a href="services.html">Serviços</a></li>
-                    <li><a href="contact.html">Contato</a></li>
+                    <li><a href="blog.php">Posts</a></li>
+                    <li><a href="about.php">Sobre</a></li>
+                    <li><a href="services.php">Serviços</a></li>
+                    <li><a href="contact.php">Contato</a></li>
                 </ul>
 
                 <button id="open__nav-btn">
@@ -62,7 +62,7 @@
                         <button type="submit" class="btn">Entrar</button>
                         <small
                             >Nao tem uma conta?
-                            <a href="singup.html">Cadastrar</a></small
+                            <a href="signup.php">Cadastrar</a></small
                         >
                     </div>
                 </form>
@@ -123,20 +123,20 @@
                                 Suporte Online</a
                             >
                         </li>
-                        <li><a href="contact.html">Numeros</a></li>
-                        <li><a href="contact.html">Email</a></li>
-                        <li><a href="contact.html">Localização</a></li>
+                        <li><a href="contact.php">Numeros</a></li>
+                        <li><a href="contact.php">Email</a></li>
+                        <li><a href="contact.php">Localização</a></li>
                     </ul>
                 </article>
 
                 <article>
                     <h4>Navegação</h4>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="about.html">Sobre</a></li>
-                        <li><a href="services.html">Serviços</a></li>
-                        <li><a href="contact.html">Contato</a></li>
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="blog.php">Blog</a></li>
+                        <li><a href="about.php">Sobre</a></li>
+                        <li><a href="services.php">Serviços</a></li>
+                        <li><a href="contact.php">Contato</a></li>
                     </ul>
                 </article>
 
@@ -150,6 +150,6 @@
         </footer>
 
         <!-- ======== JS ======== -->
-        <script src="./main.js"></script>
+        <script src="./js/main.js"></script>
     </body>
 </html>

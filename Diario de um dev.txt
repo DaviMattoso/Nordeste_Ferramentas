@@ -1713,3 +1713,72 @@ Agora o HTML do blog está estruturalmente consistente e podemos seguir para a p
 É nozess. Os BO anotados no diário foram oficialmente abatidos.
 
 --------------------------------------------------------------------------------------------------------------------------------------
+
+BACKEND
+DIA 1 — FAZENDO ESSA PORRA FUNCIONAR
+
+Hoje foi basicamente o dia de preparar tudo para o backend do NF começar de verdade.
+Primeiro configurei o XAMPP com Apache, PHP e MySQL/MariaDB. Tive erro de PHP não encontrado, problema com Live Server, caminho errado, pasta duplicada e depois ainda veio o 403 Forbidden só pra terminar de testar minha paciência.
+
+Depois de muita raiva, conseguimos deixar o projeto rodando corretamente em:
+
+http://localhost/blog/
+
+Também configurei o Apache para abrir direto a pasta oficial do projeto:
+
+G:\Nordeste_Ferramentas\nf_blog
+
+Com isso, parei de depender daquela cópia separada dentro do htdocs.
+
+A parte do banco também ficou pronta.
+
+Foi criado o banco:
+
+nf_blog
+
+E a primeira tabela:
+
+users
+
+Com campos para nome, usuário, email, senha, avatar, tipo de usuário e datas de criação/atualização.
+
+A conexão PHP → MySQL/MariaDB foi testada pelo test.php e funcionou.
+Também migramos as páginas principais de HTML para PHP, corrigimos links antigos, organizamos config, database, admin e criamos o database.sql para deixar a estrutura do banco salva no projeto.
+
+No fim do dia, o mais importante é que agora temos:
+
+Apache funcionando
+PHP funcionando
+MySQL/MariaDB funcionando
+Banco conectado
+Projeto abrindo no localhost
+Estrutura PHP organizada
+Frontend preservado
+
+Mesmo com toda a raiva dos erros de caminho e configuração, pelo menos terminou funcionando.
+
+PRÓXIMOS PASSOS
+
+Amanhã começa o backend de verdade:
+
+1. Fazer o signup.php funcionar.
+2. Receber dados com POST.
+3. Validar os campos.
+4. Salvar usuário no MySQL.
+5. Usar password_hash().
+6. Impedir email e username duplicados.
+7. Fazer o signin.php.
+8. Criar sessão de login.
+9. Proteger o dashboard.
+10. Criar logout.
+
+Depois disso:
+
+- CRUD de usuários
+- categorias
+- posts
+- uploads
+- dashboard dinâmico
+- blog puxando dados do banco
+
+Resumindo: hoje foi configuração e dor de cabeça. Amanhã começa a parte interessante.

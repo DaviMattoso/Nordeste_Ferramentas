@@ -1,59 +1,8 @@
-<!doctype html>
-<html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>NF Blog</title>
-        <!-- Fav icon -->
-        <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
-        <link rel="stylesheet" href="./style.css" />
-        <!-- Font-awesome cdn -->
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        />
-    </head>
+<?php
+require_once __DIR__ . '/admin/partials/header.php';
 
-    <body>
-        <!-- ======== Navbar ======== -->
-        <nav>
-            <div class="container nav__container">
-                <a href="index.html" class="nav__logo">
-                    <img
-                        src="./Images/logo.png"
-                        alt="Logo NFB"
-                        class="nav__logo-image"
-                    />
-                    <span>NF BLOG</span>
-                </a>
-                <ul class="nav__items">
-                    <li><a href="blog.html">Posts</a></li>
-                    <li><a href="about.html">Sobre</a></li>
-                    <li><a href="services.html">Serviços</a></li>
-                    <li><a href="contact.html">Contato</a></li>
-                    <li><a href="signin.html">Signin</a></li>
-                    <li class="nav__profile">
-                        <div class="avatar">
-                            <img src="./Images/avatar2.jpg" alt="" />
-                        </div>
-                        <ul>
-                            <li><a href="dashboard.html">Dashboard</a></li>
-                            <li><a href="logout">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <button id="open__nav-btn">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <button id="close__nav-btn">
-                    <i class="fa-solid fa-x"></i>
-                </button>
-            </div>
-        </nav>
-        <!-- ======== Fim da navbar ======== -->
-
+?>        
+        
         <!-- ======== Featured posts ======== -->
         <!-- ======== Post base (posttop) ======== -->
 
@@ -70,14 +19,14 @@
                 <!-- Informações do post -->
                 <div class="post__info">
                     <!-- Categoria do post -->
-                    <a href="category-posts.html" class="category__buttons"
+                    <a href="category-post.php" class="category__buttons"
                         >Ferramentas</a
                     >
 
                     <!-- Título do post -->
                     <h2 class="post__title">
                         <!-- Link para a página completa do post -->
-                        <a href="post.html"
+                        <a href="post.php"
                             >Começando no mundo das ferramentas</a
                         >
                     </h2>
@@ -127,12 +76,12 @@
                     </div>
 
                     <div class="post__info">
-                        <a href="category-posts.html" class="category__buttons"
+                        <a href="category-post.php" class="category__buttons"
                             >Ferramentas</a
                         >
 
                         <h3 class="post__title">
-                            <a href="post.html"
+                            <a href="post.php"
                                 >Ferramentas manuais que todo profissional deve
                                 ter</a
                             >
@@ -166,11 +115,11 @@
                     </div>
 
                     <div class="post__info">
-                        <a href="category-posts.html" class="category__buttons"
+                        <a href="category-post.php" class="category__buttons"
                             >Construção</a
                         >
                         <h3 class="post__title">
-                            <a href="post.html"
+                            <a href="post.php"
                                 >Etapas básicas de uma obra residencial</a
                             >
                         </h3>
@@ -202,11 +151,11 @@
                     </div>
 
                     <div class="post__info">
-                        <a href="category-posts.html" class="category__buttons"
+                        <a href="category-post.php" class="category__buttons"
                             >Marcenaria</a
                         >
                         <h3 class="post__title">
-                            <a href="post.html"
+                            <a href="post.php"
                                 >Primeiros passos na marcenaria para
                                 iniciantes</a
                             >
@@ -239,11 +188,11 @@
                     </div>
 
                     <div class="post__info">
-                        <a href="category-posts.html" class="category__buttons"
+                        <a href="category-post.php" class="category__buttons"
                             >Segurança no Trabalho</a
                         >
                         <h3 class="post__title">
-                            <a href="post.html"
+                            <a href="post.php"
                                 >Equipamentos de proteção individual (EPIs)
                                 essenciais</a
                             >
@@ -276,11 +225,11 @@
                     </div>
 
                     <div class="post__info">
-                        <a href="category-posts.html" class="category__buttons"
+                        <a href="category-post.php" class="category__buttons"
                             >Dicas e Tutoriais</a
                         >
                         <h3 class="post__title">
-                            <a href="post.html"
+                            <a href="post.php"
                                 >Como trocar uma torneira sem chamar um
                                 profissional</a
                             >
@@ -313,11 +262,11 @@
                     </div>
 
                     <div class="post__info">
-                        <a href="category-posts.html" class="category__buttons"
+                        <a href="category-post.php" class="category__buttons"
                             >Construção</a
                         >
                         <h3 class="post__title">
-                            <a href="post.html"
+                            <a href="post.php"
                                 >Materiais de construção mais utilizados
                                 atualmente</a
                             >
@@ -350,11 +299,11 @@
                     </div>
 
                     <div class="post__info">
-                        <a href="category-posts.html" class="category__buttons"
+                        <a href="category-post.php" class="category__buttons"
                             >Ferramentas</a
                         >
                         <h3 class="post__title">
-                            <a href="post.html"
+                            <a href="post.php"
                                 >Ferramentas elétricas: quais valem a pena
                                 comprar primeiro?</a
                             >
@@ -452,20 +401,20 @@
                                 Suporte Online</a
                             >
                         </li>
-                        <li><a href="contact.html">Numeros</a></li>
-                        <li><a href="contact.html">Email</a></li>
-                        <li><a href="contact.html">Localização</a></li>
+                        <li><a href="contact.php">Numeros</a></li>
+                        <li><a href="contact.php">Email</a></li>
+                        <li><a href="contact.php">Localização</a></li>
                     </ul>
                 </article>
 
                 <article>
                     <h4>Navegação</h4>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="about.html">Sobre</a></li>
-                        <li><a href="services.html">Serviços</a></li>
-                        <li><a href="contact.html">Contato</a></li>
+                        <li><a href="index.php">Home</a></li>
+                        <li><a href="blog.php">Blog</a></li>
+                        <li><a href="about.php">Sobre</a></li>
+                        <li><a href="services.php">Serviços</a></li>
+                        <li><a href="contact.php">Contato</a></li>
                     </ul>
                 </article>
 
@@ -479,6 +428,6 @@
         </footer>
 
         <!-- ======== JS ======== -->
-        <script src="./main.js"></script>
+        <script src="./js/main.js"></script>
     </body>
 </html>
