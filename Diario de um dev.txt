@@ -1782,3 +1782,260 @@ Depois disso:
 - blog puxando dados do banco
 
 Resumindo: hoje foi configuração e dor de cabeça. Amanhã começa a parte interessante.
+
+
+Hoje o backend finalmente começou a ficar com cara de sistema de verdade.
+
+Ontem a gente tinha deixado PHP, Apache, MySQL/MariaDB, banco e conexão funcionando. Hoje a ideia foi começar a usar isso de verdade.
+
+1 — CADASTRO DE USUÁRIO FUNCIONANDO
+
+Comecei pelo signup.php.
+
+O formulário deixou de ser só visual e passou a realmente enviar dados para o PHP.
+
+Foram adicionados:
+- first_name
+- last_name
+- username
+- email
+- password
+- confirm_password
+- avatar
+
+O PHP agora valida os campos, confere email, compara as duas senhas e verifica se username ou email já existem no banco.
+
+A senha não é salva em texto puro.
+
+Ela passa por:
+password_hash()
+
+Também foi usado prepared statement para evitar SQL montado diretamente com dados do usuário.
+
+O cadastro público sempre cria:
+role = author
+
+Depois testei de verdade no XAMPP.
+
+Criei o usuário:
+nf_teste_01
+
+E confirmei no phpMyAdmin que ele apareceu na tabela users.
+
+A senha estava salva como hash começando com algo tipo:
+$2y$...
+
+Então essa parte funcionou certinho.
+
+2 — LOGIN FUNCIONANDO
+
+Depois partimos para o signin.php.
+
+Agora o login aceita username ou email junto com a senha.
+
+O PHP procura o usuário no MySQL usando prepared statement e depois verifica a senha com:
+password_verify()
+
+Se estiver tudo certo, uma sessão é criada e o usuário é enviado para:
+admin/dashboard.php
+
+Se estiver errado, aparece uma mensagem genérica para não revelar se o problema foi usuário ou senha.
+
+3 — SESSÕES
+
+Também foi criado o sistema de sessão.
+
+Na sessão ficam somente dados necessários:
+- user_id
+- username
+- role
+- avatar
+
+A senha e o hash nunca são guardados na sessão.
+
+O sistema também passou a proteger as páginas administrativas.
+
+Sem estar logado, tentar abrir diretamente uma página do admin manda de volta para o login.
+
+Também foi criado o logout, que destrói a sessão e impede o usuário de continuar acessando o painel.
+
+4 — PERMISSÕES ADMIN X AUTHOR
+
+A regra atual ficou:
+
+AUTHOR
+- Dashboard
+- Posts
+
+ADMIN
+- Dashboard
+- Posts
+- Usuários
+- Categorias
+
+O mais importante é que não foi só esconder botão.
+
+O PHP realmente bloqueia o acesso direto pela URL.
+
+Testei com o usuário como author.
+
+Quando tentei entrar em gerenciamento de usuários/categorias, fui redirecionado para o dashboard com:
+
+"Você não tem permissão para acessar essa área."
+
+Depois alterei temporariamente o role do mesmo usuário no phpMyAdmin:
+
+author → admin
+
+Fiz logout e login novamente.
+
+Aí apareceram as opções:
+- Adicionar Usuário
+- Gerenciar Usuário
+- Adicionar Categoria
+- Gerenciar Categorias
+
+E as páginas passaram a abrir normalmente.
+
+Então o sistema de permissões funcionou nos dois casos.
+
+5 — LIMPEZA DE ALERTAS FALSOS
+
+Também encontrei algumas páginas que ainda mostravam:
+"Erro: tente novamente"
+
+mesmo sem nenhum erro ter acontecido.
+
+Esses alerts antigos foram removidos de:
+- add-post.php
+- add-user.php
+- add-category.php
+
+As classes de erro/sucesso continuam no CSS para serem usadas quando existir mensagem real.
+
+ESTADO ATUAL DO BACKEND
+
+Até agora temos:
+
+✅ XAMPP / Apache / PHP
+✅ Estrutura PHP
+✅ Banco de dados MySQL/MariaDB
+✅ Conexão PHP → banco
+✅ Tabela users
+✅ Cadastro de usuário no banco
+✅ Password hash
+✅ Login por username/email
+✅ Sessões
+✅ Logout
+✅ Proteção das páginas administrativas
+✅ Permissões admin x author
+
+Agora o projeto já consegue:
+
+Cadastrar usuário
+↓
+Salvar no MySQL
+↓
+Fazer login
+↓
+Criar sessão
+↓
+Entrar no dashboard
+↓
+Bloquear áreas conforme o role
+↓
+Fazer logout
+
+CHECKLIST GERAL DO BACKEND
+
+[✅] Estrutura inicial
+[✅] Interface do Blog
+[✅] Página de posts
+[✅] Página de categorias
+[✅] Página de login
+[✅] Página de cadastro
+[✅] Dashboard
+[✅] Interface de gerenciamento de posts
+[✅] Interface de gerenciamento de usuários
+[✅] Interface de gerenciamento de categorias
+
+[✅] Estrutura PHP
+[✅] Banco de dados MySQL/MariaDB
+[✅] Cadastro de usuários no banco
+[✅] Sistema de login
+[✅] Sessões
+[✅] Sistema de permissões
+
+[⏳] CRUD de usuários
+[⏳] CRUD de categorias
+[⏳] CRUD de posts
+[⏳] Integração front-end + back-end
+[⏳] Busca de posts
+[⏳] Segurança final
+[⏳] Testes completos
+[⏳] Publicação
+
+PRÓXIMO BLOCO — CRUD DE USUÁRIOS
+
+A próxima etapa será transformar as páginas administrativas de usuários em funcionalidades reais.
+
+A ordem será:
+
+1. add-user.php
+   - admin cria usuário
+   - escolhe author/admin
+   - senha com hash
+   - avatar
+   - validações
+
+2. manage-users.php
+   - buscar usuários do MySQL
+   - remover nomes fixos do HTML
+   - listar dados reais
+
+3. edit-user.php
+   - carregar usuário pelo ID
+   - editar nome, username, email, role e avatar
+   - tratar senha corretamente
+
+4. exclusão de usuário
+   - criar fluxo de delete
+   - evitar exclusões perigosas
+   - confirmar regras de segurança
+
+Depois disso:
+
+CRUD DE CATEGORIAS
+↓
+CRUD DE POSTS
+↓
+BLOG DINÂMICO
+↓
+BUSCA
+↓
+INTEGRAÇÃO FINAL
+↓
+SEGURANÇA
+↓
+TESTES
+↓
+PUBLICAÇÃO
+
+RESUMO DO DIA
+
+Hoje foi bem mais satisfatório do que ontem.
+
+Ontem foi basicamente brigar com configuração, Apache, caminhos e erro 403.
+
+Hoje já deu pra ver o sistema funcionando de verdade.
+
+Usuário entra no banco.
+Senha vira hash.
+Login funciona.
+Sessão funciona.
+Author é bloqueado onde deve.
+Admin entra onde deve.
+
+eu tenho que rever algumas coisas aida porque eu to achando que os caminhos estao meio tronxos, e tambem tenho que rever sobre os ususarios, se vai exister usuarios sem permi ou se todos vao ser autores
+
+em fim, eutinha feito isso ontem (16/09) porem entretanto todavia eu to gripadao e terminando ontem eu cai na cama e entrei em coma de sono, tomeu remedio hj e lembrei de subir ... em fim, ate amanha <3

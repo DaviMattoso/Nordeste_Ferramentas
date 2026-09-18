@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/../config/auth.php';
+requireAdmin();
+?>
 <!doctype html>
 <html lang="pt-BR">
     <head>
@@ -32,16 +36,19 @@
                     <li><a href="../about.php">Sobre</a></li>
                     <li><a href="../services.php">Serviços</a></li>
                     <li><a href="../contact.php">Contato</a></li>
+                    <?php if (!isLoggedIn()): ?>
                     <li><a href="../signin.php">Signin</a></li>
+                    <?php else: ?>
                     <li class="nav__profile">
                         <div class="avatar">
-                            <img src="../Images/avatar2.jpg" alt="" />
+                            <img src="<?= authEscape('../' . authAvatar()) ?>" alt="<?= authEscape($_SESSION['username'] ?? '') ?>" />
                         </div>
                         <ul>
                             <li><a href="dashboard.php">Dashboard</a></li>
                             <li><a href="../logout.php">Logout</a></li>
                         </ul>
                     </li>
+                    <?php endif; ?>
                 </ul>
 
                 <button id="open__nav-btn">
@@ -72,33 +79,41 @@
                             </a>
                         </li>
 
+                        <?php if (isAdmin()): ?>
                         <li>
                             <a href="add-user.php">
                                 <i class="fa-solid fa-user-plus"></i>
                                 <h5>Adicionar Usuário</h5>
                             </a>
                         </li>
+                        <?php endif; ?>
 
+                        <?php if (isAdmin()): ?>
                         <li class="active">
                             <a href="manage-users.php">
                                 <i class="fa-solid fa-user"></i>
                                 <h5>Gerenciar Usuário</h5>
                             </a>
                         </li>
+                        <?php endif; ?>
 
+                        <?php if (isAdmin()): ?>
                         <li>
                             <a href="add-category.php">
                                 <i class="fa-regular fa-pen-to-square"></i>
                                 <h5>Adicionar Categoria</h5>
                             </a>
                         </li>
+                        <?php endif; ?>
 
+                        <?php if (isAdmin()): ?>
                         <li>
                             <a href="manage-categories.php">
                                 <i class="fa-solid fa-list"></i>
                                 <h5>Gerenciar Categorias</h5>
                             </a>
                         </li>
+                        <?php endif; ?>
                     </ul>
                 </aside>
                 <main class="dashboard__content">

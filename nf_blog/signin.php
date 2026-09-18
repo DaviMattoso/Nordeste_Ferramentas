@@ -1,3 +1,50 @@
+<?php
+require_once __DIR__ . '/config/auth.php';
+if (isLoggedIn()) {
+    header('Location: admin/dashboard.php', true, 302);
+    exit;
+}
+
+$login = '';
+$error = '';
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    $login = is_string($_POST['login'] ?? null) ? trim($_POST['login']) : '';
+    $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
+    if ($login === '' || $password === '') {
+        $error = 'Preencha o usuário/email e a senha.';
+    } else {
+        require_once __DIR__ . '/config/database.php';
+        try {
+            $statement = $connection->prepare('SELECT id, first_name, last_name, username, email, password, avatar, role FROM users WHERE username = ? OR email = ? LIMIT 2');
+            $statement->bind_param('ss', $login, $login);
+            $statement->execute();
+            $statement->store_result();
+            $statement->bind_result($id, $firstName, $lastName, $username, $email, $hash, $avatar, $role);
+            // Em caso de username igual ao email de outra conta, não escolhe uma conta arbitrariamente.
+            $found = $statement->num_rows === 1 && $statement->fetch();
+            $statement->close();
+            if ($found && password_verify($password, $hash)) {
+                // Troca o identificador antes de gravar a identidade autenticada.
+                if (!session_regenerate_id(true)) {
+                    throw new RuntimeException('Falha ao renovar sessão.');
+                }
+                $_SESSION = [
+                    'user_id' => (int) $id,
+                    'username' => $username,
+                    'role' => $role,
+                    'avatar' => $avatar,
+                ];
+                header('Location: admin/dashboard.php', true, 303);
+                exit;
+            }
+            $error = 'Usuário/email ou senha inválidos.';
+        } catch (Throwable $exception) {
+            error_log('NF Blog: falha no login. Código: ' . $exception->getCode());
+            $error = 'Não foi possível entrar. Tente novamente.';
+        }
+    }
+}
+?>
 <!doctype html>
 <html lang="pt-BR">
     <head>
@@ -52,12 +99,22 @@
                 </div>
 
                 <h2>Login</h2>
-                <div class="alert__message success">
-                    <p>Success: Login realizado com sucesso!</p>
+                <?php if ($error !== ''): ?>
+                <div class="alert__message error" role="alert">
+                    <p><?= authEscape($error) ?></p>
                 </div>
-                <form action="" enctype="multipart/form-data">
-                    <input type="text" placeholder="Usuario" />
-                    <input type="password" placeholder="Senha" />
+                <?php elseif (($_GET['registered'] ?? null) === '1'): ?>
+                <div class="alert__message success" role="status">
+                    <p>Conta criada com sucesso. Faça login.</p>
+                </div>
+                <?php elseif (($_GET['logout'] ?? null) === '1'): ?>
+                <div class="alert__message success" role="status">
+                    <p>Você saiu da conta.</p>
+                </div>
+                <?php endif; ?>
+                <form action="signin.php" method="POST">
+                    <input type="text" name="login" placeholder="Username ou Email" value="<?= authEscape($login) ?>" autocomplete="username" required />
+                    <input type="password" name="password" placeholder="Senha" autocomplete="current-password" required />
                     <div class="form__control">
                         <button type="submit" class="btn">Entrar</button>
                         <small
