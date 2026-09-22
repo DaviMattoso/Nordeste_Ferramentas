@@ -36,8 +36,30 @@ function isAdmin(): bool
 
 function requireAdmin(): void
 {
-    // Primeiro autentica; somente depois verifica o role mantido na sessão.
+    // Revalida no banco: exclusão ou rebaixamento por outro admin revoga a sessão antiga.
     requireLogin();
+    global $connection;
+    require_once __DIR__ . '/database.php';
+    try {
+        $statement = $connection->prepare('SELECT username, avatar, role FROM users WHERE id = ?');
+        $statement->bind_param('i', $_SESSION['user_id']);
+        $statement->execute();
+        $statement->bind_result($username, $avatar, $role);
+        $found = $statement->fetch();
+        $statement->close();
+    } catch (Throwable $exception) {
+        error_log('NF Blog: falha ao verificar permissão. Código: ' . $exception->getCode());
+        http_response_code(500);
+        exit('Não foi possível verificar a permissão.');
+    }
+    if (!$found) {
+        unset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['role'], $_SESSION['avatar']);
+        header('Location: ../signin.php', true, 303);
+        exit;
+    }
+    $_SESSION['username'] = $username;
+    $_SESSION['avatar'] = $avatar;
+    $_SESSION['role'] = $role;
     if (!isAdmin()) {
         // Flash: a mensagem só nasce de uma tentativa realmente bloqueada.
         $_SESSION['access_denied'] = true;

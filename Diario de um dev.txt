@@ -2039,3 +2039,908 @@ Admin entra onde deve.
 eu tenho que rever algumas coisas aida porque eu to achando que os caminhos estao meio tronxos, e tambem tenho que rever sobre os ususarios, se vai exister usuarios sem permi ou se todos vao ser autores
 
 em fim, eutinha feito isso ontem (16/09) porem entretanto todavia eu to gripadao e terminando ontem eu cai na cama e entrei em coma de sono, tomeu remedio hj e lembrei de subir ... em fim, ate amanha <3
+
+---------------------------------------------------------------------------------------------------------------------------------------
+Dia... eu vou parar com esse bagulho de dia porque eu nao tenho mais nocao de nada xd
+
+Hoje foi, sem exagero, um dos dias mais fodas desde que comecei o Nordeste Ferramentas.
+Eu comecei o dia com a sensação de que o projeto estava demorando demais e com vontade de acelerar de verdade. A ideia era simples: pegar tudo que ainda era interface e começar a transformar em sistema real.
+
+E foi exatamente isso que aconteceu.
+
+Hoje eu vi cadastro entrando no banco, usuário sendo editado e apagado de verdade, categoria sendo criada e protegida contra duplicidade, post descobrindo sozinho quem é o autor pela sessão, permissões funcionando de verdade no backend e foreign key impedindo que eu fizesse merda no banco.
+
+Foi muita coisa em um dia.
+
+E o melhor: não foi só escrever código.
+
+EU TESTEI.
+
+Cliquei.
+Editei.
+Excluí.
+Tentei quebrar.
+Manipulei URL.
+Troquei perfil.
+Olhei o phpMyAdmin.
+Comparei ID.
+Chequei hash.
+Chequei relacionamento.
+
+E a porra funcionou.
+
+VIVA A IA QUE ME AJUDOU PRA CARALHO <3
+Mas também: EU SOU FODA PRA CARALHO porque fui eu que fiquei aqui testando, entendendo cada etapa, corrigindo o que precisava e fazendo essa merda sair do papel.
+
+============================================================
+1 — COMEÇANDO O DIA: ONDE O PROJETO ESTAVA
+============================================================
+
+Eu comecei revisando a checklist do backend.
+
+Já tínhamos:
+
+- estrutura PHP
+- XAMPP / Apache / PHP
+- banco MySQL/MariaDB
+- conexão PHP → banco
+- tabela users
+- cadastro público
+- login
+- password_hash()
+- password_verify()
+- sessões
+- logout
+- proteção das páginas administrativas
+- permissões ADMIN x AUTHOR
+
+Ou seja, a base estava pronta.
+
+Hoje o objetivo era entrar nos CRUDs de verdade.
+
+Meta principal:
+
+CRUD USERS
+↓
+CRUD CATEGORIES
+↓
+CRUD POSTS
+
+E conseguimos avançar praticamente tudo isso.
+
+============================================================
+2 — CRUD DE USUÁRIOS
+============================================================
+
+Essa foi a primeira grande missão do dia.
+
+Até então existiam as páginas visuais:
+
+add-user.php
+manage-users.php
+edit-user.php
+
+Mas elas ainda não eram um sistema completo conectado ao MySQL.
+
+Hoje isso mudou.
+
+------------------------------------------------------------
+CREATE — ADICIONAR USUÁRIO
+------------------------------------------------------------
+
+O add-user.php passou a cadastrar usuários reais no banco.
+
+O admin consegue preencher:
+
+- primeiro nome
+- sobrenome
+- username
+- email
+- senha
+- confirmação de senha
+- role
+- avatar
+
+O sistema faz validações no servidor e não confia só no HTML.
+
+A senha passa por:
+
+password_hash()
+
+Então senha nenhuma fica salva em texto puro.
+
+Também existe validação para:
+
+- username duplicado
+- email duplicado
+- senha inválida
+- confirmação diferente
+- role inválido
+- avatar inválido
+
+O avatar é opcional e, quando enviado, fica salvo em:
+
+Images/avatars/
+
+com nome aleatório.
+
+------------------------------------------------------------
+READ — GERENCIAR USUÁRIOS
+------------------------------------------------------------
+
+O manage-users.php deixou de mostrar usuários fictícios escritos no HTML.
+
+Agora ele busca os usuários reais do banco.
+
+Eu criei um usuário de teste, confirmei que ele apareceu no painel e depois fui no phpMyAdmin conferir se ele estava realmente salvo no banco.
+
+CREATE ✅
+READ ✅
+
+------------------------------------------------------------
+UPDATE — EDITAR USUÁRIO
+------------------------------------------------------------
+
+Depois testei a edição.
+
+Alterei nome e username, salvei e o painel mostrou:
+
+"Usuário atualizado com sucesso."
+
+Fui no banco e os dados também tinham mudado.
+
+O updated_at atualizou corretamente.
+
+Também testamos:
+
+- manter a senha antiga quando o campo de nova senha fica vazio
+- alteração de role
+- avatar
+- proteções administrativas
+
+UPDATE ✅
+
+------------------------------------------------------------
+DELETE — EXCLUIR USUÁRIO
+------------------------------------------------------------
+
+Depois veio a exclusão.
+
+Cliquei em excluir o usuário de teste.
+
+O sistema confirmou a operação, fez o DELETE e mostrou:
+
+"Usuário excluído com sucesso."
+
+Depois conferi no phpMyAdmin.
+
+O registro realmente tinha desaparecido.
+
+DELETE ✅
+
+============================================================
+3 — PROTEÇÕES DO CRUD DE USUÁRIOS
+============================================================
+
+Essa parte foi muito importante porque CRUD funcionando não basta. Ele também precisa impedir cagada.
+
+AUTOEXCLUSÃO
+
+Tentei excluir a própria conta administrativa.
+
+O sistema bloqueou:
+
+"Você não pode excluir sua própria conta."
+
+FUNCIONOU.
+
+ÚLTIMO ADMIN
+
+Tentei transformar o último administrador em author.
+
+O sistema bloqueou:
+
+"O último administrador não pode ser alterado para autor."
+
+FUNCIONOU.
+
+AVATAR
+
+Também testamos upload e atualização de avatar.
+
+O caminho apareceu no banco como algo parecido com:
+
+Images/avatars/<arquivo-gerado>.png
+
+FUNCIONOU.
+
+============================================================
+4 — CONTAS PARA TESTES DE VERDADE
+============================================================
+
+Depois de fechar o CRUD de usuários, deixei duas contas para testar o sistema:
+
+ADMIN:
+Davi_ADM
+
+AUTHOR:
+nf_author_teste
+
+Isso foi ótimo porque agora eu consigo testar o sistema de duas perspectivas diferentes.
+
+ADMIN:
+- gerencia usuários
+- gerencia categorias
+- gerencia posts
+- vê tudo
+
+AUTHOR:
+- não gerencia usuários
+- não gerencia categorias
+- trabalha com os próprios posts
+
+============================================================
+5 — CRUD DE CATEGORIAS
+============================================================
+
+Depois partimos para categorias.
+
+Foi criada a tabela categories com:
+
+id
+title
+description
+created_at
+updated_at
+
+O título possui UNIQUE para impedir duplicidade.
+
+CREATE
+
+Criei a categoria Ferramentas.
+Ela apareceu no painel e no phpMyAdmin.
+
+CREATE ✅
+
+READ
+
+manage-categories.php passou a mostrar somente categorias reais vindas do MySQL.
+
+READ ✅
+
+UPDATE
+
+Editei título e descrição.
+O painel confirmou:
+
+"Categoria atualizada com sucesso."
+
+E no banco o updated_at mudou.
+
+UPDATE ✅
+
+DUPLICIDADE
+
+Depois tentei cadastrar a mesma categoria de novo.
+
+O sistema bloqueou:
+
+"Categoria já existe."
+
+A proteção existe tanto no PHP quanto pelo índice UNIQUE do banco.
+
+FUNCIONOU.
+
+DELETE
+
+Excluí a categoria de teste.
+Ela sumiu da interface e do banco.
+
+DELETE ✅
+
+PERMISSÃO
+
+Entrei como AUTHOR e tentei acessar o gerenciamento de categorias.
+
+O sistema me jogou de volta para o dashboard:
+
+"Você não tem permissão para acessar essa área."
+
+FUNCIONOU.
+
+============================================================
+6 — CATEGORIAS REAIS DO BLOG
+============================================================
+
+Depois dos testes, comecei a montar o conteúdo real do Nordeste Ferramentas.
+
+Cadastrei as seis categorias do frontend:
+
+1. Ferramentas
+2. Construção
+3. Marcenaria
+4. Segurança no Trabalho
+5. Dicas e Tutoriais
+6. Maquinaria Pesada
+
+Também coloquei descrições reais em todas.
+
+Foi muito foda abrir o phpMyAdmin e ver aquelas categorias ali.
+
+Antes elas eram só HTML, texto e layout.
+
+Agora são dados reais do sistema.
+
+============================================================
+7 — CRUD DE POSTS
+============================================================
+
+Aí veio a parte mais pesada do dia.
+
+POSTS.
+
+Foi criada a tabela posts com:
+
+id
+title
+body
+thumbnail
+category_id
+author_id
+is_featured
+created_at
+updated_at
+
+E aqui começaram os relacionamentos de verdade.
+
+============================================================
+8 — RELAÇÃO POST → CATEGORIA
+============================================================
+
+Cada post possui category_id apontando para categories.id.
+
+Então o sistema não salva simplesmente o texto "Ferramentas".
+
+Ele salva algo como:
+
+category_id = 2
+
+E sabe que esse ID pertence à categoria Ferramentas.
+
+============================================================
+9 — RELAÇÃO POST → AUTOR
+============================================================
+
+Essa foi uma das coisas que mais achei foda hoje.
+
+No formulário de criação de post NÃO existe campo para escolher autor.
+
+O sistema pega o usuário da sessão:
+
+$_SESSION['user_id']
+
+E grava automaticamente:
+
+author_id
+
+Eu criei o primeiro post logado como Davi_ADM.
+
+Depois fui olhar o banco.
+
+O post tinha:
+
+author_id = 3
+
+E na tabela users:
+
+id = 3
+username = Davi_ADM
+
+ELE DESCOBRIU O AUTOR SOZINHO KKKKKKKKK.
+
+Na verdade, foi sessão + relacionamento, mas ver isso funcionando na prática foi foda demais.
+
+============================================================
+10 — PRIMEIRO POST REAL
+============================================================
+
+Criei:
+
+"Começando no mundo das ferramentas: o guia para iniciantes"
+
+Categoria:
+Ferramentas
+
+Autor:
+Davi_ADM
+
+Destaque:
+SIM
+
+Thumbnail:
+salva automaticamente em Images/posts/<hash>.png
+
+No banco ficou aproximadamente:
+
+category_id = 2
+author_id = 3
+is_featured = 1
+
+CREATE DE POST ✅
+
+============================================================
+11 — SEGUNDO POST COM AUTHOR
+============================================================
+
+Depois saí da conta admin e entrei como:
+
+nf_author_teste
+
+Criei:
+
+"Ferramentas manuais que todo profissional deve ter"
+
+O sistema gravou outro author_id automaticamente.
+
+No banco:
+
+POST 1
+author_id = 3
+
+POST 2
+author_id = 4
+
+E cada thumbnail ficou salva com um nome diferente.
+
+Muito foda.
+
+============================================================
+12 — ADMIN VÊ TUDO / AUTHOR VÊ SÓ O PRÓPRIO
+============================================================
+
+Entrei como AUTHOR.
+
+Dashboard:
+só apareceu o post criado pelo AUTHOR.
+
+Depois entrei como ADMIN.
+
+Dashboard:
+apareceram os dois posts.
+
+Isso não é só filtro visual.
+
+A consulta SQL já busca os posts de acordo com o usuário.
+
+ADMIN
+→ SELECT de todos os posts
+
+AUTHOR
+→ SELECT somente WHERE author_id = usuário logado
+
+FUNCIONOU PERFEITAMENTE.
+
+============================================================
+13 — TESTE DE SEGURANÇA PELA URL
+============================================================
+
+Esse teste foi MUITO importante.
+
+O author não consegue ver o post do admin no dashboard.
+
+Mas alguém poderia tentar digitar:
+
+edit-post.php?id=1
+
+diretamente na URL.
+
+Então fiz exatamente isso.
+
+Logado como AUTHOR, tentei abrir o post do ADMIN.
+
+O sistema bloqueou e mostrou:
+
+"Você não tem permissão para editar este post."
+
+Isso provou que a segurança não está só escondendo botão.
+
+O BACKEND realmente verifica quem é o dono do post.
+
+============================================================
+14 — UPDATE DE POST
+============================================================
+
+Depois testei edição como ADMIN.
+
+Consegui:
+
+- alterar dados do post
+- mudar categoria
+- trocar thumbnail
+
+O sistema mostrou:
+
+"Post atualizado com sucesso."
+
+UPDATE ✅
+
+============================================================
+15 — DELETE DE POST
+============================================================
+
+Depois testamos exclusão.
+
+ADMIN conseguiu excluir post.
+
+AUTHOR conseguiu excluir o próprio post.
+
+O sistema mostrou:
+
+"Post excluído com sucesso."
+
+DELETE ✅
+
+============================================================
+16 — FOREIGN KEY SALVANDO MINHA VIDA
+============================================================
+
+Outra coisa muito foda:
+
+Tentei excluir um usuário que ainda tinha post vinculado.
+
+O banco NÃO deixou.
+
+O sistema mostrou:
+
+"Não é possível excluir este usuário porque existem posts vinculados a ele."
+
+Isso acontece porque posts.author_id possui uma FOREIGN KEY apontando para users.id com ON DELETE RESTRICT.
+
+USUÁRIO
+↓
+TEM POST
+↓
+NÃO PODE SER APAGADO
+
+Isso evita deixar post apontando para autor que não existe.
+
+E FUNCIONOU.
+
+============================================================
+17 — THUMBNAILS
+============================================================
+
+As thumbnails agora são uploads reais.
+
+Elas:
+
+- são validadas
+- precisam ser imagem
+- aceitam JPG, PNG e WebP
+- possuem limite de tamanho
+- recebem nome aleatório
+- ficam em Images/posts/
+- ficam fora do Git por .gitignore
+
+O banco salva apenas o caminho.
+
+Também testamos troca de thumbnail durante edição.
+
+FUNCIONOU.
+
+============================================================
+18 — POST EM DESTAQUE
+============================================================
+
+O sistema também já grava:
+
+is_featured
+
+0 = normal
+1 = destaque
+
+O primeiro post foi criado como destaque.
+O segundo não.
+
+Quando o index.php virar dinâmico, isso vai ser usado para definir quais conteúdos ganham destaque na página inicial.
+
+============================================================
+19 — O MAIS IMPORTANTE: OS TESTES
+============================================================
+
+Hoje não foi aquele desenvolvimento onde eu escrevo 500 linhas e simplesmente assumo que está funcionando.
+
+Eu TESTEI a porra toda.
+
+Testei no navegador.
+Testei trocando conta.
+Testei no painel.
+Testei direto pela URL.
+Testei no phpMyAdmin.
+Comparei os IDs.
+Olhei o banco depois de CREATE.
+Olhei depois de UPDATE.
+Olhei depois de DELETE.
+Testei duplicidade.
+Testei permissões.
+Testei relacionamento.
+Testei avatar.
+Testei thumbnail.
+Testei foreign key.
+
+E os testes passaram.
+
+Então hoje eu posso falar sem medo:
+
+EU SOU FODA PRA CARALHO KKKKKKKKK.
+
+Porque usar IA ajuda pra porra — e ajudou MUITO — mas fui eu que fiquei aqui apertando botão, conferindo o banco, percebendo comportamento estranho, testando perfil, validando tela e acompanhando cada etapa.
+
+Eu estou entendendo o que está acontecendo.
+
+E cada vez mais esse projeto está deixando de ser "um projeto que eu fiz seguindo alguma coisa" e virando um sistema que eu consigo explicar.
+
+VIVA A IA TAMBÉM, PORQUE SEM ELA EU PROVAVELMENTE JÁ TERIA MANDADO O XAMPP TOMAR NO CU DE NOVO <3
+
+============================================================
+20 — ARQUITETURA ATUAL
+============================================================
+
+USERS
+  │
+  │ author_id
+  ▼
+POSTS
+  ▲
+  │ category_id
+  │
+CATEGORIES
+
+E no sistema:
+
+CADASTRO
+↓
+LOGIN
+↓
+SESSÃO
+↓
+ROLE
+↓
+DASHBOARD
+↓
+CRUD
+↓
+MYSQL
+
+ADMIN
+├── usuários
+├── categorias
+└── todos os posts
+
+AUTHOR
+└── próprios posts
+
+============================================================
+21 — CHECKLIST ATUAL DO PROJETO
+============================================================
+
+FRONTEND / ESTRUTURA ORIGINAL
+
+[✅] Estrutura inicial
+[✅] Interface do Blog
+[✅] Página de posts
+[✅] Página de categorias
+[✅] Página de login
+[✅] Página de cadastro
+[✅] Dashboard
+[✅] Interface de gerenciamento de posts
+[✅] Interface de gerenciamento de usuários
+[✅] Interface de gerenciamento de categorias
+
+BACKEND BASE
+
+[✅] Migração das páginas para PHP
+[✅] Estrutura PHP
+[✅] XAMPP / Apache
+[✅] PHP
+[✅] MySQL/MariaDB
+[✅] Banco nf_blog
+[✅] Conexão PHP → MySQL
+[✅] database.sql
+
+USUÁRIOS / AUTENTICAÇÃO
+
+[✅] Tabela users
+[✅] Cadastro público
+[✅] Validação de cadastro
+[✅] password_hash()
+[✅] Login por username
+[✅] Login por email
+[✅] password_verify()
+[✅] Sessões
+[✅] Logout
+[✅] Proteção das páginas administrativas
+[✅] Permissões admin x author
+[✅] Bloqueio por URL
+[✅] Avatar
+
+CRUD DE USUÁRIOS
+
+[✅] CREATE
+[✅] READ
+[✅] UPDATE
+[✅] DELETE
+[✅] Role admin/author
+[✅] Avatar administrativo
+[✅] Troca de senha
+[✅] Proteção contra autoexclusão
+[✅] Proteção do último admin
+[✅] Atualização dos dados da sessão
+[✅] Foreign key impede apagar autor com posts
+
+CRUD DE CATEGORIAS
+
+[✅] Tabela categories
+[✅] CREATE
+[✅] READ
+[✅] UPDATE
+[✅] DELETE
+[✅] Título UNIQUE
+[✅] Bloqueio de categoria duplicada
+[✅] Permissão exclusiva de admin
+[✅] 6 categorias reais do NF cadastradas
+
+CRUD DE POSTS
+
+[✅] Tabela posts
+[✅] Relação post → usuário
+[✅] Relação post → categoria
+[✅] CREATE
+[✅] READ no dashboard
+[✅] UPDATE
+[✅] DELETE
+[✅] Thumbnail
+[✅] Troca de thumbnail
+[✅] Post em destaque
+[✅] Autor definido pela sessão
+[✅] Admin vê todos os posts
+[✅] Author vê somente os próprios
+[✅] Author não edita post de outro usuário pela URL
+[✅] Admin edita qualquer post
+[✅] Author exclui o próprio post
+[✅] Admin exclui posts
+[⏳] Testar author tentando excluir post de outro usuário via ID manipulado
+[⏳] Testar exclusão de categoria que ainda possui post vinculado
+
+============================================================
+22 — O QUE AINDA FALTA
+============================================================
+
+INTEGRAÇÃO PÚBLICA
+
+[⏳] Transformar index.php em página dinâmica
+[⏳] Buscar posts em destaque no banco
+[⏳] Transformar blog.php em listagem dinâmica
+[⏳] Remover cards/posts estáticos do blog público
+[⏳] Transformar post.php em post individual dinâmico
+[⏳] Carregar post por ID
+[⏳] Mostrar autor real do banco
+[⏳] Mostrar avatar real do autor
+[⏳] Mostrar categoria real
+[⏳] Mostrar thumbnail real
+[⏳] Mostrar data real
+[⏳] Transformar category-post.php em página dinâmica
+[⏳] Listar posts por categoria
+[⏳] Tornar links das categorias funcionais
+[⏳] Integrar categorias do rodapé
+
+BUSCA
+
+[⏳] Campo de busca
+[⏳] Pesquisa no banco
+[⏳] Resultados por título/conteúdo
+[⏳] Tratamento quando nenhum post é encontrado
+
+SEGURANÇA FINAL
+
+[⏳] Proteção CSRF
+[⏳] Revisão completa de formulários destrutivos
+[⏳] Revisão de uploads
+[⏳] Limitação de tentativas de login
+[⏳] Revisão de sessão/cookies
+[⏳] Revisão final de escaping e prepared statements
+
+LIMPEZA / FINALIZAÇÃO
+
+[⏳] Remover test.php quando não for mais necessário
+[⏳] Remover TODOs antigos
+[⏳] Remover placeholders restantes
+[⏳] Revisar arquivos não utilizados
+[⏳] Revisar .gitignore
+[⏳] Atualizar README
+[⏳] Atualizar checklist oficial
+[⏳] Testes finais completos
+
+PUBLICAÇÃO
+
+[⏳] Configuração de produção
+[⏳] Credenciais via ambiente
+[⏳] Configuração do banco em produção
+[⏳] Upload/implantação
+[⏳] Teste em produção
+[⏳] Publicação final
+
+============================================================
+23 — PRÓXIMO PASSO
+============================================================
+
+A próxima grande fase agora é:
+
+BACKEND
++
+FRONTEND
+=
+BLOG DINÂMICO
+
+A lógica administrativa já está praticamente toda construída.
+
+Agora vamos pegar aquilo que o admin e o author criam no painel e fazer aparecer automaticamente para quem visita o blog.
+
+A próxima sequência será:
+
+index.php
+↓
+blog.php
+↓
+post.php
+↓
+category-post.php
+↓
+busca
+↓
+segurança final
+↓
+testes
+↓
+publicação
+
+============================================================
+24 — FINAL DO DIA
+============================================================
+
+Hoje eu comecei querendo acelerar o projeto.
+
+Terminei o dia com:
+
+CRUD DE USUÁRIOS FUNCIONANDO.
+CRUD DE CATEGORIAS FUNCIONANDO.
+CRUD DE POSTS FUNCIONANDO.
+PERMISSÕES FUNCIONANDO.
+RELACIONAMENTOS FUNCIONANDO.
+UPLOADS FUNCIONANDO.
+FOREIGN KEYS FUNCIONANDO.
+DOIS PERFIS SENDO TESTADOS.
+MYSQL CHEIO DE DADOS REAIS DO PROJETO.
+
+Caralho.
+
+Foi um puta avanço.
+
+Ainda falta coisa, obviamente.
+
+Mas agora eu consigo olhar para o Nordeste Ferramentas e enxergar claramente um sistema completo sendo construído.
+
+E talvez a parte mais satisfatória seja lembrar de onde isso começou:
+
+HTML estático.
+
+Hoje:
+
+PHP + MySQL + sessões + autenticação + permissões + CRUD + relacionamentos + uploads + integridade de dados.
+
+É evolução pra caralho em um projeto só.
+Por hoje é isso.
+Eu sou foda pra caralho.
+E viva a IA que tá me ajudando nessa caminhada 
+
+AMANHÃ TEM MAIS.

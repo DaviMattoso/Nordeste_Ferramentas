@@ -1,6 +1,44 @@
 <?php
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/flash.php';
+require_once __DIR__ . '/../config/category-utils.php';
+
+$title = '';
+$description = '';
+$errors = [];
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
+    $descriptionInput = $_POST['description'] ?? '';
+    $description = is_string($descriptionInput) ? $descriptionInput : '';
+    $errors = categoryValidationErrors($title, $description);
+    if (!is_string($descriptionInput)) {
+        $errors[] = 'Descrição inválida.';
+    }
+
+    if (!$errors) {
+        try {
+            if (categoryTitleExists($connection, $title)) {
+                $errors[] = 'Categoria já existe.';
+            } else {
+                $storedDescription = $description === '' ? null : $description;
+                $statement = $connection->prepare('INSERT INTO categories (title, description) VALUES (?, ?)');
+                $statement->bind_param('ss', $title, $storedDescription);
+                $statement->execute();
+                $statement->close();
+                setFlash('success', 'Categoria criada com sucesso.');
+                header('Location: manage-categories.php', true, 303);
+                exit;
+            }
+        } catch (Throwable $exception) {
+            $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1062
+                ? 'Categoria já existe.'
+                : 'Não foi possível criar a categoria. Tente novamente.';
+            error_log('NF Blog: falha ao criar categoria. Código: ' . $exception->getCode());
+        }
+    }
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -60,13 +98,20 @@ requireAdmin();
             </div>
         </nav>
 
-        <!-- ======== Formulário de Login ======== -->
+        <!-- ======== Formulário de categoria ======== -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Adicionar categoria</h2>
-                <form action="" enctype="multipart/form-data">
-                    <input type="text" placeholder="Título" />
-                    <textarea rows="4" placeholder="Descrição"></textarea>
+                <?php if ($errors): ?>
+                <div class="alert__message error" role="alert">
+                    <?php foreach (array_unique($errors) as $error): ?>
+                    <p><?= authEscape($error) ?></p>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+                <form action="add-category.php" method="POST">
+                    <input type="text" name="title" placeholder="Título" maxlength="150" value="<?= authEscape($title) ?>" required />
+                    <textarea name="description" rows="4" placeholder="Descrição"><?= authEscape($description) ?></textarea>
                     <div class="form__control">
                         <button type="submit" class="btn">
                             Adicionar categoria

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/config/user-utils.php';
 $errors = [];
 $values = array_fill_keys(['first_name', 'last_name', 'username', 'email'], '');
 $escape = static function ($value) {
@@ -14,89 +15,25 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
     $confirmation = is_string($_POST['confirm_password'] ?? null) ? $_POST['confirm_password'] : '';
 
-    if (in_array('', $values, true) || $password === '' || $confirmation === '') {
+    if ($password === '' || $confirmation === '') {
         $errors[] = 'Preencha todos os campos obrigatórios.';
     }
-    foreach (['first_name' => 100, 'last_name' => 100, 'username' => 100, 'email' => 254] as $field => $limit) {
-        if (preg_match('//u', $values[$field]) !== 1) {
-            $errors[] = 'Há texto com codificação inválida no formulário.';
-            break;
-        }
-        if (preg_match_all('/./us', $values[$field]) > $limit) {
-            $errors[] = 'Nome, sobrenome e username permitem até 100 caracteres; email, até 254.';
-            break;
-        }
-    }
-    if ($values['email'] !== '' && !filter_var($values['email'], FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'Email inválido.';
-    }
-    if (preg_match('//u', $password) !== 1 || preg_match_all('/./us', $password) < 8) {
-        $errors[] = 'A senha deve ter pelo menos 8 caracteres.';
-    }
-    // Evita truncamento silencioso pelo bcrypt usado em PASSWORD_DEFAULT.
-    if (strlen($password) > 72 || strpos($password, "\0") !== false) {
-        $errors[] = 'A senha deve ter no máximo 72 bytes e não pode conter caracteres nulos.';
-    }
-    if ($password !== $confirmation) {
-        $errors[] = 'As senhas não coincidem.';
-    }
+    $errors = array_merge($errors, userFieldErrors($values), userPasswordErrors($password, $confirmation));
 
     $upload = $_FILES['avatar'] ?? null;
-    $avatarExtension = null;
-    if ($upload !== null) {
-        if (!is_array($upload) || !isset($upload['error']) || !is_int($upload['error'])) {
-            $errors[] = 'Arquivo de avatar inválido.';
-        } elseif ($upload['error'] !== UPLOAD_ERR_NO_FILE) {
-            if ($upload['error'] !== UPLOAD_ERR_OK) {
-                $errors[] = 'Falha no envio do avatar. Envie uma imagem de até 2 MB.';
-            } elseif (!is_string($upload['tmp_name'] ?? null) || !is_uploaded_file($upload['tmp_name'])) {
-                $errors[] = 'Arquivo de avatar inválido.';
-            } elseif (filesize($upload['tmp_name']) > 2 * 1024 * 1024) {
-                $errors[] = 'O avatar deve ter no máximo 2 MB.';
-            } else {
-                $allowedTypes = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
-                $mime = (new finfo(FILEINFO_MIME_TYPE))->file($upload['tmp_name']);
-                $image = @getimagesize($upload['tmp_name']);
-                if (!isset($allowedTypes[$mime]) || $image === false || $image['mime'] !== $mime) {
-                    $errors[] = 'Arquivo de avatar inválido. Use JPG, PNG ou WebP.';
-                } else {
-                    $avatarExtension = $allowedTypes[$mime];
-                }
-            }
-        }
-    }
+    [$avatarExtension, $avatarErrors] = userAvatarValidation($upload);
+    $errors = array_merge($errors, $avatarErrors);
 
     if (!$errors) {
         require_once __DIR__ . '/config/database.php';
         $avatar = null;
-        $avatarPath = null;
         try {
-            $statement = $connection->prepare('SELECT username = ?, email = ? FROM users WHERE username = ? OR email = ?');
-            $statement->bind_param('ssss', $values['username'], $values['email'], $values['username'], $values['email']);
-            $statement->execute();
-            $statement->bind_result($sameUsername, $sameEmail);
-            while ($statement->fetch()) {
-                if ($sameUsername) {
-                    $errors[] = 'Username já está em uso.';
-                }
-                if ($sameEmail) {
-                    $errors[] = 'Email já está cadastrado.';
-                }
-            }
-            $statement->close();
+            $errors = userDuplicateErrors($connection, $values);
 
             if (!$errors) {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
                 if ($avatarExtension !== null) {
-                    $directory = __DIR__ . '/Images/avatars';
-                    if (!is_dir($directory) && !@mkdir($directory, 0755, true) && !is_dir($directory)) {
-                        throw new RuntimeException('Falha ao criar diretório de avatars.');
-                    }
-                    $avatar = 'Images/avatars/' . bin2hex(random_bytes(16)) . '.' . $avatarExtension;
-                    $avatarPath = __DIR__ . '/' . $avatar;
-                    if (!@move_uploaded_file($upload['tmp_name'], $avatarPath)) {
-                        throw new RuntimeException('Falha ao salvar avatar.');
-                    }
+                    $avatar = saveUserAvatar($upload, $avatarExtension);
                 }
                 $role = 'author';
                 $statement = $connection->prepare('INSERT INTO users (first_name, last_name, username, email, password, avatar, role) VALUES (?, ?, ?, ?, ?, ?, ?)');
@@ -104,9 +41,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $statement->execute();
             }
         } catch (Throwable $exception) {
-            if ($avatarPath !== null && is_file($avatarPath) && !@unlink($avatarPath)) {
-                error_log('NF Blog: falha ao remover avatar de cadastro não concluído.');
-            }
+            removeManagedUserAvatar($avatar);
             // Os índices UNIQUE também protegem contra cadastros simultâneos.
             $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1062
                 ? 'Username ou email já está cadastrado.'

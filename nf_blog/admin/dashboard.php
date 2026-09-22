@@ -1,8 +1,38 @@
 <?php
 require_once __DIR__ . '/../config/auth.php';
 requireLogin();
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/flash.php';
+require_once __DIR__ . '/../config/post-utils.php';
+refreshPostActor($connection);
+$userFlash = getFlash();
 $accessDenied = ($_SESSION['access_denied'] ?? false) === true;
 unset($_SESSION['access_denied']);
+$posts = [];
+$listError = '';
+try {
+    $sql = 'SELECT p.id, p.title, p.category_id, c.title AS category_title, p.author_id, p.is_featured, p.created_at '
+        . 'FROM posts AS p INNER JOIN categories AS c ON c.id = p.category_id';
+    if (!isAdmin()) {
+        $sql .= ' WHERE p.author_id = ?';
+    }
+    $statement = $connection->prepare($sql . ' ORDER BY p.id ASC');
+    if (!isAdmin()) {
+        $currentUserId = $_SESSION['user_id'];
+        $statement->bind_param('i', $currentUserId);
+    }
+    $statement->execute();
+    $statement->bind_result($postId, $postTitle, $categoryId, $categoryTitle, $authorId, $isFeatured, $createdAt);
+    while ($statement->fetch()) {
+        $posts[] = ['id' => $postId, 'title' => $postTitle, 'category_id' => $categoryId,
+            'category_title' => $categoryTitle, 'author_id' => $authorId,
+            'is_featured' => $isFeatured, 'created_at' => $createdAt];
+    }
+    $statement->close();
+} catch (Throwable $exception) {
+    error_log('NF Blog: falha ao listar posts. Código: ' . $exception->getCode());
+    $listError = 'Não foi possível carregar os posts. Tente novamente.';
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -125,6 +155,14 @@ unset($_SESSION['access_denied']);
                         <p>Você não tem permissão para acessar essa área.</p>
                     </div>
                     <?php endif; ?>
+                    <?php if ($userFlash): ?>
+                    <div class="alert__message <?= authEscape($userFlash['type']) ?>" role="<?= $userFlash['type'] === 'error' ? 'alert' : 'status' ?>">
+                        <p><?= authEscape($userFlash['message']) ?></p>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($listError !== ''): ?>
+                    <div class="alert__message error" role="alert"><p><?= authEscape($listError) ?></p></div>
+                    <?php endif; ?>
                     <table>
                         <thead>
                             <tr>
@@ -135,80 +173,22 @@ unset($_SESSION['access_denied']);
                             </tr>
                         </thead>
                         <tbody>
+                            <?php foreach ($posts as $post): ?>
                             <tr>
-                                <td>Começando no mundo das ferramentas</td>
-                                <td>Ferramentas</td>
+                                <td><?= authEscape($post['title']) ?></td>
+                                <td><?= authEscape($post['category_title']) ?></td>
+                                <td><a href="edit-post.php?id=<?= (int) $post['id'] ?>" class="btn sm">Editar</a></td>
                                 <td>
-                                    <a href="edit-post.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <!-- TODO: implementar exclusão de post -->
-                                    <a
-                                        href="#"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
+                                    <form action="delete-post.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este post?')">
+                                        <input type="hidden" name="id" value="<?= (int) $post['id'] ?>" />
+                                        <button type="submit" class="btn sm danger">Excluir</button>
+                                    </form>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    Ferramentas manuais que todo profissional
-                                    deve ter
-                                </td>
-                                <td>Ferramentas</td>
-                                <td>
-                                    <a href="edit-post.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <!-- TODO: implementar exclusão de post -->
-                                    <a
-                                        href="#"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Etapas básicas de uma obra residencial</td>
-                                <td>Construção</td>
-                                <td>
-                                    <a href="edit-post.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <!-- TODO: implementar exclusão de post -->
-                                    <a
-                                        href="#"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Equipamentos de proteção individual (EPIs)
-                                    essenciais
-                                </td>
-                                <td>Segurança do trabalho</td>
-                                <td>
-                                    <a href="edit-post.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <!-- TODO: implementar exclusão de post -->
-                                    <a
-                                        href="#"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                            </tr>
+                            <?php endforeach; ?>
+                            <?php if (!$posts && $listError === ''): ?>
+                            <tr><td colspan="4">Nenhum post encontrado.</td></tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </main>

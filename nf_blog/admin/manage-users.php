@@ -1,6 +1,20 @@
 <?php
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/flash.php';
+$flash = getFlash();
+$users = [];
+try {
+    $result = $connection->query('SELECT id, first_name, last_name, username, role FROM users ORDER BY id ASC');
+    while ($user = $result->fetch_assoc()) {
+        $users[] = $user;
+    }
+    $result->free();
+} catch (Throwable $exception) {
+    error_log('NF Blog: falha ao listar usuários. Código: ' . $exception->getCode());
+    $flash = ['type' => 'error', 'message' => 'Não foi possível carregar os usuários. Tente novamente.'];
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -117,7 +131,12 @@ requireAdmin();
                     </ul>
                 </aside>
                 <main class="dashboard__content">
-                    <h2>Gerenciar Usuarios</h2>
+                    <h2>Gerenciar Usuários</h2>
+                    <?php if ($flash): ?>
+                    <div class="alert__message <?= authEscape($flash['type']) ?>" role="<?= $flash['type'] === 'error' ? 'alert' : 'status' ?>">
+                        <p><?= authEscape($flash['message']) ?></p>
+                    </div>
+                    <?php endif; ?>
                     <table>
                         <thead>
                             <tr>
@@ -129,60 +148,23 @@ requireAdmin();
                             </tr>
                         </thead>
                         <tbody>
+                            <?php foreach ($users as $user): ?>
                             <tr>
-                                <td>Rodrigo Miranda</td>
-                                <td>Rodrigo_ADM</td>
+                                <td><?= authEscape($user['first_name'] . ' ' . $user['last_name']) ?></td>
+                                <td><?= authEscape($user['username']) ?></td>
+                                <td><a href="edit-user.php?id=<?= (int) $user['id'] ?>" class="btn sm">Editar</a></td>
                                 <td>
-                                    <a href="edit-user.php" class="btn sm"
-                                        >Editar</a
-                                    >
+                                    <form action="delete-user.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?')">
+                                        <input type="hidden" name="id" value="<?= (int) $user['id'] ?>" />
+                                        <button type="submit" class="btn sm danger">Excluir</button>
+                                    </form>
                                 </td>
-                                <td>
-                                    <!-- TODO: implementar exclusão de usuário -->
-                                    <a
-                                        href="#"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                                <td>Sim</td>
+                                <td><?= $user['role'] === 'admin' ? 'Sim' : 'Não' ?></td>
                             </tr>
-                            <tr>
-                                <td>Davi Mattoso</td>
-                                <td>Davi_ADM</td>
-                                <td>
-                                    <a href="edit-user.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <!-- TODO: implementar exclusão de usuário -->
-                                    <a
-                                        href="#"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                                <td>Sim</td>
-                            </tr>
-                            <tr>
-                                <td>Aline Nogueira</td>
-                                <td>Ali.Nog</td>
-                                <td>
-                                    <a href="edit-user.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <!-- TODO: implementar exclusão de usuário -->
-                                    <a
-                                        href="#"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                                <td>Nao</td>
-                            </tr>
+                            <?php endforeach; ?>
+                            <?php if (!$users): ?>
+                            <tr><td colspan="5">Nenhum usuário encontrado.</td></tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </main>

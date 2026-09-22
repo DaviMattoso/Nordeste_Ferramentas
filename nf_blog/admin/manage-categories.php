@@ -1,6 +1,21 @@
 <?php
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/flash.php';
+
+$flash = getFlash();
+$categories = [];
+try {
+    $result = $connection->query('SELECT id, title, description, created_at, updated_at FROM categories ORDER BY id ASC');
+    while ($category = $result->fetch_assoc()) {
+        $categories[] = $category;
+    }
+    $result->free();
+} catch (Throwable $exception) {
+    error_log('NF Blog: falha ao listar categorias. Código: ' . $exception->getCode());
+    $flash = ['type' => 'error', 'message' => 'Não foi possível carregar as categorias. Tente novamente.'];
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -118,105 +133,37 @@ requireAdmin();
                 </aside>
                 <main class="dashboard__content">
                     <h2>Gerenciar Categorias</h2>
+                    <?php if ($flash): ?>
+                    <div class="alert__message <?= authEscape($flash['type']) ?>" role="<?= $flash['type'] === 'error' ? 'alert' : 'status' ?>">
+                        <p><?= authEscape($flash['message']) ?></p>
+                    </div>
+                    <?php endif; ?>
                     <table>
                         <thead>
                             <tr>
                                 <th>Título</th>
+                                <th>Descrição</th>
                                 <th>Editar</th>
                                 <th>Excluir</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php foreach ($categories as $category): ?>
                             <tr>
-                                <td>Ferramentas</td>
+                                <td><?= authEscape($category['title']) ?></td>
+                                <td><?= nl2br(authEscape($category['description'] ?? '')) ?></td>
+                                <td><a href="edit-category.php?id=<?= (int) $category['id'] ?>" class="btn sm">Editar</a></td>
                                 <td>
-                                    <a href="edit-category.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <a
-                                        href="delete-category.php"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
+                                    <form action="delete-category.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?')">
+                                        <input type="hidden" name="id" value="<?= (int) $category['id'] ?>" />
+                                        <button type="submit" class="btn sm danger">Excluir</button>
+                                    </form>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Construção</td>
-                                <td>
-                                    <a href="edit-category.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <a
-                                        href="delete-category.php"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Marcenaria</td>
-                                <td>
-                                    <a href="edit-category.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <a
-                                        href="delete-category.php"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Segurança no Trabalho</td>
-                                <td>
-                                    <a href="edit-category.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <a
-                                        href="delete-category.php"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Dicas e Tutoriais</td>
-                                <td>
-                                    <a href="edit-category.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <a
-                                        href="delete-category.php"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Maquinaria Pesada</td>
-                                <td>
-                                    <a href="edit-category.php" class="btn sm"
-                                        >Editar</a
-                                    >
-                                </td>
-                                <td>
-                                    <a
-                                        href="delete-category.php"
-                                        class="btn sm danger"
-                                        >Excluir</a
-                                    >
-                                </td>
-                            </tr>
+                            <?php endforeach; ?>
+                            <?php if (!$categories): ?>
+                            <tr><td colspan="4">Nenhuma categoria encontrada.</td></tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </main>

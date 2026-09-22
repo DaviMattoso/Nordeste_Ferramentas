@@ -1,6 +1,98 @@
 <?php
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/flash.php';
+require_once __DIR__ . '/../config/category-utils.php';
+
+$id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+if ($id === false || $id === null) {
+    setFlash('error', 'ID de categoria inválido.');
+    header('Location: manage-categories.php', true, 303);
+    exit;
+}
+
+try {
+    $statement = $connection->prepare('SELECT title, description FROM categories WHERE id = ?');
+    $statement->bind_param('i', $id);
+    $statement->execute();
+    $statement->bind_result($storedTitle, $storedDescription);
+    $found = $statement->fetch();
+    $statement->close();
+} catch (Throwable $exception) {
+    error_log('NF Blog: falha ao buscar categoria. Código: ' . $exception->getCode());
+    setFlash('error', 'Não foi possível carregar a categoria. Tente novamente.');
+    header('Location: manage-categories.php', true, 303);
+    exit;
+}
+if (!$found) {
+    setFlash('error', 'Categoria não encontrada.');
+    header('Location: manage-categories.php', true, 303);
+    exit;
+}
+
+$title = $storedTitle;
+$description = $storedDescription ?? '';
+$errors = [];
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
+    $descriptionInput = $_POST['description'] ?? '';
+    $description = is_string($descriptionInput) ? $descriptionInput : '';
+    $errors = categoryValidationErrors($title, $description);
+    if (!is_string($descriptionInput)) {
+        $errors[] = 'Descrição inválida.';
+    }
+
+    if (!$errors) {
+        $inTransaction = false;
+        try {
+            $connection->begin_transaction();
+            $inTransaction = true;
+            $statement = $connection->prepare('SELECT id FROM categories WHERE id = ? FOR UPDATE');
+            $statement->bind_param('i', $id);
+            $statement->execute();
+            $statement->bind_result($foundId);
+            $stillExists = $statement->fetch() === true;
+            $statement->close();
+            if (!$stillExists) {
+                throw new DomainException('Categoria não encontrada.');
+            }
+            if (categoryTitleExists($connection, $title, $id)) {
+                $errors[] = 'Categoria já existe.';
+                $connection->rollback();
+                $inTransaction = false;
+            } else {
+                $storedDescription = $description === '' ? null : $description;
+                $statement = $connection->prepare('UPDATE categories SET title = ?, description = ? WHERE id = ?');
+                $statement->bind_param('ssi', $title, $storedDescription, $id);
+                $statement->execute();
+                $statement->close();
+                $connection->commit();
+                $inTransaction = false;
+                setFlash('success', 'Categoria atualizada com sucesso.');
+                header('Location: manage-categories.php', true, 303);
+                exit;
+            }
+        } catch (Throwable $exception) {
+            if ($inTransaction) {
+                try {
+                    $connection->rollback();
+                } catch (Throwable $rollbackException) {
+                    error_log('NF Blog: falha ao desfazer edição de categoria. Código: ' . $rollbackException->getCode());
+                }
+            }
+            if ($exception instanceof DomainException) {
+                setFlash('error', $exception->getMessage());
+                header('Location: manage-categories.php', true, 303);
+                exit;
+            }
+            $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1062
+                ? 'Categoria já existe.'
+                : 'Não foi possível atualizar a categoria. Tente novamente.';
+            error_log('NF Blog: falha ao atualizar categoria. Código: ' . $exception->getCode());
+        }
+    }
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -60,13 +152,20 @@ requireAdmin();
             </div>
         </nav>
 
-        <!-- ======== Formulário de Login ======== -->
+        <!-- ======== Formulário de categoria ======== -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Editar categoria</h2>
-                <form action="" enctype="multipart/form-data">
-                    <input type="text" placeholder="Título" />
-                    <textarea rows="4" placeholder="Descrição"></textarea>
+                <?php if ($errors): ?>
+                <div class="alert__message error" role="alert">
+                    <?php foreach (array_unique($errors) as $error): ?>
+                    <p><?= authEscape($error) ?></p>
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+                <form action="edit-category.php?id=<?= (int) $id ?>" method="POST">
+                    <input type="text" name="title" placeholder="Título" maxlength="150" value="<?= authEscape($title) ?>" required />
+                    <textarea name="description" rows="4" placeholder="Descrição"><?= authEscape($description) ?></textarea>
                     <div class="form__control">
                         <button type="submit" class="btn">Editar</button>
                     </div>
