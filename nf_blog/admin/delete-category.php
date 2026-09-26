@@ -1,9 +1,11 @@
 <?php
+// Exclusão de categoria é permitida somente para administradores.
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
 
+// Exige formulário POST para evitar que uma simples visita a um link exclua dados.
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     setFlash('error', 'A exclusão de categoria exige envio pelo formulário.');
     header('Location: manage-categories.php', true, 303);
@@ -21,6 +23,7 @@ $inTransaction = false;
 try {
     $connection->begin_transaction();
     $inTransaction = true;
+    // Trava o registro até DELETE/ROLLBACK e também confirma que ele existe.
     $statement = $connection->prepare('SELECT id FROM categories WHERE id = ? FOR UPDATE');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -45,6 +48,7 @@ try {
             error_log('NF Blog: falha ao desfazer exclusão de categoria. Código: ' . $rollbackException->getCode());
         }
     }
+    // O erro 1451 vem da FOREIGN KEY RESTRICT quando ainda existem posts vinculados.
     setFlash('error', $exception instanceof DomainException
         ? $exception->getMessage()
         : ($exception instanceof mysqli_sql_exception && $exception->getCode() === 1451

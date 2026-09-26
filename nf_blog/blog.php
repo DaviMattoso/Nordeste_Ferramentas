@@ -1,5 +1,38 @@
 <?php
+// A página é pública: auth.php apenas inicia a sessão para montar a navbar,
+// sem chamar requireLogin(). A conexão é usada para buscar os cards reais.
 require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/post-utils.php';
+
+$posts = [];
+$listError = '';
+try {
+    // INNER JOIN traz, em uma única consulta, o post, sua categoria e seu autor.
+    // Como não há entrada externa nesta listagem, não existem parâmetros para bind.
+    $result = $connection->query(
+        'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, p.is_featured, '
+        . 'c.id AS category_id, c.title AS category_title, '
+        . 'u.id AS author_id, u.username, u.first_name, u.last_name, u.avatar '
+        . 'FROM posts AS p '
+        . 'INNER JOIN categories AS c ON c.id = p.category_id '
+        . 'INNER JOIN users AS u ON u.id = p.author_id '
+        . 'ORDER BY p.created_at DESC'
+    );
+    while ($post = $result->fetch_assoc()) {
+        // Prepara somente valores de apresentação; os dados originais continuam intactos.
+        $authorName = trim($post['first_name'] . ' ' . $post['last_name']);
+        $post['author_name'] = $authorName !== '' ? $authorName : $post['username'];
+        $post['excerpt'] = postExcerpt($post['body']);
+        $post['display_date'] = postDisplayDate($post['created_at']);
+        $posts[] = $post;
+    }
+    $result->free();
+} catch (Throwable $exception) {
+    // O visitante recebe uma mensagem genérica; detalhes técnicos ficam apenas no log.
+    error_log('NF Blog: falha ao listar posts públicos. Código: ' . $exception->getCode());
+    $listError = 'Não foi possível carregar os posts. Tente novamente.';
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -64,10 +97,11 @@ require_once __DIR__ . '/config/auth.php';
 
         <!-- ======== Barra de pesquisa ======== -->
         <section class="search__bar">
-            <form action="" class="container search__bar-container">
+            <!-- GET deixa o termo visível na URL para a pesquisa poder ser compartilhada. -->
+            <form action="search.php" method="GET" class="container search__bar-container">
                 <div>
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="search" name="" placeholder="Pesquisar" />
+                    <input type="search" name="q" maxlength="200" placeholder="Pesquisar" />
                 </div>
                 <button type="submit" class="btn">Go</button>
             </form>
@@ -78,254 +112,44 @@ require_once __DIR__ . '/config/auth.php';
 
         <section class="posts">
             <div class="container posts__container">
-                <!-- Post 1 -->
+                <?php if ($listError !== ''): ?>
+                <div class="alert__message error" role="alert">
+                    <p><?= authEscape($listError) ?></p>
+                </div>
+                <?php elseif (!$posts): ?>
+                <p>Ainda não existem posts publicados.</p>
+                <?php else: ?>
+                <?php foreach ($posts as $post): ?>
                 <article class="post">
                     <div class="post__thumbnail">
-                        <img src="Images/post1t1.png" />
+                        <img src="<?= authEscape(ROOT_URL . ltrim($post['thumbnail'], '/')) ?>" alt="<?= authEscape($post['title']) ?>" />
                     </div>
 
                     <div class="post__info">
-                        <a href="" class="category__buttons">Ferramentas</a>
+                        <a href="category-post.php?id=<?= (int) $post['category_id'] ?>" class="category__buttons"><?= authEscape($post['category_title']) ?></a>
 
                         <h3 class="post__title">
-                            <a href="post.php"
-                                >Ferramentas manuais que todo profissional deve
-                                ter</a
-                            >
+                            <a href="post.php?id=<?= (int) $post['id'] ?>"><?= authEscape($post['title']) ?></a>
                         </h3>
 
                         <p class="post__body">
-                            As ferramentas manuais são indispensáveis para
-                            qualquer profissional. Conheça os principais itens
-                            que não podem faltar na sua caixa de ferramentas e
-                            descubra como eles facilitam o trabalho no dia a
-                            dia.
+                            <?= authEscape($post['excerpt']) ?>
                         </p>
 
                         <div class="post__author">
                             <div class="post__author-avatar">
-                                <img src="./Images/avatar1.png" />
+                                <img src="<?= authEscape(ROOT_URL . ltrim($post['avatar'] ?: 'Images/avatar2.jpg', '/')) ?>" alt="<?= authEscape($post['author_name']) ?>" />
                             </div>
 
                             <div class="post__author-info">
-                                <h5>Por: Davi Mattoso</h5>
-                                <small>Janeiro 15, 2026 - 13:20</small>
+                                <h5>Por: <?= authEscape($post['author_name']) ?></h5>
+                                <small><?= authEscape($post['display_date']) ?></small>
                             </div>
                         </div>
                     </div>
                 </article>
-
-                <!-- Post 2 -->
-                <article class="post">
-                    <div class="post__thumbnail">
-                        <img src="Images/post2t2.jpg" />
-                    </div>
-
-                    <div class="post__info">
-                        <a href="" class="category__buttons">Construção</a>
-                        <h3 class="post__title">
-                            <a href="post.php"
-                                >Etapas básicas de uma obra residencial</a
-                            >
-                        </h3>
-                        <p class="post__body">
-                            Construir ou reformar uma casa é o sonho de muita
-                            gente, mas olhar para um terreno vazio e imaginar o
-                            resultado final pode dar um nó na cabeça. Uma obra
-                            residencial de sucesso não nasce do acaso; ela segue
-                            um passo a passo lógico e estratégico.
-                        </p>
-
-                        <div class="post__author">
-                            <div class="post__author-avatar">
-                                <img src="./Images/avatar2.jpg" />
-                            </div>
-
-                            <div class="post__author-info">
-                                <h5>Por: Rodrigo Miranda</h5>
-                                <small>Janeiro 20, 2026 - 14:00</small>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Post 3 -->
-                <article class="post">
-                    <div class="post__thumbnail">
-                        <img src="Images/post3t3.png" />
-                    </div>
-
-                    <div class="post__info">
-                        <a href="" class="category__buttons">Marcenaria</a>
-                        <h3 class="post__title">
-                            <a href="post.php"
-                                >Primeiros passos na marcenaria para
-                                iniciantes</a
-                            >
-                        </h3>
-                        <p class="post__body">
-                            A marcenaria é uma atividade que une criatividade e
-                            técnica. Com as ferramentas certas e conhecimentos
-                            básicos sobre madeira e medidas, qualquer iniciante
-                            pode começar a criar projetos práticos e desenvolver
-                            novas habilidades passo a passo.
-                        </p>
-
-                        <div class="post__author">
-                            <div class="post__author-avatar">
-                                <img src="./Images/avatar1.png" />
-                            </div>
-
-                            <div class="post__author-info">
-                                <h5>Por: Davi Mattoso</h5>
-                                <small>Janeiro 25, 2026 - 16:00</small>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Post 4 -->
-                <article class="post">
-                    <div class="post__thumbnail">
-                        <img src="Images/post4t4.png" />
-                    </div>
-
-                    <div class="post__info">
-                        <a href="" class="category__buttons"
-                            >Segurança no Trabalho</a
-                        >
-                        <h3 class="post__title">
-                            <a href="post.php"
-                                >Equipamentos de proteção individual (EPIs)
-                                essenciais</a
-                            >
-                        </h3>
-                        <p class="post__body">
-                            Os EPIs são fundamentais para garantir a segurança
-                            em qualquer atividade profissional. Conheça os
-                            equipamentos de proteção mais importantes e descubra
-                            como eles ajudam a prevenir acidentes e preservar
-                            sua saúde no trabalho.
-                        </p>
-
-                        <div class="post__author">
-                            <div class="post__author-avatar">
-                                <img src="./Images/avatar2.jpg" />
-                            </div>
-
-                            <div class="post__author-info">
-                                <h5>Por: Rodrigo Miranda</h5>
-                                <small>Janeiro 30, 2026 - 12:00</small>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Post 5 -->
-                <article class="post">
-                    <div class="post__thumbnail">
-                        <img src="Images/post5t5.png" />
-                    </div>
-
-                    <div class="post__info">
-                        <a href="" class="category__buttons"
-                            >Dicas e Tutoriais</a
-                        >
-                        <h3 class="post__title">
-                            <a href="post.php"
-                                >Como trocar uma torneira sem chamar um
-                                profissional</a
-                            >
-                        </h3>
-                        <p class="post__body">
-                            Trocar uma torneira pode ser mais simples do que
-                            parece. Com algumas ferramentas básicas e seguindo
-                            os passos corretos, você pode fazer a substituição
-                            de forma rápida, segura e sem precisar contratar um
-                            profissional.
-                        </p>
-
-                        <div class="post__author">
-                            <div class="post__author-avatar">
-                                <img src="./Images/avatar1.png" />
-                            </div>
-
-                            <div class="post__author-info">
-                                <h5>Por: Davi Mattoso</h5>
-                                <small>Fevereiro 1, 2026 - 17:00</small>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Post 6 -->
-                <article class="post">
-                    <div class="post__thumbnail">
-                        <img src="Images/post6t2.jpg" />
-                    </div>
-
-                    <div class="post__info">
-                        <a href="" class="category__buttons">Construção</a>
-                        <h3 class="post__title">
-                            <a href="post.php"
-                                >Materiais de construção mais utilizados
-                                atualmente</a
-                            >
-                        </h3>
-                        <p class="post__body">
-                            Os materiais de construção evoluem constantemente
-                            para oferecer mais resistência, economia e
-                            sustentabilidade. Conheça os materiais mais
-                            utilizados atualmente e descubra suas principais
-                            aplicações em obras e reformas.
-                        </p>
-
-                        <div class="post__author">
-                            <div class="post__author-avatar">
-                                <img src="./Images/avatar2.jpg" />
-                            </div>
-
-                            <div class="post__author-info">
-                                <h5>Por: Rodrigo Miranda</h5>
-                                <small>Fevereiro 6, 2026 - 20:00</small>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Post 7 -->
-                <article class="post">
-                    <div class="post__thumbnail">
-                        <img src="Images/post7t1.jpg" alt="" />
-                    </div>
-
-                    <div class="post__info">
-                        <a href="" class="category__buttons">Ferramentas</a>
-                        <h3 class="post__title">
-                            <a href="post.php"
-                                >Ferramentas elétricas: quais valem a pena
-                                comprar primeiro?</a
-                            >
-                        </h3>
-                        <p class="post__body">
-                            As ferramentas elétricas aumentam a produtividade e
-                            facilitam diversos tipos de trabalho. Descubra quais
-                            modelos oferecem o melhor custo-benefício e quais
-                            merecem estar entre suas primeiras compras.
-                        </p>
-
-                        <div class="post__author">
-                            <div class="post__author-avatar">
-                                <img src="./Images/avatar1.png" alt="" />
-                            </div>
-
-                            <div class="post__author-info">
-                                <h5>Por: Davi Mattoso</h5>
-                                <small>Fevereiro 8, 2026 - 14:55</small>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </section>
 

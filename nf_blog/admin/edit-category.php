@@ -1,10 +1,12 @@
 <?php
+// Edição de categoria é uma operação exclusiva de administrador.
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/category-utils.php';
 
+// O ID recebido pela URL só entra na consulta depois de validado como inteiro positivo.
 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {
     setFlash('error', 'ID de categoria inválido.');
@@ -13,6 +15,7 @@ if ($id === false || $id === null) {
 }
 
 try {
+    // Carrega o estado atual para preencher o formulário no primeiro acesso.
     $statement = $connection->prepare('SELECT title, description FROM categories WHERE id = ?');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -35,6 +38,7 @@ $title = $storedTitle;
 $description = $storedDescription ?? '';
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // Revalida todo o conteúdo no servidor mesmo que o HTML tenha campos required.
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $descriptionInput = $_POST['description'] ?? '';
     $description = is_string($descriptionInput) ? $descriptionInput : '';
@@ -48,6 +52,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         try {
             $connection->begin_transaction();
             $inTransaction = true;
+            // FOR UPDATE confirma que a categoria ainda existe e impede mudança
+            // concorrente até o fim desta transação.
             $statement = $connection->prepare('SELECT id FROM categories WHERE id = ? FOR UPDATE');
             $statement->bind_param('i', $id);
             $statement->execute();
@@ -58,6 +64,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 throw new DomainException('Categoria não encontrada.');
             }
             if (categoryTitleExists($connection, $title, $id)) {
+                // Ao detectar duplicidade, desfaz o lock sem executar UPDATE.
                 $errors[] = 'Categoria já existe.';
                 $connection->rollback();
                 $inTransaction = false;
@@ -74,6 +81,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
+            // Se qualquer etapa falhar, garante que nenhuma alteração parcial permaneça.
             if ($inTransaction) {
                 try {
                     $connection->rollback();

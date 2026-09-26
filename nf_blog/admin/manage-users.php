@@ -1,4 +1,5 @@
 <?php
+// Tela exclusivamente administrativa para listar e acessar as ações de usuários.
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
@@ -6,12 +7,14 @@ require_once __DIR__ . '/../config/flash.php';
 $flash = getFlash();
 $users = [];
 try {
+    // A consulta não usa input externo, portanto não precisa de parâmetros preparados.
     $result = $connection->query('SELECT id, first_name, last_name, username, role FROM users ORDER BY id ASC');
     while ($user = $result->fetch_assoc()) {
         $users[] = $user;
     }
     $result->free();
 } catch (Throwable $exception) {
+    // Substitui qualquer flash anterior por um erro de carregamento desta página.
     error_log('NF Blog: falha ao listar usuários. Código: ' . $exception->getCode());
     $flash = ['type' => 'error', 'message' => 'Não foi possível carregar os usuários. Tente novamente.'];
 }

@@ -1,5 +1,8 @@
 <?php
+// Cadastro público: novos usuários sempre entram como author.
 require_once __DIR__ . '/config/user-utils.php';
+
+// Preserva os campos não sensíveis quando houver erro; senhas nunca voltam ao HTML.
 $errors = [];
 $values = array_fill_keys(['first_name', 'last_name', 'username', 'email'], '');
 $escape = static function ($value) {
@@ -8,6 +11,7 @@ $escape = static function ($value) {
 
 // TODO: adicionar proteção CSRF na revisão de segurança, antes da publicação.
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // Aceita somente strings e remove espaços acidentais dos campos textuais.
     foreach ($values as $field => $value) {
         $values[$field] = is_string($_POST[$field] ?? null) ? trim($_POST[$field]) : '';
     }
@@ -21,16 +25,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $errors = array_merge($errors, userFieldErrors($values), userPasswordErrors($password, $confirmation));
 
     $upload = $_FILES['avatar'] ?? null;
+    // A validação retorna a extensão determinada pelo MIME real, não pelo nome enviado.
     [$avatarExtension, $avatarErrors] = userAvatarValidation($upload);
     $errors = array_merge($errors, $avatarErrors);
 
     if (!$errors) {
+        // A conexão só é necessária depois que a validação básica foi aprovada.
         require_once __DIR__ . '/config/database.php';
         $avatar = null;
         try {
             $errors = userDuplicateErrors($connection, $values);
 
             if (!$errors) {
+                // Nunca armazena senha pura: password_hash inclui algoritmo, salt e custo.
                 $hash = password_hash($password, PASSWORD_DEFAULT);
                 if ($avatarExtension !== null) {
                     $avatar = saveUserAvatar($upload, $avatarExtension);
@@ -41,6 +48,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $statement->execute();
             }
         } catch (Throwable $exception) {
+            // Evita deixar avatar órfão se o INSERT falhar após salvar a imagem.
             removeManagedUserAvatar($avatar);
             // Os índices UNIQUE também protegem contra cadastros simultâneos.
             $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1062
@@ -49,6 +57,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             error_log('NF Blog: falha no cadastro. Código: ' . $exception->getCode());
         }
         if (!$errors) {
+            // POST/Redirect/GET impede cadastrar novamente ao atualizar o navegador.
             header('Location: signin.php?registered=1', true, 303);
             exit;
         }

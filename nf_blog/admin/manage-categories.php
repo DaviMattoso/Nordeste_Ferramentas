@@ -1,4 +1,5 @@
 <?php
+// Lista administrativa de categorias; requireAdmin bloqueia authors.
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
@@ -7,6 +8,7 @@ require_once __DIR__ . '/../config/flash.php';
 $flash = getFlash();
 $categories = [];
 try {
+    // Não há filtro vindo do navegador, então uma consulta direta é suficiente.
     $result = $connection->query('SELECT id, title, description, created_at, updated_at FROM categories ORDER BY id ASC');
     while ($category = $result->fetch_assoc()) {
         $categories[] = $category;

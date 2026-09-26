@@ -2944,3 +2944,945 @@ Eu sou foda pra caralho.
 E viva a IA que tá me ajudando nessa caminhada 
 
 AMANHÃ TEM MAIS.
+==================================================================//=============================================================
+
+Salve rapeize, vamo contnuar aqui naquele Pike hehe
+
+Hoje eu estava bem cansado e não consegui acompanhar cada detalhe com a atenção que eu gostaria.
+Então esta entrada vai ser mais explicativa do que o normal, para eu conseguir voltar amanhã,
+ler com calma e entender não somente O QUE foi feito, mas também COMO funciona e ONDE devo mexer
+se quiser alterar alguma coisa.
+
+RESUMO CURTO DO DIA:
+
+Antes, o painel administrativo já criava usuários, categorias e posts reais no MySQL, mas boa
+parte do site que o visitante enxergava ainda usava textos e cards escritos diretamente no HTML.
+
+Hoje ligamos as duas metades do projeto:
+
+PAINEL ADMINISTRATIVO
+        ↓
+     MYSQL
+        ↓
+PÁGINAS PÚBLICAS
+
+Agora o conteúdo criado pelo admin ou author pode aparecer automaticamente na homepage, na lista
+do blog, na página individual, na página da categoria e nos resultados da pesquisa.
+
+Também foram adicionados comentários explicativos nas partes importantes do backend para deixar
+o código mais fácil de estudar e manter.
+
+O site deixou de ser apenas:
+
+HTML com conteúdo fixo
+
+e passou a funcionar como:
+
+PHP + MYSQL + POSTS REAIS + CATEGORIAS REAIS + AUTORES REAIS + BUSCA REAL
+
+========================================================================================================================
+1 — COMENTÁRIOS EXPLICATIVOS NO BACKEND
+========================================================================================================================
+
+Uma das primeiras coisas feitas hoje foi revisar os arquivos PHP e comentar as partes importantes.
+
+Os comentários explicam coisas como:
+
+- por que uma página exige login;
+- por que determinada página exige admin;
+- como os prepared statements protegem as consultas;
+- como as sessões identificam o usuário;
+- por que uma exclusão aceita apenas POST;
+- como o sistema verifica se o author é realmente dono do post;
+- como as transactions e o FOR UPDATE protegem operações sensíveis;
+- como os uploads são validados;
+- por que os arquivos recebem nomes aleatórios;
+- como funciona o fallback de avatar;
+- por que os dados precisam ser escapados antes de entrar no HTML;
+- como funcionam os estados de erro e sucesso.
+
+Foram comentados arquivos importantes de:
+
+- autenticação;
+- usuários;
+- categorias;
+- posts;
+- dashboard;
+- login e cadastro;
+- exclusões;
+- edição;
+- uploads;
+- páginas públicas.
+
+IMPORTANTE:
+
+Comentário serve para explicar a intenção do código. Ele não é executado pelo PHP.
+
+Exemplo:
+
+// Prepared statement impede que o texto enviado altere a consulta SQL.
+
+A linha acima existe para eu entender POR QUE o código foi escrito daquela maneira.
+
+Se amanhã eu ficar perdido em uma função, o primeiro passo é ler os comentários próximos dela.
+
+========================================================================================================================
+2 — REVISÃO FINAL DA SEGURANÇA DOS POSTS
+========================================================================================================================
+
+Antes de colocar os posts no site público, foi revisado o fluxo administrativo.
+
+As regras confirmadas foram:
+
+AUTHOR:
+- cria post usando o próprio ID da sessão;
+- vê os próprios posts no dashboard;
+- edita somente os próprios posts;
+- exclui somente os próprios posts.
+
+ADMIN:
+- vê todos os posts;
+- edita qualquer post;
+- exclui qualquer post.
+
+O author_id NÃO vem de um campo do formulário.
+
+Ele vem de:
+
+$_SESSION['user_id']
+
+Isso é importante porque, se author_id viesse do navegador, alguém poderia alterar o HTML ou a
+requisição e fingir que o post foi criado por outra pessoa.
+
+A exclusão de post também continua aceitando somente POST.
+
+Ou seja, isto NÃO pode excluir um post:
+
+delete-post.php?id=4
+
+O sistema espera um formulário POST e ainda verifica o dono do post no servidor.
+
+Também foi confirmada a proteção das FOREIGN KEYS:
+
+- usuário com post vinculado não pode ser apagado;
+- categoria com post vinculado não pode ser apagada;
+- o erro técnico 1451 é transformado em mensagem amigável.
+
+As thumbnails continuam protegidas:
+
+- somente JPG, PNG e WebP;
+- limite de 5 MB;
+- MIME real verificado;
+- getimagesize() confirma que o arquivo é uma imagem;
+- nome aleatório;
+- remoção permitida somente dentro do padrão Images/posts/<hash>.<extensão>.
+
+========================================================================================================================
+3 — DOIS HELPERS IMPORTANTES CRIADOS EM post-utils.php
+========================================================================================================================
+
+Arquivo:
+
+nf_blog/config/post-utils.php
+
+Foram centralizadas duas lógicas que várias páginas públicas precisam usar.
+
+------------------------------------------------------------
+postExcerpt()
+------------------------------------------------------------
+
+Essa função cria o resumo mostrado nos cards.
+
+Ela faz o seguinte:
+
+1. recebe o body completo do post;
+2. remove tags HTML com strip_tags();
+3. remove espaços e quebras repetidas;
+4. conta caracteres Unicode corretamente;
+5. limita o resumo a 220 caracteres por padrão;
+6. adiciona “…” quando o texto é cortado.
+
+Exemplo mental:
+
+BODY COMPLETO
+“Este é um texto enorme do post...”
+        ↓
+postExcerpt($body)
+        ↓
+RESUMO CURTO PARA O CARD
+
+Se eu quiser mudar o tamanho dos resumos de TODOS os cards, o local principal é:
+
+function postExcerpt(string $body, int $maxLength = 220)
+
+Trocar 220 altera o limite padrão.
+
+------------------------------------------------------------
+postDisplayDate()
+------------------------------------------------------------
+
+Essa função recebe a data do MySQL e transforma somente a exibição.
+
+O banco continua guardando algo parecido com:
+
+2026-09-26 14:30:00
+
+O visitante vê:
+
+26/09/2026 - 14:30
+
+Se eu quiser mudar o formato das datas públicas, devo procurar por:
+
+function postDisplayDate(string $createdAt)
+
+e alterar:
+
+date('d/m/Y - H:i', $timestamp)
+
+========================================================================================================================
+4 — blog.php DEIXOU DE TER POSTS FIXOS
+========================================================================================================================
+
+Arquivo:
+
+nf_blog/blog.php
+
+Antes, cada card existia manualmente no HTML.
+
+Era mais ou menos assim:
+
+POST 1 escrito no arquivo
+POST 2 escrito no arquivo
+POST 3 escrito no arquivo
+
+Se fosse criado um post no painel, ele NÃO aparecia automaticamente nessa página.
+
+Agora blog.php consulta o banco.
+
+A consulta relaciona três tabelas:
+
+POSTS
+  ├── CATEGORIES, através de posts.category_id
+  └── USERS, através de posts.author_id
+
+Isso é feito com INNER JOIN.
+
+Em termos simples, o JOIN permite buscar em uma consulta:
+
+- os dados do post;
+- o nome da categoria daquele post;
+- os dados do autor daquele post.
+
+Os posts são ordenados assim:
+
+ORDER BY p.created_at DESC
+
+DESC significa do mais recente para o mais antigo.
+
+Cada card agora recebe dados reais:
+
+- thumbnail;
+- categoria;
+- título;
+- resumo;
+- autor;
+- avatar;
+- data.
+
+Os links também usam IDs reais:
+
+post.php?id=ID_DO_POST
+category-post.php?id=ID_DA_CATEGORIA
+
+Se o nome e sobrenome existirem, o site mostra o nome completo.
+Se estiverem vazios, mostra o username.
+
+Se o avatar estiver vazio, usa:
+
+Images/avatar2.jpg
+
+Se não houver posts, não aparecem cards falsos. A página mostra:
+
+“Ainda não existem posts publicados.”
+
+========================================================================================================================
+5 — post.php VIROU A PÁGINA REAL DE UM POST
+========================================================================================================================
+
+Arquivo:
+
+nf_blog/post.php
+
+A rota funciona assim:
+
+post.php?id=5
+
+O número 5 é o ID do post no banco.
+
+Como esse ID vem da URL, ele é uma entrada externa e não pode ser confiado automaticamente.
+
+O fluxo agora é:
+
+$_GET['id']
+      ↓
+validar se é inteiro positivo
+      ↓
+prepared statement
+      ↓
+buscar post + categoria + autor
+      ↓
+montar a página
+
+IDs ausentes, inválidos, negativos, zero ou inexistentes retornam HTTP 404 e mostram:
+
+“Post não encontrado.”
+
+A consulta usa:
+
+WHERE p.id = ? LIMIT 1
+
+O ponto de interrogação é preenchido com bind_param().
+
+Isso mantém o valor separado do SQL e impede SQL injection.
+
+A página mostra:
+
+- título real;
+- categoria real e clicável;
+- autor real;
+- avatar real ou padrão;
+- data real;
+- thumbnail real;
+- conteúdo completo.
+
+O body é texto simples. Por segurança ele usa:
+
+nl2br(authEscape($post['body']))
+
+authEscape() impede que HTML ou JavaScript armazenado no body seja executado.
+nl2br() transforma as quebras de linha em quebras visuais no navegador.
+
+Portanto, se alguém salvar:
+
+<script>alert(1)</script>
+
+o navegador deve exibir esse texto, não executar o script.
+
+========================================================================================================================
+6 — category-post.php VIROU UMA LISTAGEM REAL POR CATEGORIA
+========================================================================================================================
+
+Arquivo:
+
+nf_blog/category-post.php
+
+A rota funciona assim:
+
+category-post.php?id=2
+
+O fluxo possui DUAS consultas preparadas.
+
+PRIMEIRA CONSULTA:
+
+Busca a categoria pelo ID.
+
+Ela confirma:
+
+- se a categoria existe;
+- qual é o título;
+- qual é a descrição.
+
+SEGUNDA CONSULTA:
+
+Busca somente os posts que possuem:
+
+WHERE p.category_id = ?
+
+Por que fazer em duas partes?
+
+Porque existem dois estados diferentes:
+
+1. CATEGORIA NÃO EXISTE
+   Resultado: HTTP 404 + “Categoria não encontrada.”
+
+2. CATEGORIA EXISTE, MAS AINDA NÃO TEM POST
+   Resultado: HTTP 200 + “Ainda não existem posts nesta categoria.”
+
+Uma categoria vazia não é um erro. Ela é uma categoria válida sem conteúdo naquele momento.
+
+Os cards usam os mesmos helpers do blog:
+
+- postExcerpt();
+- postDisplayDate();
+- authEscape();
+- ROOT_URL.
+
+Assim evitamos escrever a mesma lógica várias vezes.
+
+========================================================================================================================
+7 — index.php VIROU UMA HOMEPAGE DINÂMICA
+========================================================================================================================
+
+Arquivo:
+
+nf_blog/index.php
+
+Somente as partes editoriais foram transformadas em dados do banco.
+
+Navbar, identidade visual, footer, CSS e conteúdo institucional foram preservados.
+
+A homepage possui dois tipos de conteúdo:
+
+1. POST PRINCIPAL EM DESTAQUE
+2. CARDS DE POSTS RECENTES
+
+------------------------------------------------------------
+COMO O DESTAQUE É ESCOLHIDO
+------------------------------------------------------------
+
+Primeiro o sistema procura:
+
+WHERE p.is_featured = 1
+ORDER BY p.created_at DESC
+LIMIT 1
+
+Portanto, se vários posts estiverem marcados como destaque, o mais recente deles vence.
+
+Se não existir nenhum post com is_featured = 1, o post mais recente do banco vira o destaque.
+
+A ordem é:
+
+1. destaque mais recente;
+2. se não houver destaque, post mais recente geral;
+3. se não houver post algum, estado vazio.
+
+------------------------------------------------------------
+COMO OS POSTS RECENTES SÃO ESCOLHIDOS
+------------------------------------------------------------
+
+O layout original possui espaço para até sete cards recentes.
+
+O código busca até oito candidatos porque um deles pode ser o mesmo post usado no destaque.
+
+Depois ele:
+
+- ignora o ID já utilizado no destaque;
+- adiciona os outros em ordem de data;
+- para quando chegar a sete cards.
+
+Isso evita mostrar o mesmo post duas vezes na homepage.
+
+Se eu quiser mudar a quantidade de cards da home, preciso revisar em index.php:
+
+- o LIMIT 8 da consulta de candidatos;
+- a condição count($recentPosts) === 7.
+
+Exemplo: para mostrar 5 cards, provavelmente seriam buscados 6 candidatos e o limite final seria 5.
+
+========================================================================================================================
+8 — BUSCA PÚBLICA IMPLEMENTADA
+========================================================================================================================
+
+Arquivos:
+
+nf_blog/blog.php
+nf_blog/search.php
+
+Foi procurado todo campo de pesquisa público do projeto.
+
+O único formulário de busca real estava em blog.php.
+O bloco chamado search__bar em category-post.php é apenas uma área visual para o título da categoria,
+não é um formulário de pesquisa.
+
+O formulário de blog.php agora envia:
+
+method="GET"
+action="search.php"
+
+e o input usa:
+
+name="q"
+
+Por isso uma pesquisa aparece na URL assim:
+
+search.php?q=furadeira
+
+GET foi usado porque uma pesquisa pode aparecer na URL, ser copiada, atualizada e compartilhada.
+
+Como ainda não existia uma página de resultados, foi criado:
+
+nf_blog/search.php
+
+Ela usa o mesmo visual dos cards de blog.php.
+
+------------------------------------------------------------
+VALIDAÇÃO DA PESQUISA
+------------------------------------------------------------
+
+O termo vem de:
+
+$_GET['q']
+
+O PHP verifica:
+
+- se q existe;
+- se é uma string;
+- trim() para remover espaços das pontas;
+- se o texto é UTF-8 válido;
+- limite máximo de 200 caracteres;
+- se não ficou vazio.
+
+Se estiver vazio, a página mostra:
+
+“Digite algo para pesquisar.”
+
+E NÃO executa:
+
+LIKE '%%'
+
+Isso é importante porque LIKE '%%' combina com tudo e devolveria todos os posts sem necessidade.
+
+O limite principal pode ser alterado em search.php nesta constante:
+
+const SEARCH_MAX_LENGTH = 200;
+
+O input HTML também possui maxlength, mas a validação que realmente protege é a do PHP.
+O HTML pode ser burlado; o servidor não.
+
+------------------------------------------------------------
+CONSULTA DA BUSCA
+------------------------------------------------------------
+
+A parte principal é:
+
+WHERE p.title LIKE ? OR p.body LIKE ?
+ORDER BY p.created_at DESC
+
+O PHP monta:
+
+%TERMO%
+
+e envia o mesmo padrão para os dois pontos de interrogação usando bind_param().
+
+Os símbolos % significam que o termo pode aparecer no começo, meio ou fim do texto.
+
+Exemplo:
+
+pesquisa = ferramenta
+
+pode encontrar:
+
+“Guia de ferramentas”
+“Ferramentas manuais”
+“Como escolher uma ferramenta elétrica”
+
+A consulta também faz JOIN com categories e users para o resultado conseguir montar o card completo.
+
+Se a pesquisa for válida, mas não encontrar nada, aparece:
+
+“Nenhum post encontrado para esta pesquisa.”
+
+O título da página mostra de forma segura:
+
+Resultados para: "termo"
+
+========================================================================================================================
+9 — SEGURANÇA: PREPARED STATEMENT E ESCAPING NÃO SÃO A MESMA COISA
+========================================================================================================================
+
+Essa diferença é MUITO importante.
+
+------------------------------------------------------------
+PREPARED STATEMENT
+------------------------------------------------------------
+
+Protege a CONSULTA SQL.
+
+Usado quando um valor externo entra em uma busca no banco.
+
+Exemplos:
+
+- ID do post;
+- ID da categoria;
+- termo pesquisado;
+- login;
+- IDs enviados por formulários administrativos.
+
+O valor fica separado do comando SQL.
+
+Isso protege contra algo como:
+
+' OR 1=1 --
+
+------------------------------------------------------------
+authEscape() / htmlspecialchars()
+------------------------------------------------------------
+
+Protege a SAÍDA HTML.
+
+Usado antes de mostrar textos na página.
+
+Exemplos:
+
+- título;
+- nome do autor;
+- categoria;
+- resumo;
+- descrição;
+- termo pesquisado;
+- valores usados em atributos HTML.
+
+Isso protege contra algo como:
+
+<script>alert(1)</script>
+
+RESUMINDO:
+
+prepared statement = protege o banco/SQL
+authEscape()       = protege a página/HTML
+
+Um não substitui o outro.
+
+========================================================================================================================
+10 — TRATAMENTO DE ERROS
+========================================================================================================================
+
+As páginas públicas não devem mostrar ao visitante:
+
+- SQL;
+- stack trace;
+- caminho interno do computador;
+- senha do banco;
+- detalhes técnicos da exceção.
+
+Em erro inesperado, o comportamento é:
+
+DETALHE TÉCNICO
+        ↓
+error_log()
+
+MENSAGEM GENÉRICA
+        ↓
+visitante
+
+Quando apropriado também é enviado HTTP 500.
+
+Já IDs ou recursos inexistentes usam HTTP 404.
+
+Diferença:
+
+404 = o recurso pedido não existe ou o ID é inválido.
+500 = aconteceu uma falha inesperada no servidor/banco.
+
+========================================================================================================================
+11 — FLUXO COMPLETO ATUAL
+========================================================================================================================
+
+Quando um author cria um post:
+
+AUTHOR PREENCHE FORMULÁRIO
+          ↓
+PHP VALIDA TEXTO, CATEGORIA E THUMBNAIL
+          ↓
+author_id VEM DA SESSÃO
+          ↓
+POST É GRAVADO NO MYSQL
+          ↓
+BLOG.PHP LISTA O POST
+          ↓
+INDEX.PHP PODE EXIBIR COMO DESTAQUE/RECENTE
+          ↓
+POST.PHP ABRE O CONTEÚDO COMPLETO
+          ↓
+CATEGORY-POST.PHP MOSTRA NA CATEGORIA CORRETA
+          ↓
+SEARCH.PHP CONSEGUE ENCONTRAR PELO TÍTULO OU BODY
+
+É isso que significa integrar frontend com backend.
+
+O painel escreve no banco.
+O site público lê o banco.
+
+========================================================================================================================
+12 — ONDE MUDAR CADA COISA AMANHÃ
+========================================================================================================================
+
+QUERO MUDAR O TAMANHO DO RESUMO DOS CARDS:
+
+nf_blog/config/post-utils.php
+função postExcerpt()
+valor padrão atual: 220
+
+QUERO MUDAR O FORMATO DA DATA:
+
+nf_blog/config/post-utils.php
+função postDisplayDate()
+formato atual: d/m/Y - H:i
+
+QUERO MUDAR QUANTOS POSTS RECENTES APARECEM NA HOME:
+
+nf_blog/index.php
+procurar por LIMIT 8 e count($recentPosts) === 7
+
+QUERO MUDAR A REGRA DO POST EM DESTAQUE:
+
+nf_blog/index.php
+procurar por p.is_featured = 1
+
+QUERO MUDAR O LIMITE DO TEXTO PESQUISADO:
+
+nf_blog/search.php
+const SEARCH_MAX_LENGTH = 200
+
+QUERO PESQUISAR EM OUTRO CAMPO:
+
+nf_blog/search.php
+procurar por:
+WHERE p.title LIKE ? OR p.body LIKE ?
+
+ATENÇÃO: adicionar outro campo exige adicionar outro ? e também outro valor no bind_param().
+
+QUERO MUDAR O VISUAL DOS CARDS:
+
+Primeiro olhar:
+nf_blog/css/style.css
+
+As principais classes são:
+
+.posts__container
+.post
+.post__thumbnail
+.post__info
+.post__title
+.post__body
+.post__author
+.category__buttons
+
+QUERO MUDAR A PÁGINA QUE MOSTRA TODOS OS POSTS:
+
+nf_blog/blog.php
+
+QUERO MUDAR A PÁGINA DO POST COMPLETO:
+
+nf_blog/post.php
+
+QUERO MUDAR A LISTAGEM DE UMA CATEGORIA:
+
+nf_blog/category-post.php
+
+QUERO MUDAR A PÁGINA DOS RESULTADOS DA BUSCA:
+
+nf_blog/search.php
+
+QUERO MUDAR AS REGRAS DE UPLOAD/POST:
+
+nf_blog/config/post-utils.php
+
+QUERO MUDAR AUTENTICAÇÃO, LOGIN OU PERMISSÃO:
+
+nf_blog/config/auth.php
+nf_blog/signin.php
+
+ATENÇÃO:
+
+Antes de mudar uma query com JOIN, prepared statement, permissão, exclusão ou upload, é melhor
+reler os comentários e testar com calma. Essas partes não são apenas visuais; uma mudança errada
+pode causar falha de segurança ou inconsistência no banco.
+
+========================================================================================================================
+13 — TESTES FEITOS
+========================================================================================================================
+
+Ao longo das etapas foram revisados e testados:
+
+- sintaxe dos arquivos PHP com php -l;
+- integridade do diff com git diff --check;
+- páginas públicas sem exigir login;
+- posts reais vindos do MySQL;
+- links com IDs reais;
+- post válido;
+- post inexistente;
+- ID ausente ou inválido;
+- categoria com posts;
+- categoria sem posts;
+- categoria inexistente;
+- post em destaque;
+- fallback para o post mais recente;
+- não repetição do destaque nos cards recentes;
+- pesquisa por palavra no título;
+- pesquisa por palavra existente somente no body;
+- pesquisa sem resultado;
+- pesquisa vazia;
+- pesquisa acima de 200 caracteres;
+- tentativa de XSS com <script>alert(1)</script>;
+- tentativa de SQL injection com ' OR 1=1 --;
+- link do resultado para o post real;
+- link do resultado para a categoria real.
+
+Na busca, os testes maliciosos não executaram script e não retornaram posts indevidamente.
+
+========================================================================================================================
+14 — ROTEIRO PARA EU TESTAR AMANHÃ NO NAVEGADOR
+========================================================================================================================
+
+1. Abrir o XAMPP.
+2. Iniciar Apache.
+3. Iniciar MySQL.
+4. Abrir:
+
+http://localhost/blog/
+
+5. Confirmar que a homepage mostra um post real em destaque.
+6. Confirmar que os posts recentes não repetem o destaque.
+7. Clicar no título do destaque.
+8. Confirmar que abre algo como:
+
+post.php?id=4
+
+9. Voltar e clicar na categoria de um post.
+10. Confirmar que abre algo como:
+
+category-post.php?id=2
+
+11. Abrir:
+
+http://localhost/blog/blog.php
+
+12. Confirmar que os cards correspondem aos dados do phpMyAdmin.
+13. Pesquisar por EPIS.
+14. Confirmar que a URL vira:
+
+search.php?q=EPIS
+
+15. Pesquisar por Test 2, que no banco atual existe no body.
+16. Pesquisar um termo aleatório que não existe.
+17. Enviar o campo de busca vazio.
+18. Testar como texto:
+
+<script>alert(1)</script>
+
+19. Confirmar que nenhum alerta JavaScript abre.
+20. Testar como texto:
+
+' OR 1=1 --
+
+21. Confirmar que a busca não devolve todos os posts.
+22. Abrir uma janela anônima e repetir a navegação pública sem fazer login.
+
+========================================================================================================================
+15 — CHECKLIST ATUALIZADA
+========================================================================================================================
+
+INTEGRAÇÃO PÚBLICA
+
+[✅] blog.php dinâmico
+[✅] Cards estáticos removidos da listagem pública
+[✅] Posts ordenados do mais recente para o mais antigo
+[✅] post.php dinâmico por ID
+[✅] ID do post validado
+[✅] Post inexistente retorna 404
+[✅] Body protegido contra XSS
+[✅] category-post.php dinâmica por ID
+[✅] Categoria inexistente retorna 404
+[✅] Categoria existente sem posts tem estado vazio
+[✅] index.php dinâmica
+[✅] Destaque controlado por is_featured
+[✅] Fallback para o post mais recente
+[✅] Destaque não é repetido entre os recentes
+[✅] Autor, avatar, categoria, thumbnail e data reais
+[✅] Helpers compartilhados de resumo e data
+[✅] Páginas continuam públicas
+
+BUSCA
+
+[✅] Formulário conectado com GET
+[✅] Input usa name="q"
+[✅] search.php criada
+[✅] Pesquisa por título
+[✅] Pesquisa por body
+[✅] Prepared statement
+[✅] Busca vazia protegida
+[✅] Limite de 200 caracteres
+[✅] Estado sem resultado
+[✅] Proteção contra SQL injection
+[✅] Proteção contra XSS
+[✅] Cards e links com IDs reais
+
+DOCUMENTAÇÃO DO CÓDIGO
+
+[✅] Comentários nas partes importantes do backend
+[✅] Explicação de autenticação e sessão
+[✅] Explicação de permissões
+[✅] Explicação de prepared statements
+[✅] Explicação de uploads
+[✅] Explicação de exclusões e transactions
+[✅] Explicação das páginas públicas
+
+========================================================================================================================
+16 — O QUE AINDA FALTA OU MERECE ATENÇÃO
+========================================================================================================================
+
+Ainda existem tarefas importantes:
+
+[⏳] Tornar os botões fixos de categorias do footer/seções realmente dinâmicos
+[⏳] Corrigir links de categoria que ainda possuem href vazio
+[⏳] Implementar proteção CSRF nos formulários destrutivos
+[⏳] Revisar todos os formulários destrutivos na etapa final de segurança
+[⏳] Adicionar limitação de tentativas de login
+[⏳] Fazer revisão final de sessões e cookies para produção
+[⏳] Remover test.php quando ele não for mais necessário
+[⏳] Remover TODOs e placeholders antigos
+[⏳] Avaliar uma futura refatoração de navbar/footer repetidos entre páginas
+[⏳] Atualizar README e checklist oficial
+[⏳] Preparar credenciais/configuração para produção
+[⏳] Fazer bateria final de testes antes da publicação
+
+PONTO IMPORTANTE:
+
+Alguns botões de categoria existentes no final das páginas ainda são apenas parte do frontend
+antigo e continuam com href vazio. Os links de categoria DENTRO DOS CARDS já funcionam e usam IDs
+reais. Não confundir uma coisa com a outra.
+
+Também não foi criado commit hoje. As alterações continuam no working tree para revisão.
+
+========================================================================================================================
+17 — CONCLUSÃO DO DIA
+========================================================================================================================
+
+Hoje não foi apenas “colocar alguns textos do banco na tela”.
+
+Foi construída a ligação completa entre administração e visitante.
+
+Antes:
+
+O admin criava dados reais, mas o frontend ainda contava uma história estática.
+
+Agora:
+
+O admin/author cria o post.
+O MySQL guarda.
+O blog lista.
+A homepage destaca.
+A categoria filtra.
+A página individual abre.
+A busca encontra.
+
+E tudo isso respeitando:
+
+- permissões;
+- prepared statements;
+- escaping;
+- 404;
+- 500;
+- fallback de avatar;
+- helpers reutilizáveis;
+- layout existente;
+- dados reais.
+
+Foi coisa pra caralho para um dia só, principalmente estando cansado.
+
+Amanhã eu não preciso tentar lembrar de tudo de cabeça.
+É só voltar nesta entrada, acompanhar o fluxo e usar a seção “ONDE MUDAR CADA COISA”.
+
+
+

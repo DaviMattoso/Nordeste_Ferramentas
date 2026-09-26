@@ -1,4 +1,6 @@
 <?php
+// Inicia a sessão para que a navbar compartilhada consiga exibir login ou perfil.
+// Este partial não exige autenticação por conta própria; cada página decide seu acesso.
 require_once __DIR__ . '/../../config/auth.php';
 ?>
 

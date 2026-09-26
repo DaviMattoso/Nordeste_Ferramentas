@@ -1,4 +1,5 @@
 <?php
+// Exclusão é uma ação protegida para admin ou para o próprio autor do post.
 require_once __DIR__ . '/../config/auth.php';
 requireLogin();
 require_once __DIR__ . '/../config/database.php';
@@ -6,6 +7,7 @@ require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/post-utils.php';
 refreshPostActor($connection);
 
+// Não aceita exclusão por link/GET; o dashboard envia um formulário POST.
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     setFlash('error', 'A exclusão de post exige envio pelo formulário.');
     header('Location: dashboard.php', true, 303);
@@ -23,6 +25,8 @@ $inTransaction = false;
 try {
     $connection->begin_transaction();
     $inTransaction = true;
+    // Busca e bloqueia o registro antes de conferir a autoria. Isso impede que um
+    // ID adulterado permita excluir o post de outro usuário.
     $statement = $connection->prepare('SELECT author_id, thumbnail FROM posts WHERE id = ? FOR UPDATE');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -41,6 +45,7 @@ try {
     $statement->close();
     $connection->commit();
     $inTransaction = false;
+    // O arquivo só é removido após a exclusão estar confirmada no banco.
     removeManagedPostThumbnail($thumbnail);
     setFlash('success', 'Post excluído com sucesso.');
 } catch (Throwable $exception) {

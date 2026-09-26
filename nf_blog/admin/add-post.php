@@ -1,4 +1,5 @@
 <?php
+// Criação de posts exige login, mas aceita tanto admin quanto author.
 require_once __DIR__ . '/../config/auth.php';
 requireLogin();
 require_once __DIR__ . '/../config/database.php';
@@ -6,12 +7,14 @@ require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/post-utils.php';
 refreshPostActor($connection);
 
+// Valores iniciais também servem para repopular o formulário após um erro.
 $title = '';
 $body = '';
 $categoryId = null;
 $isFeatured = 0;
 $errors = [];
 try {
+    // As categorias vêm do banco para impedir opções fixas e desatualizadas no HTML.
     $categories = postCategories($connection);
 } catch (Throwable $exception) {
     error_log('NF Blog: falha ao carregar categorias para post. Código: ' . $exception->getCode());
@@ -23,6 +26,8 @@ if (!$categories && !$errors) {
 }
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // Todo valor recebido é normalizado/validado no servidor; o atributo required
+    // do HTML melhora a experiência, mas não é uma barreira de segurança.
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $body = is_string($_POST['body'] ?? null) ? $_POST['body'] : '';
     $categoryId = filter_var($_POST['category_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -40,10 +45,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!$errors) {
         $thumbnail = null;
         try {
+            // Reconfirma a categoria porque ela pode ter sido removida após abrir a tela.
             if (!postCategoryExists($connection, $categoryId)) {
                 $errors[] = 'Categoria selecionada não existe. Escolha outra.';
             } else {
                 $thumbnail = savePostThumbnail($_FILES['thumbnail'], $thumbnailExtension);
+                // A autoria sempre vem da sessão autenticada, nunca de input do formulário.
                 $authorId = $_SESSION['user_id'];
                 $statement = $connection->prepare('INSERT INTO posts (title, body, thumbnail, category_id, author_id, is_featured) VALUES (?, ?, ?, ?, ?, ?)');
                 $statement->bind_param('sssiii', $title, $body, $thumbnail, $categoryId, $authorId, $isFeatured);
@@ -54,6 +61,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
+            // Se o banco falhar depois do upload, remove o arquivo que ficaria órfão.
             removeManagedPostThumbnail($thumbnail);
             $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1452
                 ? 'Categoria selecionada não está mais disponível. Escolha outra.'

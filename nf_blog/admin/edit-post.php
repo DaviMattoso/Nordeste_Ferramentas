@@ -1,4 +1,5 @@
 <?php
+// Admin edita qualquer post; author só pode editar um post de sua própria autoria.
 require_once __DIR__ . '/../config/auth.php';
 requireLogin();
 require_once __DIR__ . '/../config/database.php';
@@ -6,6 +7,7 @@ require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/post-utils.php';
 refreshPostActor($connection);
 
+// O ID da URL é dado externo e precisa ser um inteiro positivo.
 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {
     setFlash('error', 'ID de post inválido.');
@@ -14,6 +16,7 @@ if ($id === false || $id === null) {
 }
 
 try {
+    // Esta primeira leitura preenche o formulário e bloqueia acesso indevido já no GET.
     $statement = $connection->prepare('SELECT title, body, thumbnail, category_id, author_id, is_featured FROM posts WHERE id = ?');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -51,6 +54,7 @@ try {
 }
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // Repete toda validação no servidor porque o formulário pode ser manipulado.
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $body = is_string($_POST['body'] ?? null) ? $_POST['body'] : '';
     $categoryId = filter_var($_POST['category_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -71,6 +75,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         try {
             $connection->begin_transaction();
             $inTransaction = true;
+            // FOR UPDATE trava o registro e permite revalidar existência e autoria
+            // dentro da mesma transação que fará a alteração.
             $statement = $connection->prepare('SELECT thumbnail, author_id FROM posts WHERE id = ? FOR UPDATE');
             $statement->bind_param('i', $id);
             $statement->execute();
@@ -88,6 +94,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $connection->rollback();
                 $inTransaction = false;
             } else {
+                // Sem novo upload, mantém o caminho antigo. Com upload, só apaga a
+                // imagem anterior depois que o UPDATE for confirmado pelo COMMIT.
                 $thumbnail = $oldThumbnail;
                 if ($thumbnailExtension !== null) {
                     $newThumbnail = savePostThumbnail($_FILES['thumbnail'], $thumbnailExtension);
@@ -107,6 +115,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
+            // Qualquer falha volta o banco ao estado anterior e limpa somente o novo
+            // arquivo, caso ele tenha sido salvo antes do erro.
             if ($inTransaction) {
                 try {
                     $connection->rollback();

@@ -1,10 +1,15 @@
 <?php
 
+/** Guarda uma mensagem na sessão para ser exibida depois de um redirecionamento. */
 function setFlash(string $type, string $message): void
 {
     $_SESSION['user_flash'] = ['type' => $type, 'message' => $message];
 }
 
+/**
+ * Lê a mensagem uma única vez e a remove da sessão.
+ * Esse padrão evita reenvio de formulário e repetição da mensagem ao atualizar a página.
+ */
 function getFlash(): ?array
 {
     $flash = $_SESSION['user_flash'] ?? null;

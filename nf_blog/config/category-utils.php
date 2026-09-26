@@ -1,5 +1,6 @@
 <?php
 
+/** Valida os limites da tabela categories antes de executar INSERT ou UPDATE. */
 function categoryValidationErrors(string $title, string $description): array
 {
     $errors = [];
@@ -22,6 +23,7 @@ function categoryValidationErrors(string $title, string $description): array
 
 function categoryTitleExists(mysqli $connection, string $title, ?int $excludedId = null): bool
 {
+    // Na edição, ignora o próprio registro para permitir manter o título atual.
     if ($excludedId === null) {
         $statement = $connection->prepare('SELECT id FROM categories WHERE title = ? LIMIT 1');
         $statement->bind_param('s', $title);

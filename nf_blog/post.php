@@ -1,12 +1,88 @@
 <?php
+// A página é pública: auth.php inicia a sessão para a navbar, mas não exige login.
 require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/post-utils.php';
+
+$post = null;
+$pageError = '';
+
+// O ID vem da URL e só é aceito quando representa um inteiro positivo.
+$id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+if ($id === false || $id === null) {
+    http_response_code(404);
+    $pageError = 'Post não encontrado.';
+} else {
+    require_once __DIR__ . '/config/database.php';
+    try {
+        // O prepared statement mantém o ID separado do SQL. Os JOINs carregam todos
+        // os dados de categoria e autor necessários para montar a página completa.
+        $statement = $connection->prepare(
+            'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, p.updated_at, p.is_featured, '
+            . 'c.id AS category_id, c.title AS category_title, '
+            . 'u.id AS author_id, u.username, u.first_name, u.last_name, u.avatar '
+            . 'FROM posts AS p '
+            . 'INNER JOIN categories AS c ON c.id = p.category_id '
+            . 'INNER JOIN users AS u ON u.id = p.author_id '
+            . 'WHERE p.id = ? LIMIT 1'
+        );
+        $statement->bind_param('i', $id);
+        $statement->execute();
+        $statement->bind_result(
+            $postId,
+            $postTitle,
+            $postBody,
+            $postThumbnail,
+            $postCreatedAt,
+            $postUpdatedAt,
+            $postIsFeatured,
+            $categoryId,
+            $categoryTitle,
+            $authorId,
+            $username,
+            $firstName,
+            $lastName,
+            $avatar
+        );
+        $found = $statement->fetch() === true;
+        $statement->close();
+
+        if (!$found) {
+            http_response_code(404);
+            $pageError = 'Post não encontrado.';
+        } else {
+            // Nome completo é preferido; username cobre cadastros sem nome preenchido.
+            $authorName = trim($firstName . ' ' . $lastName);
+            $post = [
+                'id' => $postId,
+                'title' => $postTitle,
+                'body' => $postBody,
+                'thumbnail' => $postThumbnail,
+                'created_at' => $postCreatedAt,
+                'updated_at' => $postUpdatedAt,
+                'is_featured' => $postIsFeatured,
+                'category_id' => $categoryId,
+                'category_title' => $categoryTitle,
+                'author_id' => $authorId,
+                'username' => $username,
+                'author_name' => $authorName !== '' ? $authorName : $username,
+                'avatar' => is_string($avatar) && trim($avatar) !== '' ? $avatar : 'Images/avatar2.jpg',
+                'display_date' => postDisplayDate($postCreatedAt),
+            ];
+        }
+    } catch (Throwable $exception) {
+        // Detalhes técnicos ficam no log; o visitante recebe somente uma mensagem segura.
+        error_log('NF Blog: falha ao carregar post público. Código: ' . $exception->getCode());
+        http_response_code(500);
+        $pageError = 'Não foi possível carregar o post. Tente novamente.';
+    }
+}
 ?>
 <!doctype html>
 <html lang="pt-BR">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>NF Blog</title>
+        <title><?= $post ? authEscape($post['title']) . ' | NF Blog' : 'NF Blog' ?></title>
         <!-- Fav icon -->
         <link rel="icon" href="./Images/favicon.ico" />
         <!-- Custom style css -->
@@ -64,125 +140,39 @@ require_once __DIR__ . '/config/auth.php';
 
         <section class="singlepost">
             <div class="container singlepost__container">
+                <?php if ($post === null): ?>
+                <div class="alert__message error" role="alert">
+                    <p><?= authEscape($pageError) ?></p>
+                </div>
+                <?php else: ?>
+                <!-- Categoria -->
+                <a href="category-post.php?id=<?= (int) $post['category_id'] ?>" class="category__buttons"><?= authEscape($post['category_title']) ?></a>
+
                 <!-- Título -->
-                <h2>Começando no mundo das ferramentas</h2>
+                <h2><?= authEscape($post['title']) ?></h2>
 
                 <!-- Autor -->
                 <div class="post__author">
                     <div class="post__author-avatar">
-                        <img src="./Images/avatar2.jpg" alt="" />
+                        <img src="<?= authEscape(ROOT_URL . ltrim($post['avatar'], '/')) ?>" alt="<?= authEscape($post['author_name']) ?>" />
                     </div>
 
                     <div class="post__author-info">
-                        <h5>Por: <a href="blog.php">Rodrigo Miranda</a></h5>
-                        <small>Publicado em: 20/06/2026</small>
+                        <h5>Por: <a href="blog.php"><?= authEscape($post['author_name']) ?></a></h5>
+                        <small>Publicado em: <?= authEscape($post['display_date']) ?></small>
                     </div>
                 </div>
 
                 <!-- Imagem -->
                 <div class="singlepost__thumbnail">
-                    <img src="./Images/posttopt1.png" alt="" />
+                    <img src="<?= authEscape(ROOT_URL . ltrim($post['thumbnail'], '/')) ?>" alt="<?= authEscape($post['title']) ?>" />
                 </div>
 
-                <!-- Conteúdo -->
+                <!-- Conteúdo: escapa HTML do banco antes de converter quebras de linha. -->
                 <p>
-                    Se você está dando os primeiros passos no mundo das
-                    ferramentas, pode parecer que existe uma quantidade enorme
-                    de opções e que todas fazem praticamente a mesma coisa. Na
-                    realidade, cada ferramenta possui uma função específica, e
-                    conhecer o básico faz toda a diferença para realizar um
-                    trabalho com mais qualidade, segurança e economia.
-
-                    <br /><br />
-
-                    As ferramentas podem ser divididas em duas grandes
-                    categorias: manuais e elétricas. As ferramentas manuais
-                    dependem apenas da força do usuário para funcionar, como
-                    martelos, chaves de fenda, alicates e trenas. Já as
-                    ferramentas elétricas utilizam energia para facilitar o
-                    trabalho, oferecendo mais rapidez e precisão em tarefas como
-                    furar, cortar, lixar e parafusar.
-
-                    <br /><br />
-
-                    Para quem está começando, não é necessário comprar dezenas
-                    de equipamentos. Um kit básico já é suficiente para resolver
-                    a maioria das tarefas do dia a dia. Entre os itens mais
-                    recomendados estão:
-
-                    <br /><br />
-
-                    • Martelo.<br />
-                    • Jogo de chaves de fenda e Phillips.<br />
-                    • Alicate universal.<br />
-                    • Trena.<br />
-                    • Nível.<br />
-                    • Estilete.<br />
-                    • Furadeira/parafusadeira.<br />
-                    • Jogo de brocas adequado para diferentes materiais.
-
-                    <br /><br />
-
-                    Outro ponto importante é entender que qualidade vale mais do
-                    que quantidade. Ferramentas fabricadas com materiais
-                    resistentes costumam oferecer maior durabilidade, melhor
-                    desempenho e mais segurança durante o uso. Embora o
-                    investimento inicial possa ser um pouco maior, o
-                    custo-benefício costuma compensar ao longo do tempo.
-
-                    <br /><br />
-
-                    Também é essencial utilizar a ferramenta correta para cada
-                    tarefa. Usar uma chave de fenda como alavanca ou um alicate
-                    para apertar um parafuso, por exemplo, pode danificar tanto
-                    a ferramenta quanto a peça em que está sendo trabalhada.
-
-                    <br /><br />
-
-                    A segurança deve sempre ser prioridade. Antes de utilizar
-                    qualquer ferramenta é importante verificar se ela está em
-                    boas condições, sem rachaduras, cabos soltos ou sinais de
-                    desgaste.
-
-                    <br /><br />
-
-                    A organização também faz parte de um bom trabalho. Guardar
-                    as ferramentas limpas e secas ajuda a aumentar sua vida
-                    útil.
-
-                    <br /><br />
-
-                    Por fim, lembre-se de que aprender sobre ferramentas é um
-                    processo contínuo. Quanto mais você pratica, mais fácil se
-                    torna identificar qual equipamento utilizar em cada
-                    situação.
-
-                    <br /><br />
-
-                    <strong>Referências</strong>
-
-                    <br /><br />
-
-                    Occupational Safety and Health Administration (OSHA).
-                    <a
-                        href="https://www.osha.gov/hand-power-tools"
-                        target="_blank"
-                    >
-                        Hand and Power Tools
-                    </a>
-
-                    <br /><br />
-
-                    National Institute for Occupational Safety and Health
-                    (NIOSH).
-                    <a
-                        href="https://www.cdc.gov/niosh/docs/2004-164/"
-                        target="_blank"
-                    >
-                        Easy Ergonomics: A Guide to Selecting Non-Powered Hand
-                        Tools
-                    </a>
+                    <?= nl2br(authEscape($post['body'])) ?>
                 </p>
+                <?php endif; ?>
             </div>
         </section>
 

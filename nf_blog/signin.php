@@ -1,5 +1,8 @@
 <?php
+// auth.php inicia a sessão segura usada para guardar a identidade autenticada.
 require_once __DIR__ . '/config/auth.php';
+
+// Usuário já autenticado não precisa visualizar o formulário novamente.
 if (isLoggedIn()) {
     header('Location: admin/dashboard.php', true, 302);
     exit;
@@ -8,6 +11,7 @@ if (isLoggedIn()) {
 $login = '';
 $error = '';
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // A mesma entrada aceita username ou email; a senha não recebe trim.
     $login = is_string($_POST['login'] ?? null) ? trim($_POST['login']) : '';
     $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
     if ($login === '' || $password === '') {
@@ -15,6 +19,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     } else {
         require_once __DIR__ . '/config/database.php';
         try {
+            // Prepared statement impede que o texto do login altere a consulta SQL.
             $statement = $connection->prepare('SELECT id, first_name, last_name, username, email, password, avatar, role FROM users WHERE username = ? OR email = ? LIMIT 2');
             $statement->bind_param('ss', $login, $login);
             $statement->execute();
@@ -24,7 +29,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $found = $statement->num_rows === 1 && $statement->fetch();
             $statement->close();
             if ($found && password_verify($password, $hash)) {
-                // Troca o identificador antes de gravar a identidade autenticada.
+                // Troca o identificador antes de gravar a identidade autenticada,
+                // protegendo contra fixação de sessão.
                 if (!session_regenerate_id(true)) {
                     throw new RuntimeException('Falha ao renovar sessão.');
                 }
@@ -34,11 +40,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'role' => $role,
                     'avatar' => $avatar,
                 ];
+                // PRG evita reenviar a senha ao atualizar a página do dashboard.
                 header('Location: admin/dashboard.php', true, 303);
                 exit;
             }
             $error = 'Usuário/email ou senha inválidos.';
         } catch (Throwable $exception) {
+            // Nunca envia ao navegador a exceção ou detalhes da consulta/banco.
             error_log('NF Blog: falha no login. Código: ' . $exception->getCode());
             $error = 'Não foi possível entrar. Tente novamente.';
         }

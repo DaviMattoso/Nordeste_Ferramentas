@@ -1,14 +1,17 @@
 <?php
+// Categorias são administradas somente por usuários com role admin.
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/category-utils.php';
 
+// Mantém os valores preenchidos para mostrar novamente o formulário após um erro.
 $title = '';
 $description = '';
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // Verifica o tipo antes de usar os dados, pois requisições podem ser manipuladas.
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $descriptionInput = $_POST['description'] ?? '';
     $description = is_string($descriptionInput) ? $descriptionInput : '';
@@ -19,9 +22,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     if (!$errors) {
         try {
+            // A checagem permite uma mensagem clara; o índice UNIQUE no banco ainda
+            // protege contra cadastros simultâneos com o mesmo título.
             if (categoryTitleExists($connection, $title)) {
                 $errors[] = 'Categoria já existe.';
             } else {
+                // Descrição vazia vira NULL, refletindo que esse campo é opcional.
                 $storedDescription = $description === '' ? null : $description;
                 $statement = $connection->prepare('INSERT INTO categories (title, description) VALUES (?, ?)');
                 $statement->bind_param('ss', $title, $storedDescription);

@@ -1,4 +1,5 @@
 <?php
+// Página pública: carrega apenas a sessão necessária para a navbar compartilhada.
 require_once __DIR__ . '/config/auth.php';
 ?>
 <!doctype html>

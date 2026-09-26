@@ -1,16 +1,21 @@
 <?php
+// Qualquer usuário autenticado acessa o dashboard, mas a listagem varia pela role.
 require_once __DIR__ . '/../config/auth.php';
 requireLogin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/post-utils.php';
 refreshPostActor($connection);
+
+// Mensagens flash sobrevivem ao redirecionamento e são consumidas uma única vez.
 $userFlash = getFlash();
 $accessDenied = ($_SESSION['access_denied'] ?? false) === true;
 unset($_SESSION['access_denied']);
 $posts = [];
 $listError = '';
 try {
+    // Admin não recebe WHERE e enxerga todos os posts. Author recebe filtro obrigatório
+    // pelo user_id da sessão, nunca por um ID enviado pelo navegador.
     $sql = 'SELECT p.id, p.title, p.category_id, c.title AS category_title, p.author_id, p.is_featured, p.created_at '
         . 'FROM posts AS p INNER JOIN categories AS c ON c.id = p.category_id';
     if (!isAdmin()) {
@@ -30,6 +35,7 @@ try {
     }
     $statement->close();
 } catch (Throwable $exception) {
+    // Mantém o painel utilizável mesmo se somente a listagem falhar.
     error_log('NF Blog: falha ao listar posts. Código: ' . $exception->getCode());
     $listError = 'Não foi possível carregar os posts. Tente novamente.';
 }

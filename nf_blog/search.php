@@ -1,87 +1,65 @@
 <?php
-// A página é pública: auth.php inicia a sessão usada pela navbar sem exigir login.
+// A pesquisa é pública: auth.php inicia a sessão para montar a navbar, mas não
+// chama requireLogin(). post-utils.php fornece o resumo e a data dos cards.
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/post-utils.php';
 
-$category = null;
-$posts = [];
-$pageError = '';
+const SEARCH_MAX_LENGTH = 200;
 
-// O ID da categoria vem da URL e só é aceito quando é um inteiro positivo.
-$id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-if ($id === false || $id === null) {
-    http_response_code(404);
-    $pageError = 'Categoria não encontrada.';
+$rawSearchTerm = $_GET['q'] ?? null;
+$searchTerm = is_string($rawSearchTerm) ? trim($rawSearchTerm) : '';
+$searchResults = [];
+$searchMessage = '';
+$searchError = '';
+$searchWasPerformed = false;
+
+// Valida antes de abrir o banco. Além de limitar a entrada, isto impede uma
+// consulta LIKE '%%', que retornaria todos os posts para uma busca vazia.
+if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')) {
+    $searchMessage = 'Digite algo para pesquisar.';
+} elseif (!is_string($rawSearchTerm) || preg_match('//u', $searchTerm) !== 1) {
+    $searchMessage = 'Pesquisa inválida.';
+} elseif (preg_match_all('/./us', $searchTerm) > SEARCH_MAX_LENGTH) {
+    $searchMessage = 'A pesquisa deve ter no máximo ' . SEARCH_MAX_LENGTH . ' caracteres.';
 } else {
-    require_once __DIR__ . '/config/database.php';
+    $searchWasPerformed = true;
+
     try {
-        // A categoria é carregada primeiro porque existir sem posts é um estado válido,
-        // diferente de um ID que não corresponde a nenhuma categoria.
-        $statement = $connection->prepare('SELECT id, title, description FROM categories WHERE id = ? LIMIT 1');
-        $statement->bind_param('i', $id);
+        require_once __DIR__ . '/config/database.php';
+
+        // Os curingas pertencem apenas ao valor. O texto do visitante é enviado
+        // separadamente pelos parâmetros e nunca é concatenado ao comando SQL.
+        $searchPattern = '%' . $searchTerm . '%';
+        $statement = $connection->prepare(
+            'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, '
+            . 'c.id AS category_id, c.title AS category_title, '
+            . 'u.username, u.first_name, u.last_name, u.avatar '
+            . 'FROM posts AS p '
+            . 'INNER JOIN categories AS c ON c.id = p.category_id '
+            . 'INNER JOIN users AS u ON u.id = p.author_id '
+            . 'WHERE p.title LIKE ? OR p.body LIKE ? '
+            . 'ORDER BY p.created_at DESC'
+        );
+        $statement->bind_param('ss', $searchPattern, $searchPattern);
         $statement->execute();
-        $statement->bind_result($categoryId, $categoryTitle, $categoryDescription);
-        $found = $statement->fetch() === true;
-        $statement->close();
+        $result = $statement->get_result();
 
-        if (!$found) {
-            http_response_code(404);
-            $pageError = 'Categoria não encontrada.';
-        } else {
-            $category = [
-                'id' => $categoryId,
-                'title' => $categoryTitle,
-                'description' => $categoryDescription,
-            ];
-
-            // O filtro usa o mesmo ID já validado e mantém o valor separado do SQL.
-            // O JOIN com users fornece o autor de cada card em uma única consulta.
-            $statement = $connection->prepare(
-                'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, p.is_featured, '
-                . 'u.id AS author_id, u.username, u.first_name, u.last_name, u.avatar '
-                . 'FROM posts AS p '
-                . 'INNER JOIN users AS u ON u.id = p.author_id '
-                . 'WHERE p.category_id = ? '
-                . 'ORDER BY p.created_at DESC'
-            );
-            $statement->bind_param('i', $id);
-            $statement->execute();
-            $statement->bind_result(
-                $postId,
-                $postTitle,
-                $postBody,
-                $postThumbnail,
-                $postCreatedAt,
-                $postIsFeatured,
-                $authorId,
-                $username,
-                $firstName,
-                $lastName,
-                $avatar
-            );
-            while ($statement->fetch()) {
-                $authorName = trim($firstName . ' ' . $lastName);
-                $posts[] = [
-                    'id' => $postId,
-                    'title' => $postTitle,
-                    'thumbnail' => $postThumbnail,
-                    'is_featured' => $postIsFeatured,
-                    'author_id' => $authorId,
-                    'author_name' => $authorName !== '' ? $authorName : $username,
-                    'avatar' => is_string($avatar) && trim($avatar) !== '' ? $avatar : 'Images/avatar2.jpg',
-                    'excerpt' => postExcerpt($postBody),
-                    'display_date' => postDisplayDate($postCreatedAt),
-                ];
-            }
-            $statement->close();
+        while ($post = $result->fetch_assoc()) {
+            // Prefere o nome completo; username é o fallback para perfis sem nome.
+            $authorName = trim($post['first_name'] . ' ' . $post['last_name']);
+            $post['author_name'] = $authorName !== '' ? $authorName : $post['username'];
+            $post['excerpt'] = postExcerpt($post['body']);
+            $post['display_date'] = postDisplayDate($post['created_at']);
+            $searchResults[] = $post;
         }
+
+        $result->free();
+        $statement->close();
     } catch (Throwable $exception) {
-        // Detalhes técnicos ficam no log; o visitante recebe somente uma mensagem segura.
-        error_log('NF Blog: falha ao carregar categoria pública. Código: ' . $exception->getCode());
+        // O código técnico vai para o log; o visitante recebe somente uma mensagem genérica.
+        error_log('NF Blog: falha na pesquisa pública. Código: ' . $exception->getCode());
         http_response_code(500);
-        $category = null;
-        $posts = [];
-        $pageError = 'Não foi possível carregar a categoria. Tente novamente.';
+        $searchError = 'Não foi possível realizar a pesquisa agora. Tente novamente.';
     }
 }
 ?>
@@ -90,7 +68,7 @@ if ($id === false || $id === null) {
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title><?= $category ? authEscape($category['title']) . ' | NF Blog' : 'NF Blog' ?></title>
+        <title>Pesquisa - NF Blog</title>
         <!-- Fav icon -->
         <link rel="icon" href="./Images/favicon.ico" />
         <!-- Custom style css -->
@@ -144,37 +122,54 @@ if ($id === false || $id === null) {
         </nav>
         <!-- ======== Fim da navbar ======== -->
 
-        <!-- ======== Identificação da categoria ======== -->
+        <!-- ======== Barra de pesquisa ======== -->
         <section class="search__bar">
-            <div class="container">
-                <?php if ($pageError !== ''): ?>
-                <div class="alert__message error" role="alert">
-                    <p><?= authEscape($pageError) ?></p>
+            <!-- O limite do HTML apenas ajuda a interface; o PHP repete a validação. -->
+            <form action="search.php" method="GET" class="container search__bar-container">
+                <div>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input
+                        type="search"
+                        name="q"
+                        maxlength="<?= SEARCH_MAX_LENGTH ?>"
+                        value="<?= authEscape($searchTerm) ?>"
+                        placeholder="Pesquisar"
+                    />
                 </div>
-                <?php else: ?>
-                <h2><?= authEscape($category['title']) ?></h2>
-                <?php if (is_string($category['description']) && trim($category['description']) !== ''): ?>
-                <p><?= nl2br(authEscape($category['description'])) ?></p>
+                <button type="submit" class="btn">Go</button>
+            </form>
+        </section>
+        <!-- ======== Fim da barra de pesquisa ======== -->
+
+        <!-- ======== Resultados da pesquisa ======== -->
+        <section class="posts">
+            <div class="container">
+                <?php if ($searchWasPerformed): ?>
+                <h2>Resultados para: &quot;<?= authEscape($searchTerm) ?>&quot;</h2>
                 <?php endif; ?>
+
+                <?php if ($searchError !== ''): ?>
+                <div class="alert__message error" role="alert">
+                    <p><?= authEscape($searchError) ?></p>
+                </div>
+                <?php elseif ($searchMessage !== ''): ?>
+                <p><?= authEscape($searchMessage) ?></p>
+                <?php elseif (!$searchResults): ?>
+                <p>Nenhum post encontrado para esta pesquisa.</p>
                 <?php endif; ?>
             </div>
-        </section>
 
-        <?php if ($category !== null && $pageError === ''): ?>
-        <!-- ======== Posts da categoria ======== -->
-        <section class="posts">
+            <?php if ($searchError === '' && $searchResults): ?>
             <div class="container posts__container">
-                <?php if (!$posts): ?>
-                <p>Ainda não existem posts nesta categoria.</p>
-                <?php else: ?>
-                <?php foreach ($posts as $post): ?>
+                <?php foreach ($searchResults as $post): ?>
+                <!-- Mantém a mesma estrutura visual e os mesmos destinos do card do blog. -->
                 <article class="post">
                     <div class="post__thumbnail">
                         <img src="<?= authEscape(ROOT_URL . ltrim($post['thumbnail'], '/')) ?>" alt="<?= authEscape($post['title']) ?>" />
                     </div>
 
                     <div class="post__info">
-                        <a href="category-post.php?id=<?= (int) $category['id'] ?>" class="category__buttons"><?= authEscape($category['title']) ?></a>
+                        <a href="category-post.php?id=<?= (int) $post['category_id'] ?>" class="category__buttons"><?= authEscape($post['category_title']) ?></a>
 
                         <h3 class="post__title">
                             <a href="post.php?id=<?= (int) $post['id'] ?>"><?= authEscape($post['title']) ?></a>
@@ -186,7 +181,7 @@ if ($id === false || $id === null) {
 
                         <div class="post__author">
                             <div class="post__author-avatar">
-                                <img src="<?= authEscape(ROOT_URL . ltrim($post['avatar'], '/')) ?>" alt="<?= authEscape($post['author_name']) ?>" />
+                                <img src="<?= authEscape(ROOT_URL . ltrim($post['avatar'] ?: 'Images/avatar2.jpg', '/')) ?>" alt="<?= authEscape($post['author_name']) ?>" />
                             </div>
 
                             <div class="post__author-info">
@@ -197,11 +192,23 @@ if ($id === false || $id === null) {
                     </div>
                 </article>
                 <?php endforeach; ?>
-                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+        </section>
+        <!-- ======== Fim dos resultados ======== -->
+
+        <!-- ======== Categorias btns ======== -->
+        <section class="category__buttons-section">
+            <div class="container category__buttons-container">
+                <a href="" class="category__buttons">Ferramentas</a>
+                <a href="" class="category__buttons">Construção</a>
+                <a href="" class="category__buttons">Marcenaria</a>
+                <a href="" class="category__buttons">Segurança no Trabalho</a>
+                <a href="" class="category__buttons">Dicas e Tutoriais</a>
+                <a href="" class="category__buttons">Maquinaria Pesada</a>
             </div>
         </section>
-        <!-- ======== Fim dos posts da categoria ======== -->
-        <?php endif; ?>
+        <!-- ======== Fim categorias btns ======== -->
 
         <!-- ======== Footer ======== -->
         <footer>
@@ -231,7 +238,8 @@ if ($id === false || $id === null) {
                 <article>
                     <!-- ======================================================
                 TODO:
-                Tornar os links do footer dinâmicos em uma etapa futura.
+                Adicionar os links das categorias quando as páginas
+                individuais estiverem prontas.
             ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>

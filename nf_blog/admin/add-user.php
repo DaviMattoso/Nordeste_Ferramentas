@@ -1,14 +1,17 @@
 <?php
+// Somente admin pode criar contas pelo painel e escolher a role inicial.
 require_once __DIR__ . '/../config/auth.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/user-utils.php';
 require_once __DIR__ . '/../config/flash.php';
 
+// Estes valores repopulam o formulário se alguma validação falhar.
 $values = array_fill_keys(['first_name', 'last_name', 'username', 'email'], '');
 $role = 'author';
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // Normaliza entradas textuais e valida a role contra uma lista fechada.
     foreach ($values as $field => $unused) {
         $values[$field] = is_string($_POST[$field] ?? null) ? trim($_POST[$field]) : '';
     }
@@ -28,8 +31,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!$errors) {
         $avatar = null;
         try {
+            // A checagem melhora a mensagem; os índices UNIQUE continuam sendo
+            // a garantia final contra duas requisições simultâneas.
             $errors = userDuplicateErrors($connection, $values);
             if (!$errors) {
+                // Senha nunca é persistida em texto puro.
                 $hash = password_hash($password, PASSWORD_DEFAULT);
                 if ($avatarExtension !== null) {
                     $avatar = saveUserAvatar($_FILES['avatar'], $avatarExtension);
@@ -43,6 +49,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
+            // Remove o upload se o usuário não puder ser gravado no banco.
             removeManagedUserAvatar($avatar);
             $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1062
                 ? 'Username ou email já está cadastrado.'
