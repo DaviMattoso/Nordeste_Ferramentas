@@ -3,7 +3,7 @@
 ## Preparação e banco
 
 - Inicie Apache e MySQL, selecione `nf_blog` no phpMyAdmin e confirme que `users` e `categories` existem.
-- Execute uma vez o SQL abaixo. Ele não apaga dados existentes.
+- Confirme a estrutura atual em `database/database.sql`; não reimporte o schema em um banco que já contém os dados desejados.
 - Confirme as duas foreign keys e os três índices com `SHOW CREATE TABLE posts;` e `SHOW INDEX FROM posts;`.
 - Confirme que `Images/posts/` permite escrita e que `fileinfo` está ativo. Configure `upload_max_filesize >= 5M` e `post_max_size > 5M`.
 - Use as contas de teste ADMIN e AUTHOR em sessões separadas. Não registre senhas nem hashes neste arquivo.
@@ -87,4 +87,4 @@ SELECT id, title, category_id, author_id, is_featured, thumbnail, created_at, up
 FROM posts ORDER BY id ASC;
 ```
 
-Confira IDs reais, timestamps, índice e caminhos de thumbnail. Para testar validação server-side, remova temporariamente os atributos HTML `required`/`maxlength` no inspetor. Remova somente os posts de teste pela interface. A proteção CSRF e as páginas públicas dinâmicas ficam para etapas futuras.
+Confira IDs reais, timestamps, índices e caminhos de thumbnail. Para testar validação server-side, remova temporariamente os atributos HTML `required`/`maxlength` no inspetor. A proteção CSRF, as páginas públicas dinâmicas e a autorização por propriedade estão implementadas e foram validadas na regressão final. Os posts e uploads temporários foram removidos.

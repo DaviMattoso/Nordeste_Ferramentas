@@ -1,16 +1,20 @@
 <?php
 // Cadastro público: novos usuários sempre entram como author.
 require_once __DIR__ . '/config/user-utils.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/category-utils.php';
+require_once __DIR__ . '/config/csrf.php';
 
 // Preserva os campos não sensíveis quando houver erro; senhas nunca voltam ao HTML.
+$publicCategories = publicCategories($connection);
 $errors = [];
 $values = array_fill_keys(['first_name', 'last_name', 'username', 'email'], '');
 $escape = static function ($value) {
     return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 };
 
-// TODO: adicionar proteção CSRF na revisão de segurança, antes da publicação.
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    requireValidCsrfToken();
     // Aceita somente strings e remove espaços acidentais dos campos textuais.
     foreach ($values as $field => $value) {
         $values[$field] = is_string($_POST[$field] ?? null) ? trim($_POST[$field]) : '';
@@ -30,8 +34,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $errors = array_merge($errors, $avatarErrors);
 
     if (!$errors) {
-        // A conexão só é necessária depois que a validação básica foi aprovada.
-        require_once __DIR__ . '/config/database.php';
         $avatar = null;
         try {
             $errors = userDuplicateErrors($connection, $values);
@@ -70,11 +72,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>NF Blog</title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="./css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -82,7 +84,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     </head>
 
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -109,10 +111,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
-        <!-- ======== Formulário de Cadastro ======== -->
         <section class="form__section">
             <div class="container form__section-container">
-                <!-- ======== Imagem da página ======== -->
+
                 <div class="form__image">
                     <img src="./Images/signup.png" alt="Criando uma conta" />
                 </div>
@@ -126,6 +127,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 </div>
                 <?php endif; ?>
                 <form action="signup.php" method="POST" enctype="multipart/form-data">
+                    <?= csrfField() ?>
                     <input type="text" name="first_name" placeholder="Primeiro Nome" maxlength="100" value="<?= $escape($values['first_name']) ?>" required />
                     <input type="text" name="last_name" placeholder="Sobrenome" maxlength="100" value="<?= $escape($values['last_name']) ?>" required />
                     <input type="text" name="username" placeholder="Username" maxlength="100" value="<?= $escape($values['username']) ?>" required />
@@ -145,7 +147,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -171,19 +172,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <?php foreach ($publicCategories as $publicCategory): ?>
+                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= $escape((string) $publicCategory['title']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
 
@@ -225,7 +218,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="./js/main.js"></script>
     </body>
 </html>

@@ -61,4 +61,4 @@ SELECT id, first_name, last_name, username, email, role, avatar, created_at, upd
 FROM users ORDER BY id ASC;
 ```
 
-Confira os hashes no banco sem copiá-los para relatórios. Depois dos testes, exclua somente as contas de teste pela interface. Proteção CSRF continua pendente para revisão futura, conforme o escopo desta etapa.
+Confira os hashes no banco sem copiá-los para relatórios. A regressão final validou criação, listagem, edição, alteração de role, autoexclusão bloqueada, autorização, CSRF e exclusão. As contas temporárias foram removidas.

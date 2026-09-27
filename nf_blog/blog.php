@@ -2,9 +2,12 @@
 // A página é pública: auth.php apenas inicia a sessão para montar a navbar,
 // sem chamar requireLogin(). A conexão é usada para buscar os cards reais.
 require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/post-utils.php';
+require_once __DIR__ . '/config/category-utils.php';
 
+$publicCategories = publicCategories($connection);
 $posts = [];
 $listError = '';
 try {
@@ -40,21 +43,19 @@ try {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>NF Blog</title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="./css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         />
     </head>
 
-    <!-- ======== Colocar o fav icon ======== -->
-
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -79,7 +80,12 @@ try {
                         </div>
                         <ul>
                             <li><a href="admin/dashboard.php">Dashboard</a></li>
-                            <li><a href="logout.php">Logout</a></li>
+                            <li>
+                                <form action="logout.php" method="POST" class="logout__form">
+                                    <?= csrfField() ?>
+                                    <button type="submit" class="logout__button">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -93,11 +99,9 @@ try {
                 </button>
             </div>
         </nav>
-        <!-- ======== Fim da navbar ======== -->
 
-        <!-- ======== Barra de pesquisa ======== -->
         <section class="search__bar">
-            <!-- GET deixa o termo visível na URL para a pesquisa poder ser compartilhada. -->
+
             <form action="search.php" method="GET" class="container search__bar-container">
                 <div>
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -106,9 +110,6 @@ try {
                 <button type="submit" class="btn">Go</button>
             </form>
         </section>
-        <!-- ======== Fim da barra de pesquisa ======== -->
-
-        <!-- ======== Posts ======== -->
 
         <section class="posts">
             <div class="container posts__container">
@@ -153,24 +154,14 @@ try {
             </div>
         </section>
 
-        <!-- ======== Fim dos Posts ======== -->
-
-        <!-- ======== Categorias btns ======== -->
-
         <section class="category__buttons-section">
             <div class="container category__buttons-container">
-                <a href="" class="category__buttons">Ferramentas</a>
-                <a href="" class="category__buttons">Construção</a>
-                <a href="" class="category__buttons">Marcenaria</a>
-                <a href="" class="category__buttons">Segurança no Trabalho</a>
-                <a href="" class="category__buttons">Dicas e Tutoriais</a>
-                <a href="" class="category__buttons">Maquinaria Pesada</a>
+                <?php foreach ($publicCategories as $publicCategory): ?>
+                <a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>" class="category__buttons"><?= authEscape((string) $publicCategory['title']) ?></a>
+                <?php endforeach; ?>
             </div>
         </section>
 
-        <!-- ======== Fim categorias btns ======== -->
-
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -196,19 +187,11 @@ try {
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <?php foreach ($publicCategories as $publicCategory): ?>
+                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
 
@@ -250,7 +233,6 @@ try {
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="./js/main.js"></script>
     </body>
 </html>

@@ -90,5 +90,3 @@ function authAvatar(): string
     return is_string($avatar) && preg_match('~\AImages/avatars/[a-f0-9]{32}\.(?:jpg|png|webp)\z~', $avatar)
         ? $avatar : 'Images/avatar2.jpg';
 }
-
-// Pendência: proteção CSRF dos formulários e do logout na revisão de segurança.

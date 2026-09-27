@@ -1,6 +1,7 @@
 <?php
 // Exclusão é uma ação protegida para admin ou para o próprio autor do post.
 require_once __DIR__ . '/../config/auth.php';
+require_once __DIR__ . '/../config/csrf.php';
 requireLogin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
@@ -13,6 +14,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     header('Location: dashboard.php', true, 303);
     exit;
 }
+requireValidCsrfToken();
 
 $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {

@@ -12,7 +12,7 @@ Não executar database.sql. Usar uma conta já cadastrada no banco existente.
 - Sessão persiste entre requisições; logout expira o cookie, destrói a sessão e o cookie antigo não permite voltar ao dashboard.
 - Revisão do código: apenas user_id, username, role e avatar são gravados na sessão. Senha e hash não são gravados.
 
-Esses testes de sessão simulada não substituem o teste de credenciais reais com MySQL.
+A regressão final também cobriu credenciais temporárias reais no MySQL, com restauração integral dos dados ao término.
 
 ## Executar manualmente no XAMPP
 
@@ -29,9 +29,9 @@ Esses testes de sessão simulada não substituem o teste de credenciais reais co
 11. Conferir avatar enviado e fallback para quem não tem avatar; revisar aparência no navegador.
 12. Conferir mensagem de cadastro em signin.php?registered=1 e ausência de mensagens permanentes.
 
-## Pendências
+## Estado após a revisão de segurança
 
-Proteção CSRF (incluindo logout), limitação de tentativas de login e controle de propriedade dos posts ficam para revisão posterior. Os formulários administrativos continuam estáticos.
+Proteção CSRF (incluindo logout) e controle de propriedade dos posts foram implementados e testados. A limitação de tentativas de login permanece como melhoria de infraestrutura para antes da exposição pública de longo prazo.
 
 ## Atualização: permissões admin/author
 
@@ -58,3 +58,20 @@ UPDATE users SET role = 'author' WHERE id = 123;
 Executar a promoção e a restauração em momentos separados. Após cada alteração, fazer logout e login novamente, pois o role é carregado na sessão durante o login. Nenhum desses comandos foi executado pela implementação; o cadastro público continua criando author.
 
 Se o username de uma conta coincidir com o email de outra, o login rejeita a identificação ambígua com a mensagem genérica; usar o outro identificador exclusivo da conta.
+
+## Checklist final do NF Blog
+
+- [x] Cadastro, login por username/email, rotação de sessão e logout POST-only.
+- [x] Perfis admin/author e autorização server-side.
+- [x] CRUD de usuários, categorias e posts.
+- [x] Uploads válidos, bloqueio de tipos inválidos e remoção de arquivos substituídos/excluídos.
+- [x] CSRF em todas as operações mutáveis.
+- [x] Páginas públicas, featured/fallback, categorias e busca dinâmicas.
+- [x] Prepared statements, escaping e proteção de propriedade dos posts.
+- [x] Foreign Keys e `database.sql` coerente.
+- [x] Hardening Apache e diretórios internos bloqueados.
+- [x] Regressão final: 98 de 98 verificações aprovadas; banco restaurado para 2 usuários, 6 categorias e 2 posts.
+- [ ] Conferência visual manual final em desktop, tablet e mobile.
+- [ ] Integração com `site_principal`.
+- [ ] Deploy e HTTPS reais.
+- [ ] Rate limit de login para exposição pública prolongada.

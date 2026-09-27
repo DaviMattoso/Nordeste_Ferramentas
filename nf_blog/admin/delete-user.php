@@ -1,6 +1,7 @@
 <?php
 // Exclusão de usuário é restrita a administradores autenticados.
 require_once __DIR__ . '/../config/auth.php';
+require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/user-utils.php';
@@ -12,6 +13,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     header('Location: manage-users.php', true, 303);
     exit;
 }
+requireValidCsrfToken();
 
 $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {

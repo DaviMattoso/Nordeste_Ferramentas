@@ -3,7 +3,9 @@
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/post-utils.php';
+require_once __DIR__ . '/config/category-utils.php';
 
+$publicCategories = publicCategories($connection);
 $featuredPost = null;
 $recentPosts = [];
 $loadError = '';
@@ -76,12 +78,8 @@ try {
 require_once __DIR__ . '/admin/partials/header.php';
 ?>
 
-        <!-- ======== Featured posts ======== -->
-        <!-- ======== Post base (posttop) ======== -->
-
-        <!-- Seção do post em destaque -->
         <section class="featured">
-            <!-- Container centralizador do conteúdo -->
+
             <div class="container featured__container">
                 <?php if ($loadError !== ''): ?>
                 <div class="alert__message error" role="alert">
@@ -90,42 +88,36 @@ require_once __DIR__ . '/admin/partials/header.php';
                 <?php elseif ($featuredPost === null): ?>
                 <p>Ainda não existem posts publicados.</p>
                 <?php else: ?>
-                <!-- Miniatura/imagem principal do post -->
+
                 <div class="post__thumbnail">
-                    <!-- Imagem do post -->
+
                     <img src="<?= authEscape(ROOT_URL . ltrim($featuredPost['thumbnail'], '/')) ?>" alt="<?= authEscape($featuredPost['title']) ?>" />
                 </div>
 
-                <!-- Informações do post -->
                 <div class="post__info">
-                    <!-- Categoria do post -->
+
                     <a href="category-post.php?id=<?= (int) $featuredPost['category_id'] ?>" class="category__buttons"><?= authEscape($featuredPost['category_title']) ?></a>
 
-                    <!-- Título do post -->
                     <h2 class="post__title">
-                        <!-- Link para a página completa do post -->
+
                         <a href="post.php?id=<?= (int) $featuredPost['id'] ?>"><?= authEscape($featuredPost['title']) ?></a>
                     </h2>
 
-                    <!-- Resumo/introdução do post -->
                     <p class="post__body">
                         <?= authEscape($featuredPost['excerpt']) ?>
                     </p>
 
-                    <!-- Área de informações do autor -->
                     <div class="post__author">
-                        <!-- Avatar do autor -->
+
                         <div class="post__author-avatar">
-                            <!-- Foto do autor -->
+
                             <img src="<?= authEscape(ROOT_URL . ltrim($featuredPost['avatar'], '/')) ?>" alt="<?= authEscape($featuredPost['author_name']) ?>" />
                         </div>
 
-                        <!-- Dados do autor -->
                         <div class="post__author-info">
-                            <!-- Nome do autor -->
+
                             <h5>Por: <?= authEscape($featuredPost['author_name']) ?></h5>
 
-                            <!-- Data e horário da publicação -->
                             <small><?= authEscape($featuredPost['display_date']) ?></small>
                         </div>
                     </div>
@@ -133,10 +125,6 @@ require_once __DIR__ . '/admin/partials/header.php';
                 <?php endif; ?>
             </div>
         </section>
-
-        <!-- ======== Fim featured posts ======== -->
-
-        <!-- ======== Posts ======== -->
 
         <?php if ($recentPosts): ?>
         <section class="posts">
@@ -175,24 +163,14 @@ require_once __DIR__ . '/admin/partials/header.php';
         </section>
         <?php endif; ?>
 
-        <!-- ======== Fim dos Posts ======== -->
-
-        <!-- ======== Categorias btns ======== -->
-
         <section class="category__buttons-section">
             <div class="container category__buttons-container">
-                <a href="" class="category__buttons">Ferramentas</a>
-                <a href="" class="category__buttons">Construção</a>
-                <a href="" class="category__buttons">Marcenaria</a>
-                <a href="" class="category__buttons">Segurança no Trabalho</a>
-                <a href="" class="category__buttons">Dicas e Tutoriais</a>
-                <a href="" class="category__buttons">Maquinaria Pesada</a>
+                <?php foreach ($publicCategories as $publicCategory): ?>
+                <a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>" class="category__buttons"><?= authEscape((string) $publicCategory['title']) ?></a>
+                <?php endforeach; ?>
             </div>
         </section>
 
-        <!-- ======== Fim categorias btns ======== -->
-
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -218,19 +196,11 @@ require_once __DIR__ . '/admin/partials/header.php';
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <?php foreach ($publicCategories as $publicCategory): ?>
+                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
 
@@ -272,7 +242,6 @@ require_once __DIR__ . '/admin/partials/header.php';
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="./js/main.js"></script>
     </body>
 </html>

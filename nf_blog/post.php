@@ -1,8 +1,12 @@
 <?php
 // A página é pública: auth.php inicia a sessão para a navbar, mas não exige login.
 require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/post-utils.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/category-utils.php';
 
+$publicCategories = publicCategories($connection);
 $post = null;
 $pageError = '';
 
@@ -12,7 +16,6 @@ if ($id === false || $id === null) {
     http_response_code(404);
     $pageError = 'Post não encontrado.';
 } else {
-    require_once __DIR__ . '/config/database.php';
     try {
         // O prepared statement mantém o ID separado do SQL. Os JOINs carregam todos
         // os dados de categoria e autor necessários para montar a página completa.
@@ -83,20 +86,19 @@ if ($id === false || $id === null) {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title><?= $post ? authEscape($post['title']) . ' | NF Blog' : 'NF Blog' ?></title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="./css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         />
     </head>
 
-    <!-- ======== Colocar o fav icon ======== -->
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -121,7 +123,12 @@ if ($id === false || $id === null) {
                         </div>
                         <ul>
                             <li><a href="admin/dashboard.php">Dashboard</a></li>
-                            <li><a href="logout.php">Logout</a></li>
+                            <li>
+                                <form action="logout.php" method="POST" class="logout__form">
+                                    <?= csrfField() ?>
+                                    <button type="submit" class="logout__button">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -136,8 +143,6 @@ if ($id === false || $id === null) {
             </div>
         </nav>
 
-        <!-- ======== Single Post ======== -->
-
         <section class="singlepost">
             <div class="container singlepost__container">
                 <?php if ($post === null): ?>
@@ -145,13 +150,11 @@ if ($id === false || $id === null) {
                     <p><?= authEscape($pageError) ?></p>
                 </div>
                 <?php else: ?>
-                <!-- Categoria -->
+
                 <a href="category-post.php?id=<?= (int) $post['category_id'] ?>" class="category__buttons"><?= authEscape($post['category_title']) ?></a>
 
-                <!-- Título -->
                 <h2><?= authEscape($post['title']) ?></h2>
 
-                <!-- Autor -->
                 <div class="post__author">
                     <div class="post__author-avatar">
                         <img src="<?= authEscape(ROOT_URL . ltrim($post['avatar'], '/')) ?>" alt="<?= authEscape($post['author_name']) ?>" />
@@ -163,12 +166,10 @@ if ($id === false || $id === null) {
                     </div>
                 </div>
 
-                <!-- Imagem -->
                 <div class="singlepost__thumbnail">
                     <img src="<?= authEscape(ROOT_URL . ltrim($post['thumbnail'], '/')) ?>" alt="<?= authEscape($post['title']) ?>" />
                 </div>
 
-                <!-- Conteúdo: escapa HTML do banco antes de converter quebras de linha. -->
                 <p>
                     <?= nl2br(authEscape($post['body'])) ?>
                 </p>
@@ -176,7 +177,6 @@ if ($id === false || $id === null) {
             </div>
         </section>
 
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -202,19 +202,11 @@ if ($id === false || $id === null) {
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <?php foreach ($publicCategories as $publicCategory): ?>
+                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
 

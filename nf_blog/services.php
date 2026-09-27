@@ -1,6 +1,11 @@
 <?php
-// Página pública: carrega apenas a sessão necessária para a navbar compartilhada.
+// Página pública: a sessão monta a navbar e o banco fornece as categorias do footer.
 require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/csrf.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/category-utils.php';
+
+$publicCategories = publicCategories($connection);
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -8,21 +13,19 @@ require_once __DIR__ . '/config/auth.php';
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>NF Blog</title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="./css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         />
     </head>
 
-    <!-- ======== Colocar o fav icon ======== -->
-
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -47,7 +50,12 @@ require_once __DIR__ . '/config/auth.php';
                         </div>
                         <ul>
                             <li><a href="admin/dashboard.php">Dashboard</a></li>
-                            <li><a href="logout.php">Logout</a></li>
+                            <li>
+                                <form action="logout.php" method="POST" class="logout__form">
+                                    <?= csrfField() ?>
+                                    <button type="submit" class="logout__button">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -61,15 +69,11 @@ require_once __DIR__ . '/config/auth.php';
                 </button>
             </div>
         </nav>
-        <!-- ======== Fim da navbar ======== -->
-
-        <!-- ======== Serviços ======== -->
 
         <section class="services">
             <div class="container services__container">
                 <div class="services__title">
                     <h1>Nossos Serviços</h1>
-
                     <p>
                         O NF Ferramentas vai além de apresentar produtos. Nosso
                         objetivo é ensinar, orientar e ajudar profissionais e
@@ -77,8 +81,6 @@ require_once __DIR__ . '/config/auth.php';
                         segurança e eficiência.
                     </p>
                 </div>
-
-                <!-- ======== Ícones ======== -->
 
                 <div class="services__top">
                     <article>
@@ -109,8 +111,6 @@ require_once __DIR__ . '/config/auth.php';
                         </p>
                     </article>
                 </div>
-
-                <!-- ======== Destaque ======== -->
 
                 <div class="services__middle">
                     <div class="services__image">
@@ -162,7 +162,6 @@ require_once __DIR__ . '/config/auth.php';
                     </div>
                 </div>
 
-                <!-- ======== Estatísticas ======== -->
                 <div class="services__numbers">
                     <article>
                         <h2>500+</h2>
@@ -185,7 +184,6 @@ require_once __DIR__ . '/config/auth.php';
                     </article>
                 </div>
 
-                <!-- ======== CTA ======== -->
                 <div class="services__cta">
                     <h2>Pronto para aprender mais?</h2>
                     <p>
@@ -198,9 +196,7 @@ require_once __DIR__ . '/config/auth.php';
                 </div>
             </div>
         </section>
-        <!-- ======== Fim Serviços ======== -->
 
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -226,19 +222,11 @@ require_once __DIR__ . '/config/auth.php';
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <?php foreach ($publicCategories as $publicCategory): ?>
+                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
 
@@ -280,7 +268,6 @@ require_once __DIR__ . '/config/auth.php';
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="./js/main.js"></script>
     </body>
 </html>

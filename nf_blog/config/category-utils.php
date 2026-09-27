@@ -37,3 +37,22 @@ function categoryTitleExists(mysqli $connection, string $title, ?int $excludedId
     $statement->close();
     return $exists;
 }
+
+/** Retorna as categorias exibidas na navegação pública. */
+function publicCategories(mysqli $connection): array
+{
+    try {
+        // Não há entrada externa nesta consulta; o ID desempata títulos iguais.
+        $categories = [];
+        $result = $connection->query('SELECT id, title FROM categories ORDER BY title ASC, id ASC');
+        while ($category = $result->fetch_assoc()) {
+            $categories[] = $category;
+        }
+        $result->free();
+        return $categories;
+    } catch (Throwable $exception) {
+        // A navegação de categorias é auxiliar e não deve derrubar a página pública.
+        error_log('NF Blog: falha ao listar categorias públicas. Código: ' . $exception->getCode());
+        return [];
+    }
+}

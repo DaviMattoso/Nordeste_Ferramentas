@@ -2,6 +2,7 @@
 // Inicia a sessão para que a navbar compartilhada consiga exibir login ou perfil.
 // Este partial não exige autenticação por conta própria; cada página decide seu acesso.
 require_once __DIR__ . '/../../config/auth.php';
+require_once __DIR__ . '/../../config/csrf.php';
 ?>
 
 <!doctype html>
@@ -10,11 +11,11 @@ require_once __DIR__ . '/../../config/auth.php';
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>PHP & HTML NF Blog /Aplicativo com painel administrativo/</title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="./css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -22,7 +23,7 @@ require_once __DIR__ . '/../../config/auth.php';
     </head>
 
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -47,7 +48,12 @@ require_once __DIR__ . '/../../config/auth.php';
                         </div>
                         <ul>
                             <li><a href="admin/dashboard.php">Dashboard</a></li>
-                            <li><a href="logout.php">Logout</a></li>
+                            <li>
+                                <form action="logout.php" method="POST" class="logout__form">
+                                    <?= csrfField() ?>
+                                    <button type="submit" class="logout__button">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -61,4 +67,3 @@ require_once __DIR__ . '/../../config/auth.php';
                 </button>
             </div>
         </nav>
-        <!-- ======== Fim da navbar ======== -->

@@ -1,7 +1,6 @@
 # Verificação do cadastro público
 
-Implementação limitada ao cadastro. Login e sessões ainda não foram implementados.
-Pendência de segurança: adicionar proteção CSRF antes da publicação.
+Cadastro, login, sessões e proteção CSRF estão implementados. Este checklist permanece como referência para repetição manual dos cenários de cadastro.
 
 ## Preparação
 
@@ -49,4 +48,4 @@ Conferir `role = 'author'`, datas geradas pelo banco e os índices UNIQUE de use
 
 ## Verificação nesta implementação
 
-Revisão estática do fluxo e `git diff --check` realizados. Não foi localizado executável PHP nem serviço MySQL acessível neste ambiente: lint PHP, testes HTTP e confirmação de registros/hashes no MySQL permanecem pendentes no XAMPP.
+A regressão final no XAMPP validou cadastro real, role `author`, hash de senha, duplicidade, CSRF, avatar válido e arquivo inválido. A conta e o upload temporários foram removidos, e o banco retornou à linha de base.

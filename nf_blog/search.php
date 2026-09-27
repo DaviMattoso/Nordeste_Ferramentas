@@ -2,10 +2,14 @@
 // A pesquisa é pública: auth.php inicia a sessão para montar a navbar, mas não
 // chama requireLogin(). post-utils.php fornece o resumo e a data dos cards.
 require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/post-utils.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/category-utils.php';
 
 const SEARCH_MAX_LENGTH = 200;
 
+$publicCategories = publicCategories($connection);
 $rawSearchTerm = $_GET['q'] ?? null;
 $searchTerm = is_string($rawSearchTerm) ? trim($rawSearchTerm) : '';
 $searchResults = [];
@@ -13,7 +17,7 @@ $searchMessage = '';
 $searchError = '';
 $searchWasPerformed = false;
 
-// Valida antes de abrir o banco. Além de limitar a entrada, isto impede uma
+// Valida antes de executar a consulta de posts. Além de limitar a entrada, isto impede uma
 // consulta LIKE '%%', que retornaria todos os posts para uma busca vazia.
 if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')) {
     $searchMessage = 'Digite algo para pesquisar.';
@@ -25,8 +29,6 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
     $searchWasPerformed = true;
 
     try {
-        require_once __DIR__ . '/config/database.php';
-
         // Os curingas pertencem apenas ao valor. O texto do visitante é enviado
         // separadamente pelos parâmetros e nunca é concatenado ao comando SQL.
         $searchPattern = '%' . $searchTerm . '%';
@@ -69,11 +71,11 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Pesquisa - NF Blog</title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="./css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -81,7 +83,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
     </head>
 
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -106,7 +108,12 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
                         </div>
                         <ul>
                             <li><a href="admin/dashboard.php">Dashboard</a></li>
-                            <li><a href="logout.php">Logout</a></li>
+                            <li>
+                                <form action="logout.php" method="POST" class="logout__form">
+                                    <?= csrfField() ?>
+                                    <button type="submit" class="logout__button">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -120,11 +127,9 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
                 </button>
             </div>
         </nav>
-        <!-- ======== Fim da navbar ======== -->
 
-        <!-- ======== Barra de pesquisa ======== -->
         <section class="search__bar">
-            <!-- O limite do HTML apenas ajuda a interface; o PHP repete a validação. -->
+
             <form action="search.php" method="GET" class="container search__bar-container">
                 <div>
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -139,9 +144,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
                 <button type="submit" class="btn">Go</button>
             </form>
         </section>
-        <!-- ======== Fim da barra de pesquisa ======== -->
 
-        <!-- ======== Resultados da pesquisa ======== -->
         <section class="posts">
             <div class="container">
                 <?php if ($searchWasPerformed): ?>
@@ -162,7 +165,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
             <?php if ($searchError === '' && $searchResults): ?>
             <div class="container posts__container">
                 <?php foreach ($searchResults as $post): ?>
-                <!-- Mantém a mesma estrutura visual e os mesmos destinos do card do blog. -->
+
                 <article class="post">
                     <div class="post__thumbnail">
                         <img src="<?= authEscape(ROOT_URL . ltrim($post['thumbnail'], '/')) ?>" alt="<?= authEscape($post['title']) ?>" />
@@ -195,22 +198,15 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
             </div>
             <?php endif; ?>
         </section>
-        <!-- ======== Fim dos resultados ======== -->
 
-        <!-- ======== Categorias btns ======== -->
         <section class="category__buttons-section">
             <div class="container category__buttons-container">
-                <a href="" class="category__buttons">Ferramentas</a>
-                <a href="" class="category__buttons">Construção</a>
-                <a href="" class="category__buttons">Marcenaria</a>
-                <a href="" class="category__buttons">Segurança no Trabalho</a>
-                <a href="" class="category__buttons">Dicas e Tutoriais</a>
-                <a href="" class="category__buttons">Maquinaria Pesada</a>
+                <?php foreach ($publicCategories as $publicCategory): ?>
+                <a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>" class="category__buttons"><?= authEscape((string) $publicCategory['title']) ?></a>
+                <?php endforeach; ?>
             </div>
         </section>
-        <!-- ======== Fim categorias btns ======== -->
 
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -236,19 +232,11 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <?php foreach ($publicCategories as $publicCategory): ?>
+                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
 
@@ -290,7 +278,6 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="./js/main.js"></script>
     </body>
 </html>

@@ -1,8 +1,12 @@
 <?php
 // A página é pública: auth.php inicia a sessão usada pela navbar sem exigir login.
 require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/post-utils.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/category-utils.php';
 
+$publicCategories = publicCategories($connection);
 $category = null;
 $posts = [];
 $pageError = '';
@@ -13,7 +17,6 @@ if ($id === false || $id === null) {
     http_response_code(404);
     $pageError = 'Categoria não encontrada.';
 } else {
-    require_once __DIR__ . '/config/database.php';
     try {
         // A categoria é carregada primeiro porque existir sem posts é um estado válido,
         // diferente de um ID que não corresponde a nenhuma categoria.
@@ -91,11 +94,11 @@ if ($id === false || $id === null) {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title><?= $category ? authEscape($category['title']) . ' | NF Blog' : 'NF Blog' ?></title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="./css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -103,7 +106,7 @@ if ($id === false || $id === null) {
     </head>
 
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -128,7 +131,12 @@ if ($id === false || $id === null) {
                         </div>
                         <ul>
                             <li><a href="admin/dashboard.php">Dashboard</a></li>
-                            <li><a href="logout.php">Logout</a></li>
+                            <li>
+                                <form action="logout.php" method="POST" class="logout__form">
+                                    <?= csrfField() ?>
+                                    <button type="submit" class="logout__button">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -142,9 +150,7 @@ if ($id === false || $id === null) {
                 </button>
             </div>
         </nav>
-        <!-- ======== Fim da navbar ======== -->
 
-        <!-- ======== Identificação da categoria ======== -->
         <section class="search__bar">
             <div class="container">
                 <?php if ($pageError !== ''): ?>
@@ -161,7 +167,7 @@ if ($id === false || $id === null) {
         </section>
 
         <?php if ($category !== null && $pageError === ''): ?>
-        <!-- ======== Posts da categoria ======== -->
+
         <section class="posts">
             <div class="container posts__container">
                 <?php if (!$posts): ?>
@@ -200,10 +206,9 @@ if ($id === false || $id === null) {
                 <?php endif; ?>
             </div>
         </section>
-        <!-- ======== Fim dos posts da categoria ======== -->
+
         <?php endif; ?>
 
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -229,18 +234,11 @@ if ($id === false || $id === null) {
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Tornar os links do footer dinâmicos em uma etapa futura.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <?php foreach ($publicCategories as $publicCategory): ?>
+                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
 
@@ -282,7 +280,6 @@ if ($id === false || $id === null) {
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="./js/main.js"></script>
     </body>
 </html>

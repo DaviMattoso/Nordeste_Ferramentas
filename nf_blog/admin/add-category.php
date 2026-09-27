@@ -1,6 +1,7 @@
 <?php
 // Categorias são administradas somente por usuários com role admin.
 require_once __DIR__ . '/../config/auth.php';
+require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
@@ -11,6 +12,7 @@ $title = '';
 $description = '';
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    requireValidCsrfToken();
     // Verifica o tipo antes de usar os dados, pois requisições podem ser manipuladas.
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $descriptionInput = $_POST['description'] ?? '';
@@ -52,11 +54,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>NF Blog</title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="../Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="../css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -64,7 +66,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     </head>
 
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -89,7 +91,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                         </div>
                         <ul>
                             <li><a href="dashboard.php">Dashboard</a></li>
-                            <li><a href="../logout.php">Logout</a></li>
+                            <li>
+                                <form action="../logout.php" method="POST" class="logout__form">
+                                    <?= csrfField() ?>
+                                    <button type="submit" class="logout__button">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -104,7 +111,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
-        <!-- ======== Formulário de categoria ======== -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Adicionar categoria</h2>
@@ -116,6 +122,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 </div>
                 <?php endif; ?>
                 <form action="add-category.php" method="POST">
+                    <?= csrfField() ?>
                     <input type="text" name="title" placeholder="Título" maxlength="150" value="<?= authEscape($title) ?>" required />
                     <textarea name="description" rows="4" placeholder="Descrição"><?= authEscape($description) ?></textarea>
                     <div class="form__control">
@@ -127,7 +134,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -153,19 +159,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <li>Ferramentas</li>
+                        <li>Construção</li>
+                        <li>Marcenaria</li>
+                        <li>Seg. no Trabalho</li>
+                        <li>Dicas e Tutoriais</li>
+                        <li>Maquinaria Pesada</li>
                     </ul>
                 </article>
 
@@ -207,7 +208,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="../js/main.js"></script>
     </body>
 </html>

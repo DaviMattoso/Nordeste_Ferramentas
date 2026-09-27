@@ -3,7 +3,7 @@
 ## Preparação
 
 - Inicie Apache e MySQL no XAMPP e selecione o banco local `nf_blog` no phpMyAdmin.
-- Execute uma vez o SQL abaixo. Ele não apaga nem modifica a tabela `users`.
+- Confirme a estrutura atual em `database/database.sql`; não reimporte o schema em um banco que já contém os dados desejados.
 - Entre com uma conta admin e use títulos de teste próprios.
 - Para testar validação no servidor, remova temporariamente `required` e `maxlength` pelo inspetor do navegador.
 
@@ -59,4 +59,4 @@ FROM categories ORDER BY id ASC;
 SHOW INDEX FROM categories;
 ```
 
-Confirme o índice UNIQUE em `title`, a atualização automática de `updated_at` ao alterar dados e a ausência dos registros excluídos. Exclua somente as categorias de teste pela interface. Não há relação com posts nesta etapa; `posts.category_id` deverá ser ligado a `categories.id` quando a tabela de posts for implementada. Proteção CSRF permanece pendente para revisão posterior.
+Confirme o índice UNIQUE em `title`, a atualização automática de `updated_at` ao alterar dados e a ausência dos registros excluídos. A relação `posts.category_id → categories.id`, a proteção CSRF e o bloqueio de exclusão de categorias vinculadas estão implementados e foram validados na regressão final. As categorias temporárias foram removidas.

@@ -1,5 +1,12 @@
 <?php
-require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/csrf.php';
+
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    header('Allow: POST');
+    http_response_code(405);
+    exit('O logout exige envio pelo formulário.');
+}
+requireValidCsrfToken();
 
 // Remove primeiro os dados da memória da sessão.
 $_SESSION = [];

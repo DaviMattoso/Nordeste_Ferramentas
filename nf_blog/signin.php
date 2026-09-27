@@ -1,6 +1,7 @@
 <?php
 // auth.php inicia a sessão segura usada para guardar a identidade autenticada.
 require_once __DIR__ . '/config/auth.php';
+require_once __DIR__ . '/config/csrf.php';
 
 // Usuário já autenticado não precisa visualizar o formulário novamente.
 if (isLoggedIn()) {
@@ -8,16 +9,20 @@ if (isLoggedIn()) {
     exit;
 }
 
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/category-utils.php';
+
+$publicCategories = publicCategories($connection);
 $login = '';
 $error = '';
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    requireValidCsrfToken();
     // A mesma entrada aceita username ou email; a senha não recebe trim.
     $login = is_string($_POST['login'] ?? null) ? trim($_POST['login']) : '';
     $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
     if ($login === '' || $password === '') {
         $error = 'Preencha o usuário/email e a senha.';
     } else {
-        require_once __DIR__ . '/config/database.php';
         try {
             // Prepared statement impede que o texto do login altere a consulta SQL.
             $statement = $connection->prepare('SELECT id, first_name, last_name, username, email, password, avatar, role FROM users WHERE username = ? OR email = ? LIMIT 2');
@@ -34,11 +39,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 if (!session_regenerate_id(true)) {
                     throw new RuntimeException('Falha ao renovar sessão.');
                 }
+                $newCsrfToken = regenerateCsrfToken();
                 $_SESSION = [
                     'user_id' => (int) $id,
                     'username' => $username,
                     'role' => $role,
                     'avatar' => $avatar,
+                    'csrf_token' => $newCsrfToken,
                 ];
                 // PRG evita reenviar a senha ao atualizar a página do dashboard.
                 header('Location: admin/dashboard.php', true, 303);
@@ -59,11 +66,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>NF Blog</title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="./Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="./css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -71,7 +78,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     </head>
 
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -98,10 +105,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
-        <!-- ======== Formulário de Login ======== -->
         <section class="form__section">
             <div class="container form__section-container">
-                <!-- ======== Imagem da página ======== -->
+
                 <div class="form__image">
                     <img src="./Images/signin.png" alt="Entrando no NF Blog" />
                 </div>
@@ -121,6 +127,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 </div>
                 <?php endif; ?>
                 <form action="signin.php" method="POST">
+                    <?= csrfField() ?>
                     <input type="text" name="login" placeholder="Username ou Email" value="<?= authEscape($login) ?>" autocomplete="username" required />
                     <input type="password" name="password" placeholder="Senha" autocomplete="current-password" required />
                     <div class="form__control">
@@ -134,7 +141,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -160,19 +166,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <?php foreach ($publicCategories as $publicCategory): ?>
+                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
 
@@ -214,7 +212,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="./js/main.js"></script>
     </body>
 </html>

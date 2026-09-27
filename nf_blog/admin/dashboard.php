@@ -1,6 +1,7 @@
 <?php
 // Qualquer usuário autenticado acessa o dashboard, mas a listagem varia pela role.
 require_once __DIR__ . '/../config/auth.php';
+require_once __DIR__ . '/../config/csrf.php';
 requireLogin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
@@ -46,11 +47,11 @@ try {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>NF Blog</title>
-        <!-- Fav icon -->
+
         <link rel="icon" href="../Images/favicon.ico" />
-        <!-- Custom style css -->
+
         <link rel="stylesheet" href="../css/style.css" />
-        <!-- Font-awesome cdn -->
+
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -58,7 +59,7 @@ try {
     </head>
 
     <body>
-        <!-- ======== Navbar ======== -->
+
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -83,7 +84,12 @@ try {
                         </div>
                         <ul>
                             <li><a href="dashboard.php">Dashboard</a></li>
-                            <li><a href="../logout.php">Logout</a></li>
+                            <li>
+                                <form action="../logout.php" method="POST" class="logout__form">
+                                    <?= csrfField() ?>
+                                    <button type="submit" class="logout__button">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     <?php endif; ?>
@@ -97,7 +103,6 @@ try {
                 </button>
             </div>
         </nav>
-        <!-- ======== Fim da navbar ======== -->
 
         <section class="dashboard">
             <div class="container dashboard__container">
@@ -186,6 +191,7 @@ try {
                                 <td><a href="edit-post.php?id=<?= (int) $post['id'] ?>" class="btn sm">Editar</a></td>
                                 <td>
                                     <form action="delete-post.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este post?')">
+                                        <?= csrfField() ?>
                                         <input type="hidden" name="id" value="<?= (int) $post['id'] ?>" />
                                         <button type="submit" class="btn sm danger">Excluir</button>
                                     </form>
@@ -201,7 +207,6 @@ try {
             </div>
         </section>
 
-        <!-- ======== Footer ======== -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
@@ -227,19 +232,14 @@ try {
 
             <div class="container footer__container">
                 <article>
-                    <!-- ======================================================
-                TODO:
-                Adicionar os links das categorias quando as páginas
-                individuais estiverem prontas.
-            ====================================================== -->
                     <h4>Categorias</h4>
                     <ul>
-                        <li><a href="">Ferramentas</a></li>
-                        <li><a href="">Construção</a></li>
-                        <li><a href="">Marcenaria</a></li>
-                        <li><a href="">Seg. no Trabalho</a></li>
-                        <li><a href="">Dicas e Tutoriais</a></li>
-                        <li><a href="">Maquinaria Pesada</a></li>
+                        <li>Ferramentas</li>
+                        <li>Construção</li>
+                        <li>Marcenaria</li>
+                        <li>Seg. no Trabalho</li>
+                        <li>Dicas e Tutoriais</li>
+                        <li>Maquinaria Pesada</li>
                     </ul>
                 </article>
 
@@ -281,7 +281,6 @@ try {
             </div>
         </footer>
 
-        <!-- ======== JS ======== -->
         <script src="../js/main.js"></script>
     </body>
 </html>

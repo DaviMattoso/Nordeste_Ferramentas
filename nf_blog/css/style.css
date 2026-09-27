@@ -181,6 +181,23 @@ nav button {
     background: #d35400; /* Cor de fundo do último item do menu suspenso */
     color: #1a1a1a; /* Cor do texto do último item do menu suspenso */
 }
+
+.nav__profile ul li .logout__form {
+    margin: 0;
+}
+
+.nav__profile ul li .logout__button {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    border: 0;
+    border-radius: 0;
+    background: #d35400;
+    color: #1a1a1a;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
 /* ======= Fim Nav ======= */
 
 /* ======== Category button (botões de categoria) ======== */
