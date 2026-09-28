@@ -1,26 +1,30 @@
 <!doctype html>
+<!--
+    Página institucional da Nordeste Ferramentas.
+    Reúne a apresentação da empresa, os canais de contato e a vitrine que
+    recebe os três posts mais recentes da API pública do NF Blog.
+-->
 <html lang="pt-BR">
     <head>
         <meta charset="UTF-8" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!-- Essencial para RESPONSIVIDADE: ajusta o layout à largura do dispositivo (mobile/tablet) -->
+
         <meta
             name="description"
             content="Equipamentos de qualidade para seu negócio. Blog com dicas, instruções e novidades sobre ferramentas e equipamentos."
         />
-        <!-- Descrição do site para Google (SEO) -->
+
         <title>Nordeste Ferramentas</title>
-        <link rel="stylesheet" href="style.css" />
-        <!-- Favicon (ícone da aba) -->
-        <!-- ======== MUDAR ======== -->
+        <link rel="stylesheet" href="style.css?v=20260928-4" />
+
         <link rel="icon" href="./images/favicon.png" />
-        <!-- Ícones (Font Awesome) -->
+
         <link
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
             rel="stylesheet"
         />
-        <!-- Fonte Inter (Google Fonts) -->
+
         <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
@@ -28,23 +32,19 @@
     </head>
 
     <body id="inicio">
-        <script src="script.js"></script>
-        <!-- =====================================================
-     HEADER
-     ===================================================== -->
+        <script src="script.js?v=20260928-3"></script>
+        <!-- =========================
+             CABEÇALHO E NAVEGAÇÃO
+             ========================= -->
         <header class="header">
-            <!-- Cabeçalho principal do site -->
             <div class="container header-content">
-                <!-- Container limita largura header-content controla layout flex -->
-                <!-- BLOCO DA MARCA (logo + nome + slogan) -->
                 <div class="brand">
-                    <!-- Logo da empresa -->
                     <img
                         src="images/logo_.png"
                         alt="Nordeste Ferramentas"
                         class="logo-img"
                     />
-                    <!-- Texto da marca -->
+
                     <div class="logo-text">
                         <h1 class="company-name">Nordeste Ferramentas</h1>
                         <p class="company-tagline">
@@ -53,16 +53,8 @@
                     </div>
                 </div>
 
-                <!--
-         IMPORTANTE: Não usamos a classe .active nos links do menu.
-         Todos os botões ficam neutros por padrão e
-         só recebem estilos quando o mouse passa (hover).
-         Isso evita estados visuais "presos" como o do inicio.
-        -->
                 <nav class="nav">
-                    <!-- Volta para o topo do site -->
                     <a href="#inicio" class="nav-btn">Início</a>
-                    <!-- Abre o Blog -->
                     <a
                         href="../nf_blog/index.php"
                         target="_blank"
@@ -70,34 +62,29 @@
                         class="nav-btn"
                         >Blog</a
                     >
-                    <!-- Vai para a seção Sobre -->
                     <a href="#sobre" class="nav-btn">Sobre</a>
-                    <!-- Vai para a seção Contato -->
                     <a href="#contato" class="nav-btn">Contato</a>
 
-                    <!-- ======================================================
-         TODO:
-         Alterar este link quando o Portal de Locação estiver
-         finalizado.
-         ====================================================== -->
-                    <a href="#" class="btn-primary btn-portal">
-                        <i
-                            href="#"
-                            target="blank"
-                            class="fa-solid fa-right-from-bracket"
-                        ></i>
+                    <!-- O diálogo mantém este acesso informativo enquanto o Portal de Locação não possui URL própria. -->
+                    <a
+                        href="#portal-dialog"
+                        class="btn-primary btn-portal"
+                        data-dialog-target="portal-dialog"
+                        aria-haspopup="dialog"
+                        aria-controls="portal-dialog"
+                    >
+                        <i class="fa-solid fa-right-from-bracket"></i>
                         <b>Portal de Locação</b>
                     </a>
                 </nav>
             </div>
         </header>
 
-        <!-- =====================================================
-     HERO
-     ===================================================== -->
+        <!-- =========================
+             APRESENTAÇÃO PRINCIPAL
+             ========================= -->
         <section class="hero">
             <div class="container hero-grid">
-                <!-- COLUNA ESQUERDA — TEXTO -->
                 <div class="hero-text">
                     <h1>
                         Equipamentos de <span>qualidade</span> para seu negócio
@@ -111,7 +98,6 @@
                     </p>
                 </div>
 
-                <!-- COLUNA DIREITA — IMAGEM -->
                 <div class="hero-image">
                     <img
                         src="images/Ferramentas web.png"
@@ -119,13 +105,7 @@
                     />
                 </div>
 
-                <!-- BOTAÃO DO HERO -->
-                <div class="hero-butons">
-                    <!-- Botão principal: Ver Equipamentos -->
-                    <!-- ======================================================
-            Inserir o link para download do catálogo quando
-            o PDF estiver pronto.
-            ====================================================== -->
+                <div class="hero-buttons">
                     <a href="#equipamentos" class="btn-primary hero-btn"
                         ><i class="fa-solid fa-screwdriver-wrench"></i>Ver
                         Equipamentos</a
@@ -134,93 +114,26 @@
             </div>
         </section>
 
-        <!-- =====================================================
-     BLOG
-     ===================================================== -->
+        <!-- =========================
+             POSTS RECENTES DO BLOG
+             `data-endpoint` aponta para a API que o script.js consulta para montar os três cards.
+             ========================= -->
         <div class="blog">
             <h1>Nordeste Ferramentas Blog</h1>
-            <div class="blog_box">
-                <div class="blog_card">
-                    <div class="blog_img">
-                        <img src="images/Blog_img_1.png" />
-                    </div>
-                    <div class="blog_tag">
-                        <h2>
-                            <a href="../nf_blog/blog.php" target="_blank">
-                                Como escolher a ferramenta certa para cada tipo
-                                de obra
-                            </a>
-                        </h2>
-                        <p>
-                            Cada obra tem sua própria exigência, e usar a
-                            ferramenta certa faz toda a diferença no resultado
-                            final. Seja madeira, concreto ou manutenção geral,
-                            escolher o equipamento adequado garante mais
-                            segurança, eficiência e economia no trabalho.
-                        </p>
-                        <div class="blog_icon">
-                            <i class="fa-solid fa-calendar"></i>
-                            <i class="fa-solid fa-heart"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="blog_card">
-                    <div class="blog_img">
-                        <img src="images/Blog_img_2.png" />
-                    </div>
-                    <div class="blog_tag">
-                        <h2>
-                            <a href="../nf_blog/blog.php" target="_blank">
-                                Ferramentas essenciais para construção civil
-                            </a>
-                        </h2>
-                        <p>
-                            Na construção civil, produtividade e resistência
-                            caminham juntas. Conhecer as ferramentas essenciais
-                            para cada etapa da obra ajuda a evitar improvisos,
-                            reduzir erros e manter o ritmo do serviço do começo
-                            ao fim.
-                        </p>
-                        <div class="blog_icon">
-                            <i class="fa-solid fa-calendar"></i>
-                            <i class="fa-solid fa-heart"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="blog_card">
-                    <div class="blog_img">
-                        <img src="images/Blog_img_3.png" />
-                    </div>
-                    <div class="blog_tag">
-                        <h2>
-                            <a href="../nf_blog/blog.php" target="_blank">
-                                Diferença entre ferramentas profissionais e
-                                domésticas
-                            </a>
-                        </h2>
-                        <p>
-                            Nem toda ferramenta é feita para uso intenso.
-                            Entender a diferença entre ferramentas profissionais
-                            e domésticas evita desgaste prematuro, aumenta a
-                            durabilidade dos equipamentos e garante um trabalho
-                            bem feito, seja em pequenos reparos ou grandes
-                            projetos.
-                        </p>
-                        <div class="blog_icon">
-                            <i class="fa-solid fa-calendar"></i>
-                            <i class="fa-solid fa-heart"></i>
-                        </div>
-                    </div>
-                </div>
+            <div
+                class="blog_box"
+                id="latest-posts"
+                data-endpoint="../nf_blog/api/latest-posts.php"
+                aria-live="polite"
+            >
+                <p class="blog-status">Carregando publicações...</p>
             </div>
 
-            <!-- BOTÃO FORA DO GRID -->
             <div class="blog-actions">
                 <a
                     href="../nf_blog/blog.php"
                     target="_blank"
+                    rel="noopener noreferrer"
                     class="btn btn-primary blog-btn"
                 >
                     <i class="fa-solid fa-blog"></i>
@@ -229,9 +142,9 @@
             </div>
         </div>
 
-        <!-- =====================================================
-     EQUIPAMENTOS
-     ===================================================== -->
+        <!-- =========================
+             CATEGORIAS DE EQUIPAMENTOS
+             ========================= -->
         <section class="equipamentos" id="equipamentos">
             <div class="container">
                 <div class="section-header">
@@ -275,31 +188,49 @@
                     </div>
                 </div>
 
-                <!-- FUTURO (NÃO IMPLEMENTADO AINDA):
-        Este botão será usado para BAIXAR automaticamente
-        o catálogo de ferramentas da empresa (PDF ou outro formato).
-
-        Quando o catálogo estiver pronto:
-        1. Colocar o arquivo dentro da pasta do projeto (ex: /catalogo/)
-        2. Atualizar o atributo href com o caminho correto
-        3. O atributo 'download' força o navegador a baixar o arquivo
-        
-        Exemplo final esperado:
-        href="catalogo/catalogo-nordeste-ferramentas.pdf"
-        -->
+                <!-- O botão abre um diálogo local até existir um catálogo externo ou arquivo em PDF. -->
 
                 <div class="equipamentos-actions">
-                    <a href="portal/" class="btn btn-primary">
+                    <a
+                        href="#catalogo-dialog"
+                        class="btn btn-primary"
+                        data-dialog-target="catalogo-dialog"
+                        aria-haspopup="dialog"
+                        aria-controls="catalogo-dialog"
+                    >
                         <i class="fas fa-search"></i>
-                        Ver Catálogo Completo
+                        Solicitar Catálogo Completo
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- =====================================================
-     SOBRE
-     ===================================================== -->
+        <dialog
+            id="catalogo-dialog"
+            class="availability-dialog"
+            aria-labelledby="catalogo-dialog-title"
+        >
+            <div class="dialog-content">
+                <button
+                    type="button"
+                    class="dialog-close"
+                    data-dialog-close
+                    aria-label="Fechar"
+                >
+                    &times;
+                </button>
+                <i class="fas fa-book-open dialog-icon"></i>
+                <h2 id="catalogo-dialog-title">Catálogo de Equipamentos</h2>
+                <div class="dialog-placeholder" id="catalogo-conteudo">
+                    <!-- Ponto reservado para o futuro link, PDF ou visualizador do catálogo. -->
+                    <p>Catálogo indisponível no momento.</p>
+                </div>
+            </div>
+        </dialog>
+
+        <!-- =========================
+             SOBRE A EMPRESA
+             ========================= -->
         <section class="sobre" id="sobre">
             <div class="container">
                 <div class="sobre-content">
@@ -334,8 +265,13 @@
                             </div>
                         </div>
 
-                        <a href="#contato" class="btn btn-outline">
-                            <!--O botão tem que levar direto pao whats da empresa-->
+                        <a
+                            href="https://wa.me/5581995607222"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-outline"
+                        >
+
                             <i class="fas fa-phone"></i>
                             Fale Conosco
                         </a>
@@ -352,9 +288,10 @@
             </div>
         </section>
 
-        <!-- =====================================================
-     CONTATO
-     ===================================================== -->
+        <!-- =========================
+             CONTATO E FORMULÁRIO
+             Sem `data-endpoint`, o script prepara a mensagem e direciona o visitante ao WhatsApp.
+             ========================= -->
         <section class="contato" id="contato">
             <div class="container">
                 <div class="section-header">
@@ -370,7 +307,11 @@
                             <i class="fas fa-phone"></i>
                             <div>
                                 <h4>Telefone</h4>
-                                <p>(81) 99560-7222</p>
+                                <p>
+                                    <a href="tel:+5581995607222"
+                                        >(81) 99560-7222</a
+                                    >
+                                </p>
                             </div>
                         </div>
 
@@ -378,7 +319,12 @@
                             <i class="fas fa-envelope"></i>
                             <div>
                                 <h4>Email</h4>
-                                <p>contato@nordesteferramentas.com</p>
+                                <p>
+                                    <a
+                                        href="mailto:contato@nordesteferramentas.com"
+                                        >contato@nordesteferramentas.com</a
+                                    >
+                                </p>
                             </div>
                         </div>
 
@@ -406,7 +352,13 @@
                     </div>
 
                     <div class="contato-form">
-                        <form id="contato-form">
+                        <!-- `data-endpoint` pode receber futuramente uma API de contato; vazio preserva o fluxo pelo WhatsApp. -->
+                        <form
+                            id="contato-form"
+                            method="post"
+                            data-endpoint=""
+                            data-whatsapp="5581995607222"
+                        >
                             <div class="form-group">
                                 <input
                                     type="text"
@@ -458,19 +410,28 @@
                                 ></textarea>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
                                 <i class="fas fa-paper-plane"></i>
                                 Enviar Mensagem
                             </button>
+                            <p
+                                id="form-status"
+                                class="form-status"
+                                role="status"
+                                aria-live="polite"
+                            ></p>
                         </form>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- =====================================================
-   FOOTER
-   ===================================================== -->
+        <!-- =========================
+             RODAPÉ E LINKS INSTITUCIONAIS
+             ========================= -->
         <footer class="footer">
             <div class="container">
                 <div class="footer-content">
@@ -491,13 +452,17 @@
 
                     <div class="footer-section">
                         <h4>Links Rápidos</h4>
-                        <!-- Edição para links rapidos no js-->
+
                         <ul class="footer-links">
                             <li>
                                 <a href="#inicio"> Início </a>
                             </li>
                             <li>
-                                <a href="../nf_blog/index.php" target="_blank">
+                                <a
+                                    href="../nf_blog/index.php"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     Blog
                                 </a>
                             </li>
@@ -508,9 +473,13 @@
                                 <a href="#contato"> Contato </a>
                             </li>
                             <li>
-                                <!-- TODO:
-                                    Inserir o link oficial do Portal de Locação. -->
-                                <a href="#" target="blank">
+                                <!-- Mantém o mesmo diálogo informativo da navegação até o portal receber uma rota própria. -->
+                                <a
+                                    href="#portal-dialog"
+                                    data-dialog-target="portal-dialog"
+                                    aria-haspopup="dialog"
+                                    aria-controls="portal-dialog"
+                                >
                                     Portal de Locação
                                 </a>
                             </li>
@@ -519,17 +488,38 @@
 
                     <div class="footer-section">
                         <h4>Redes Sociais</h4>
+                        <!-- Estes links são marcadores até a definição dos perfis sociais oficiais. -->
                         <div class="social-links">
-                            <a href="#" class="social-link"
+                            <a
+                                href="https://www.facebook.com/?locale=pt_BR"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="social-link"
+                                aria-label="Facebook"
                                 ><i class="fab fa-facebook"></i
                             ></a>
-                            <a href="#" class="social-link"
+                            <a
+                                href="https://www.instagram.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="social-link"
+                                aria-label="Instagram"
                                 ><i class="fab fa-instagram"></i
                             ></a>
-                            <a href="#" class="social-link"
+                            <a
+                                href="https://pt.linkedin.com/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="social-link"
+                                aria-label="LinkedIn"
                                 ><i class="fab fa-linkedin"></i
                             ></a>
-                            <a href="#" class="social-link"
+                            <a
+                                href="https://wa.me/5581995607222"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="social-link"
+                                aria-label="WhatsApp"
                                 ><i class="fab fa-whatsapp"></i
                             ></a>
                         </div>
@@ -544,5 +534,28 @@
                 </div>
             </div>
         </footer>
+
+        <dialog
+            id="portal-dialog"
+            class="availability-dialog"
+            aria-labelledby="portal-dialog-title"
+        >
+            <div class="dialog-content">
+                <button
+                    type="button"
+                    class="dialog-close"
+                    data-dialog-close
+                    aria-label="Fechar"
+                >
+                    &times;
+                </button>
+                <i class="fa-solid fa-right-from-bracket dialog-icon"></i>
+                <h2 id="portal-dialog-title">Portal de Locação</h2>
+                <div class="dialog-placeholder">
+                    <!-- Conteúdo temporário do acesso ao Portal de Locação. -->
+                    <p>Portal de Locação indisponível no momento.</p>
+                </div>
+            </div>
+        </dialog>
     </body>
 </html>

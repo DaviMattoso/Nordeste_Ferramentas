@@ -1,6 +1,13 @@
 <?php
 
-/** Valida os campos textuais de usuário conforme os limites definidos no banco. */
+/**
+ * Funções compartilhadas pelo cadastro público e pelo CRUD de usuários.
+ *
+ * Centraliza limites dos campos, senhas, avatars, duplicidades e a proteção
+ * contra remoção ou rebaixamento simultâneo do último administrador.
+ */
+
+/** Valida campos textuais conforme obrigatoriedade, codificação e limites do banco. */
 function userFieldErrors(array $values): array
 {
     $errors = [];
@@ -23,14 +30,15 @@ function userFieldErrors(array $values): array
     return $errors;
 }
 
+/** Valida comprimento, bytes permitidos e confirmação exata de uma nova senha. */
 function userPasswordErrors(string $password, string $confirmation): array
 {
-    // A confirmação é comparada exatamente: espaços também fazem parte da senha.
+    /* Espaços fazem parte da senha e, por isso, não são removidos antes da comparação. */
     $errors = [];
     if (preg_match('//u', $password) !== 1 || preg_match_all('/./us', $password) < 8) {
         $errors[] = 'A senha deve ter pelo menos 8 caracteres.';
     }
-    // PASSWORD_DEFAULT usa bcrypt atualmente, que considera somente 72 bytes.
+    /* O limite evita truncamento silencioso enquanto PASSWORD_DEFAULT usar bcrypt. */
     if (strlen($password) > 72 || strpos($password, "\0") !== false) {
         $errors[] = 'A senha deve ter no máximo 72 bytes e não pode conter caracteres nulos.';
     }
@@ -40,10 +48,12 @@ function userPasswordErrors(string $password, string $confirmation): array
     return $errors;
 }
 
+/**
+ * Valida um avatar opcional pelo estado do upload, tamanho, MIME e conteúdo da imagem.
+ * Retorna a extensão derivada do arquivo e os erros encontrados.
+ */
 function userAvatarValidation($upload): array
 {
-    // Avatar é opcional. Quando enviado, a validação combina erro do upload,
-    // tamanho, MIME real e leitura da imagem; a extensão do nome não é confiável.
     if ($upload === null) {
         return [null, []];
     }
@@ -71,9 +81,10 @@ function userAvatarValidation($upload): array
     return [$allowedTypes[$mime], []];
 }
 
+/** Salva um avatar validado com nome aleatório e retorna seu caminho relativo. */
 function saveUserAvatar(array $upload, string $extension): string
 {
-    // O nome aleatório impede colisões e evita reutilizar o nome fornecido pelo usuário.
+    /* O nome aleatório impede colisões e descarta nomes controlados pelo usuário. */
     $directory = __DIR__ . '/../Images/avatars';
     if (!is_dir($directory) && !@mkdir($directory, 0755, true) && !is_dir($directory)) {
         throw new RuntimeException('Falha ao criar diretório de avatars.');
@@ -85,10 +96,10 @@ function saveUserAvatar(array $upload, string $extension): string
     return $avatar;
 }
 
+/** Remove somente avatars que correspondam ao padrão criado por esta aplicação. */
 function removeManagedUserAvatar(?string $avatar): void
 {
-    // Só remove arquivos cujo caminho segue exatamente o padrão criado pelo sistema.
-    // Assim, um valor inesperado no banco não permite apagar outro arquivo do projeto.
+    /* Um caminho inesperado no banco não pode provocar exclusão fora de Images/avatars. */
     if ($avatar === null || !preg_match('~\AImages/avatars/[a-f0-9]{32}\.(?:jpg|png|webp)\z~', $avatar)) {
         return;
     }
@@ -98,10 +109,12 @@ function removeManagedUserAvatar(?string $avatar): void
     }
 }
 
+/**
+ * Retorna conflitos de username e email.
+ * Na edição, exclui o ID atual para permitir que seus valores permaneçam inalterados.
+ */
 function userDuplicateErrors(mysqli $connection, array $values, ?int $excludedId = null): array
 {
-    // Retorna mensagens específicas para username e email. Durante a edição,
-    // o ID atual é excluído da busca para não ser considerado duplicado de si mesmo.
     if ($excludedId === null) {
         $statement = $connection->prepare('SELECT username = ?, email = ? FROM users WHERE username = ? OR email = ?');
         $statement->bind_param('ssss', $values['username'], $values['email'], $values['username'], $values['email']);
@@ -124,10 +137,10 @@ function userDuplicateErrors(mysqli $connection, array $values, ?int $excludedId
     return array_unique($errors);
 }
 
+/** Conta administradores enquanto mantém suas linhas bloqueadas na transação atual. */
 function lockedAdminCount(mysqli $connection): int
 {
-    // FOR UPDATE bloqueia os administradores atuais até o COMMIT. Isso impede que
-    // duas requisições simultâneas removam/rebaixem o último admin ao mesmo tempo.
+    /* FOR UPDATE impede que requisições concorrentes removam o último admin em paralelo. */
     $statement = $connection->prepare("SELECT id FROM users WHERE role = 'admin' ORDER BY id FOR UPDATE");
     $statement->execute();
     $statement->bind_result($adminId);

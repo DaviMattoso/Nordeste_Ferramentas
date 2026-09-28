@@ -1,5 +1,11 @@
 <?php
-// Somente admin pode criar contas pelo painel e escolher a role inicial.
+/**
+ * Formulário administrativo de criação de usuários.
+ *
+ * Permite ao administrador definir o papel inicial, valida senha e avatar e
+ * impede duplicidade de username ou email antes de persistir a conta.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
@@ -7,13 +13,13 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/user-utils.php';
 require_once __DIR__ . '/../config/flash.php';
 
-// Estes valores repopulam o formulário se alguma validação falhar.
+/* Campos não sensíveis são preservados para repopular o formulário após erro. */
 $values = array_fill_keys(['first_name', 'last_name', 'username', 'email'], '');
 $role = 'author';
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     requireValidCsrfToken();
-    // Normaliza entradas textuais e valida a role contra uma lista fechada.
+    /* Entradas textuais são normalizadas e a role é comparada com uma lista fechada. */
     foreach ($values as $field => $unused) {
         $values[$field] = is_string($_POST[$field] ?? null) ? trim($_POST[$field]) : '';
     }
@@ -33,11 +39,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!$errors) {
         $avatar = null;
         try {
-            // A checagem melhora a mensagem; os índices UNIQUE continuam sendo
-            // a garantia final contra duas requisições simultâneas.
+            /* A consulta melhora a mensagem; os índices UNIQUE protegem a concorrência. */
             $errors = userDuplicateErrors($connection, $values);
             if (!$errors) {
-                // Senha nunca é persistida em texto puro.
+                /* A senha é persistida apenas pelo hash gerado com o algoritmo padrão. */
                 $hash = password_hash($password, PASSWORD_DEFAULT);
                 if ($avatarExtension !== null) {
                     $avatar = saveUserAvatar($_FILES['avatar'], $avatarExtension);
@@ -51,7 +56,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
-            // Remove o upload se o usuário não puder ser gravado no banco.
+            /* Remove o avatar salvo se a conta não puder ser gravada no banco. */
             removeManagedUserAvatar($avatar);
             $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1062
                 ? 'Username ou email já está cadastrado.'
@@ -70,7 +75,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -79,7 +84,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     </head>
 
     <body>
-
+        <!-- Navegação do blog com caminhos relativos ao diretório administrativo. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -124,6 +129,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
+        <!-- Formulário administrativo de criação de conta e avatar opcional. -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Adicionar usuário</h2>
@@ -155,6 +161,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

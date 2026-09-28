@@ -1,11 +1,17 @@
 <?php
-// Cadastro público: novos usuários sempre entram como author.
+/**
+ * Cadastro público de autores do NF Blog.
+ *
+ * Valida dados, senha e avatar, impede username/email duplicados e cria toda
+ * conta pública com o papel fixo de `author`.
+ */
+
 require_once __DIR__ . '/config/user-utils.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/category-utils.php';
 require_once __DIR__ . '/config/csrf.php';
 
-// Preserva os campos não sensíveis quando houver erro; senhas nunca voltam ao HTML.
+/* Campos não sensíveis são repopulados após erro; senhas nunca retornam ao HTML. */
 $publicCategories = publicCategories($connection);
 $errors = [];
 $values = array_fill_keys(['first_name', 'last_name', 'username', 'email'], '');
@@ -15,11 +21,11 @@ $escape = static function ($value) {
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     requireValidCsrfToken();
-    // Aceita somente strings e remove espaços acidentais dos campos textuais.
+    /* Campos textuais aceitam somente strings e têm espaços externos removidos. */
     foreach ($values as $field => $value) {
         $values[$field] = is_string($_POST[$field] ?? null) ? trim($_POST[$field]) : '';
     }
-    // Senhas não recebem trim: espaços podem fazer parte da senha escolhida.
+    /* Senhas não recebem trim porque espaços podem fazer parte do valor escolhido. */
     $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
     $confirmation = is_string($_POST['confirm_password'] ?? null) ? $_POST['confirm_password'] : '';
 
@@ -29,7 +35,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $errors = array_merge($errors, userFieldErrors($values), userPasswordErrors($password, $confirmation));
 
     $upload = $_FILES['avatar'] ?? null;
-    // A validação retorna a extensão determinada pelo MIME real, não pelo nome enviado.
+    /* A extensão confiável deriva do conteúdo do arquivo, não do nome enviado. */
     [$avatarExtension, $avatarErrors] = userAvatarValidation($upload);
     $errors = array_merge($errors, $avatarErrors);
 
@@ -39,7 +45,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $errors = userDuplicateErrors($connection, $values);
 
             if (!$errors) {
-                // Nunca armazena senha pura: password_hash inclui algoritmo, salt e custo.
+                /* Somente o hash com salt e custo do algoritmo padrão é persistido. */
                 $hash = password_hash($password, PASSWORD_DEFAULT);
                 if ($avatarExtension !== null) {
                     $avatar = saveUserAvatar($upload, $avatarExtension);
@@ -50,16 +56,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $statement->execute();
             }
         } catch (Throwable $exception) {
-            // Evita deixar avatar órfão se o INSERT falhar após salvar a imagem.
+            /* Remove o avatar salvo caso o INSERT não possa ser concluído. */
             removeManagedUserAvatar($avatar);
-            // Os índices UNIQUE também protegem contra cadastros simultâneos.
+            /* Os índices UNIQUE são a garantia final contra requisições concorrentes. */
             $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1062
                 ? 'Username ou email já está cadastrado.'
                 : 'Não foi possível concluir o cadastro. Tente novamente.';
             error_log('NF Blog: falha no cadastro. Código: ' . $exception->getCode());
         }
         if (!$errors) {
-            // POST/Redirect/GET impede cadastrar novamente ao atualizar o navegador.
+            /* POST/Redirect/GET impede novo cadastro ao atualizar a página de destino. */
             header('Location: signin.php?registered=1', true, 303);
             exit;
         }
@@ -75,7 +81,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <link rel="icon" href="./Images/favicon.ico" />
 
-        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -85,6 +91,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     <body>
 
+        <!-- Navegação pública exibida durante a criação da conta. -->
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -111,6 +118,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
+        <!-- Formulário multipart para dados da conta e avatar opcional. -->
         <section class="form__section">
             <div class="container form__section-container">
 
@@ -147,6 +155,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
+        <!-- Rodapé público com categorias, suporte e navegação. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

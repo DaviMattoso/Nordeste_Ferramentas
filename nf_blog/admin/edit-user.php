@@ -1,5 +1,11 @@
 <?php
-// Apenas administradores podem editar cadastro, senha, avatar ou role de usuários.
+/**
+ * Edita cadastro, papel, senha e avatar de um usuário.
+ *
+ * A operação é exclusiva de administradores, protege a permanência de ao menos
+ * um admin e sincroniza a sessão quando a própria conta é modificada.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
@@ -7,7 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/user-utils.php';
 require_once __DIR__ . '/../config/flash.php';
 
-// O ID da URL é validado antes de entrar em qualquer consulta.
+/* O ID da URL só entra nas consultas depois de validado como inteiro positivo. */
 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {
     setFlash('error', 'ID de usuário inválido.');
@@ -16,7 +22,7 @@ if ($id === false || $id === null) {
 }
 
 try {
-    // Primeira leitura: carrega os dados usados para preencher o formulário.
+    /* A leitura inicial preenche o formulário e detecta contas inexistentes. */
     $statement = $connection->prepare('SELECT first_name, last_name, username, email, avatar, role FROM users WHERE id = ?');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -40,7 +46,7 @@ $role = $currentRole;
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     requireValidCsrfToken();
-    // Senha vazia significa "manter a atual"; confirmação isolada é tratada como erro.
+    /* Senha vazia mantém o hash atual; uma confirmação isolada continua sendo erro. */
     foreach ($values as $field => $unused) {
         $values[$field] = is_string($_POST[$field] ?? null) ? trim($_POST[$field]) : '';
     }
@@ -65,8 +71,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         try {
             $connection->begin_transaction();
             $inTransaction = true;
-            // Trava a relação de administradores e depois o usuário editado. Assim,
-            // requisições simultâneas não conseguem rebaixar o último admin.
+            /* Os locks impedem que operações concorrentes rebaixem o último administrador. */
             $adminCount = lockedAdminCount($connection);
             $statement = $connection->prepare('SELECT avatar, role FROM users WHERE id = ? FOR UPDATE');
             $statement->bind_param('i', $id);
@@ -82,18 +87,18 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             }
             $duplicates = userDuplicateErrors($connection, $values, $id);
             if ($duplicates) {
-                // Não há nada para persistir quando username/email já pertencem a outro ID.
+                /* Conflitos de username ou email encerram a transação sem UPDATE. */
                 $errors = array_merge($errors, $duplicates);
                 $connection->rollback();
                 $inTransaction = false;
             } else {
-                // Mantém o avatar atual quando nenhum novo arquivo foi enviado.
+                /* A ausência de novo upload preserva o avatar atual. */
                 $avatar = $oldAvatar;
                 if ($avatarExtension !== null) {
                     $newAvatar = saveUserAvatar($_FILES['avatar'], $avatarExtension);
                     $avatar = $newAvatar;
                 }
-                // COALESCE no UPDATE preserva a senha antiga quando $hash é null.
+                /* COALESCE mantém a senha anterior quando nenhum novo hash foi gerado. */
                 $hash = $password !== '' ? password_hash($password, PASSWORD_DEFAULT) : null;
                 $statement = $connection->prepare('UPDATE users SET first_name = ?, last_name = ?, username = ?, email = ?, role = ?, avatar = ?, password = COALESCE(?, password) WHERE id = ?');
                 $statement->bind_param('sssssssi', $values['first_name'], $values['last_name'], $values['username'], $values['email'], $role, $avatar, $hash, $id);
@@ -101,12 +106,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $statement->close();
                 $connection->commit();
                 $inTransaction = false;
-                // Só remove o avatar antigo após o COMMIT confirmar o novo caminho.
+                /* O avatar antigo só é removido depois que o novo caminho foi confirmado. */
                 if ($newAvatar !== null) {
                     removeManagedUserAvatar($oldAvatar);
                 }
                 if ($_SESSION['user_id'] === $id) {
-                    // Se o admin editou a própria conta, sincroniza sua sessão imediatamente.
+                    /* Alterações na própria conta são refletidas imediatamente na sessão. */
                     $_SESSION['username'] = $values['username'];
                     $_SESSION['role'] = $role;
                     $_SESSION['avatar'] = $avatar;
@@ -116,7 +121,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
-            // Reverte o banco e remove apenas o novo upload ainda não confirmado.
+            /* Em falha, reverte o banco e limpa apenas o upload ainda não confirmado. */
             if ($inTransaction) {
                 try {
                     $connection->rollback();
@@ -145,7 +150,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -155,6 +160,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     <body>
 
+        <!-- Navegação do blog com caminhos relativos ao diretório administrativo. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -199,6 +205,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
+        <!-- Formulário de edição; senha e avatar permanecem opcionais. -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Editar usuário</h2>
@@ -230,6 +237,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

@@ -1,5 +1,11 @@
 <?php
-// Exclusão é uma ação protegida para admin ou para o próprio autor do post.
+/**
+ * Exclui um post e sua thumbnail gerenciada.
+ *
+ * Autoriza administradores ou o próprio autor, confirma a operação em transação
+ * e só remove o arquivo depois que o banco conclui o DELETE.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireLogin();
@@ -8,7 +14,7 @@ require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/post-utils.php';
 refreshPostActor($connection);
 
-// Não aceita exclusão por link/GET; o dashboard envia um formulário POST.
+/* A mutação exige o formulário POST do dashboard e um token CSRF válido. */
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     setFlash('error', 'A exclusão de post exige envio pelo formulário.');
     header('Location: dashboard.php', true, 303);
@@ -27,8 +33,7 @@ $inTransaction = false;
 try {
     $connection->begin_transaction();
     $inTransaction = true;
-    // Busca e bloqueia o registro antes de conferir a autoria. Isso impede que um
-    // ID adulterado permita excluir o post de outro usuário.
+    /* O registro é bloqueado e sua autoria é revalidada dentro da mesma transação. */
     $statement = $connection->prepare('SELECT author_id, thumbnail FROM posts WHERE id = ? FOR UPDATE');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -47,7 +52,7 @@ try {
     $statement->close();
     $connection->commit();
     $inTransaction = false;
-    // O arquivo só é removido após a exclusão estar confirmada no banco.
+    /* O arquivo permanece intacto se o DELETE ou o COMMIT falhar. */
     removeManagedPostThumbnail($thumbnail);
     setFlash('success', 'Post excluído com sucesso.');
 } catch (Throwable $exception) {

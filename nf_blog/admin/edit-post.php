@@ -1,5 +1,11 @@
 <?php
-// Admin edita qualquer post; author só pode editar um post de sua própria autoria.
+/**
+ * Edita um post existente e, opcionalmente, substitui sua thumbnail.
+ *
+ * Administradores podem editar qualquer registro; autores são limitados aos
+ * próprios posts. Banco e arquivo são coordenados para evitar estado parcial.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireLogin();
@@ -8,7 +14,7 @@ require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/post-utils.php';
 refreshPostActor($connection);
 
-// O ID da URL é dado externo e precisa ser um inteiro positivo.
+/* O ID externo precisa ser um inteiro positivo antes de entrar nas consultas. */
 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {
     setFlash('error', 'ID de post inválido.');
@@ -17,7 +23,7 @@ if ($id === false || $id === null) {
 }
 
 try {
-    // Esta primeira leitura preenche o formulário e bloqueia acesso indevido já no GET.
+    /* A leitura inicial preenche o formulário e já bloqueia autoria indevida no GET. */
     $statement = $connection->prepare('SELECT title, body, thumbnail, category_id, author_id, is_featured FROM posts WHERE id = ?');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -56,7 +62,7 @@ try {
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     requireValidCsrfToken();
-    // Repete toda validação no servidor porque o formulário pode ser manipulado.
+    /* O POST é revalidado integralmente, independentemente dos atributos do formulário. */
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $body = is_string($_POST['body'] ?? null) ? $_POST['body'] : '';
     $categoryId = filter_var($_POST['category_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -77,8 +83,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         try {
             $connection->begin_transaction();
             $inTransaction = true;
-            // FOR UPDATE trava o registro e permite revalidar existência e autoria
-            // dentro da mesma transação que fará a alteração.
+            /* O lock mantém existência e autoria estáveis durante o UPDATE. */
             $statement = $connection->prepare('SELECT thumbnail, author_id FROM posts WHERE id = ? FOR UPDATE');
             $statement->bind_param('i', $id);
             $statement->execute();
@@ -96,8 +101,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 $connection->rollback();
                 $inTransaction = false;
             } else {
-                // Sem novo upload, mantém o caminho antigo. Com upload, só apaga a
-                // imagem anterior depois que o UPDATE for confirmado pelo COMMIT.
+                /* Sem upload, mantém a thumbnail; com upload, a anterior espera o COMMIT. */
                 $thumbnail = $oldThumbnail;
                 if ($thumbnailExtension !== null) {
                     $newThumbnail = savePostThumbnail($_FILES['thumbnail'], $thumbnailExtension);
@@ -117,8 +121,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
-            // Qualquer falha volta o banco ao estado anterior e limpa somente o novo
-            // arquivo, caso ele tenha sido salvo antes do erro.
+            /* Em falha, reverte o banco e remove somente o novo arquivo ainda não confirmado. */
             if ($inTransaction) {
                 try {
                     $connection->rollback();
@@ -149,7 +152,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -159,6 +162,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     <body>
 
+        <!-- Navegação do blog com caminhos relativos ao diretório administrativo. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -203,6 +207,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
+        <!-- Formulário de edição; um novo upload substitui a thumbnail atual após o COMMIT. -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Editar Post</h2>
@@ -236,6 +241,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

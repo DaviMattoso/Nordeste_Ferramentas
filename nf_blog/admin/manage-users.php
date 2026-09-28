@@ -1,5 +1,11 @@
 <?php
-// Tela exclusivamente administrativa para listar e acessar as ações de usuários.
+/**
+ * Lista administrativa de usuários.
+ *
+ * Exibe as contas disponíveis para edição ou exclusão e mantém essas ações
+ * restritas a administradores revalidados no banco.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
@@ -8,14 +14,14 @@ require_once __DIR__ . '/../config/flash.php';
 $flash = getFlash();
 $users = [];
 try {
-    // A consulta não usa input externo, portanto não precisa de parâmetros preparados.
+    /* A consulta não recebe entrada externa e mantém os resultados ordenados por ID. */
     $result = $connection->query('SELECT id, first_name, last_name, username, role FROM users ORDER BY id ASC');
     while ($user = $result->fetch_assoc()) {
         $users[] = $user;
     }
     $result->free();
 } catch (Throwable $exception) {
-    // Substitui qualquer flash anterior por um erro de carregamento desta página.
+    /* Um erro desta listagem substitui mensagens anteriores para não sugerir sucesso parcial. */
     error_log('NF Blog: falha ao listar usuários. Código: ' . $exception->getCode());
     $flash = ['type' => 'error', 'message' => 'Não foi possível carregar os usuários. Tente novamente.'];
 }
@@ -29,7 +35,7 @@ try {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -39,6 +45,7 @@ try {
 
     <body>
 
+        <!-- Navegação do blog com acesso ao perfil administrativo. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -83,6 +90,7 @@ try {
             </div>
         </nav>
 
+        <!-- Menu de gestão e tabela das contas cadastradas. -->
         <section class="dashboard">
             <div class="container dashboard__container">
                 <aside>
@@ -180,6 +188,7 @@ try {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

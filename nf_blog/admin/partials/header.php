@@ -1,6 +1,11 @@
 <?php
-// Inicia a sessão para que a navbar compartilhada consiga exibir login ou perfil.
-// Este partial não exige autenticação por conta própria; cada página decide seu acesso.
+/**
+ * Abre o documento HTML e renderiza a navegação compartilhada da homepage.
+ *
+ * Este partial inicia a sessão para apresentar login ou perfil, mas não protege
+ * rotas por conta própria; a página que o inclui define sua regra de acesso.
+ */
+
 require_once __DIR__ . '/../../config/auth.php';
 require_once __DIR__ . '/../../config/csrf.php';
 ?>
@@ -14,7 +19,7 @@ require_once __DIR__ . '/../../config/csrf.php';
 
         <link rel="icon" href="./Images/favicon.ico" />
 
-        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/style.css?v=<?= filemtime(__DIR__ . '/../../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -24,6 +29,7 @@ require_once __DIR__ . '/../../config/csrf.php';
 
     <body>
 
+        <!-- Navegação pública compartilhada; o conteúdo seguinte é definido pela página que inclui este partial. -->
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">

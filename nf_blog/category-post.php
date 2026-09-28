@@ -1,5 +1,11 @@
 <?php
-// A página é pública: auth.php inicia a sessão usada pela navbar sem exigir login.
+/**
+ * Lista os posts públicos de uma categoria.
+ *
+ * Distingue categoria inexistente de categoria ainda sem posts e prepara os
+ * dados de autor, resumo e data necessários para cada card.
+ */
+
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/post-utils.php';
@@ -11,15 +17,14 @@ $category = null;
 $posts = [];
 $pageError = '';
 
-// O ID da categoria vem da URL e só é aceito quando é um inteiro positivo.
+/* O parâmetro da URL só entra nas consultas depois de validado como inteiro positivo. */
 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {
     http_response_code(404);
     $pageError = 'Categoria não encontrada.';
 } else {
     try {
-        // A categoria é carregada primeiro porque existir sem posts é um estado válido,
-        // diferente de um ID que não corresponde a nenhuma categoria.
+        /* A primeira consulta separa uma categoria vazia de um ID inexistente. */
         $statement = $connection->prepare('SELECT id, title, description FROM categories WHERE id = ? LIMIT 1');
         $statement->bind_param('i', $id);
         $statement->execute();
@@ -37,8 +42,7 @@ if ($id === false || $id === null) {
                 'description' => $categoryDescription,
             ];
 
-            // O filtro usa o mesmo ID já validado e mantém o valor separado do SQL.
-            // O JOIN com users fornece o autor de cada card em uma única consulta.
+            /* O statement filtra pelo ID validado e o JOIN fornece o autor de cada card. */
             $statement = $connection->prepare(
                 'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, p.is_featured, '
                 . 'u.id AS author_id, u.username, u.first_name, u.last_name, u.avatar '
@@ -79,7 +83,7 @@ if ($id === false || $id === null) {
             $statement->close();
         }
     } catch (Throwable $exception) {
-        // Detalhes técnicos ficam no log; o visitante recebe somente uma mensagem segura.
+        /* Registra a falha internamente e preserva uma resposta pública genérica. */
         error_log('NF Blog: falha ao carregar categoria pública. Código: ' . $exception->getCode());
         http_response_code(500);
         $category = null;
@@ -97,7 +101,7 @@ if ($id === false || $id === null) {
 
         <link rel="icon" href="./Images/favicon.ico" />
 
-        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -107,6 +111,7 @@ if ($id === false || $id === null) {
 
     <body>
 
+        <!-- Navegação pública com estado de login refletido no perfil. -->
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -151,6 +156,7 @@ if ($id === false || $id === null) {
             </div>
         </nav>
 
+        <!-- Identificação da categoria ou mensagem de erro preparada pelo backend. -->
         <section class="search__bar">
             <div class="container">
                 <?php if ($pageError !== ''): ?>
@@ -168,6 +174,7 @@ if ($id === false || $id === null) {
 
         <?php if ($category !== null && $pageError === ''): ?>
 
+        <!-- Cards pertencentes exclusivamente à categoria validada. -->
         <section class="posts">
             <div class="container posts__container">
                 <?php if (!$posts): ?>
@@ -209,6 +216,7 @@ if ($id === false || $id === null) {
 
         <?php endif; ?>
 
+        <!-- Rodapé público com categorias, suporte e navegação. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

@@ -1,10 +1,17 @@
 <?php
 
+/**
+ * Funções compartilhadas pelo CRUD e pela apresentação de posts.
+ *
+ * Centraliza validação textual, categorias, resumos, datas, thumbnails e a
+ * regra que limita autores aos próprios posts.
+ */
+
 /** Revalida no banco a conta que está prestes a criar ou gerenciar um post. */
 function refreshPostActor(mysqli $connection): void
 {
     try {
-        // Atualiza username, avatar e role para não confiar em dados antigos da sessão.
+        /* Atualiza identidade e papel para não confiar em dados antigos da sessão. */
         $statement = $connection->prepare('SELECT username, avatar, role FROM users WHERE id = ?');
         $statement->bind_param('i', $_SESSION['user_id']);
         $statement->execute();
@@ -26,9 +33,9 @@ function refreshPostActor(mysqli $connection): void
     $_SESSION['role'] = $role;
 }
 
+/** Valida título e conteúdo conforme os limites das colunas do banco. */
 function postValidationErrors(string $title, string $body): array
 {
-    // Os limites espelham VARCHAR(255) para o título e TEXT para o conteúdo.
     $errors = [];
     if ($title === '') {
         $errors[] = 'Informe o título do post.';
@@ -49,11 +56,12 @@ function postValidationErrors(string $title, string $body): array
     return $errors;
 }
 
+/** Produz texto simples e curto para cards sem cortar marcação HTML no meio. */
 function postExcerpt(string $body, int $maxLength = 220): string
 {
-    // Remove tags antes de cortar, pois truncar HTML poderia gerar marcação quebrada.
+    /* A remoção de tags ocorre antes do corte para não produzir marcação incompleta. */
     $text = trim(strip_tags($body));
-    // Une quebras de linha e espaços repetidos para o resumo caber melhor no card.
+    /* Quebras e espaços repetidos são normalizados para o resumo ocupar uma linha contínua. */
     $normalizedText = preg_replace('/\s+/u', ' ', $text);
     if ($normalizedText !== null) {
         $text = $normalizedText;
@@ -61,7 +69,7 @@ function postExcerpt(string $body, int $maxLength = 220): string
     if ($text === '' || $maxLength < 1) {
         return '';
     }
-    // Conta caracteres Unicode, não bytes, para não dividir letras acentuadas.
+    /* O corte considera caracteres Unicode e não divide letras acentuadas por byte. */
     $length = preg_match_all('/./us', $text, $characters);
     if ($length === false || $length <= $maxLength) {
         return $text;
@@ -69,16 +77,17 @@ function postExcerpt(string $body, int $maxLength = 220): string
     return implode('', array_slice($characters[0], 0, $maxLength)) . '…';
 }
 
+/** Formata a data armazenada somente para exibição, preservando o valor original. */
 function postDisplayDate(string $createdAt): string
 {
-    // Formata somente para exibição e preserva o valor original armazenado no banco.
     $timestamp = strtotime($createdAt);
     return $timestamp === false ? $createdAt : date('d/m/Y - H:i', $timestamp);
 }
 
+/** Normaliza o valor opcional do checkbox de destaque e rejeita entradas inesperadas. */
 function postFeaturedInput($input): array
 {
-    // Checkbox desmarcado não é enviado pelo navegador; por isso null significa 0.
+    /* Checkbox desmarcado não é enviado pelo navegador; por isso null equivale a zero. */
     if ($input === null || $input === '0') {
         return [0, null];
     }
@@ -88,9 +97,9 @@ function postFeaturedInput($input): array
     return [0, 'Valor de destaque inválido.'];
 }
 
+/** Retorna as opções atuais do seletor de categoria no CRUD de posts. */
 function postCategories(mysqli $connection): array
 {
-    // Carrega as opções usadas nos selects de criação e edição de post.
     $categories = [];
     $result = $connection->query('SELECT id, title FROM categories ORDER BY title ASC, id ASC');
     while ($category = $result->fetch_assoc()) {
@@ -100,9 +109,9 @@ function postCategories(mysqli $connection): array
     return $categories;
 }
 
+/** Confirma que uma categoria recebida do formulário ainda existe. */
 function postCategoryExists(mysqli $connection, int $categoryId): bool
 {
-    // Confirma no servidor que o ID enviado pelo select ainda existe.
     $statement = $connection->prepare('SELECT id FROM categories WHERE id = ? LIMIT 1');
     $statement->bind_param('i', $categoryId);
     $statement->execute();
@@ -112,9 +121,12 @@ function postCategoryExists(mysqli $connection, int $categoryId): bool
     return $exists;
 }
 
+/**
+ * Valida uma thumbnail por estado do upload, tamanho, MIME real e leitura da imagem.
+ * Retorna a extensão confiável e uma lista de erros; na edição o arquivo é opcional.
+ */
 function postThumbnailValidation($upload, bool $required): array
 {
-    // Na criação a imagem é obrigatória; na edição, ausência significa manter a atual.
     if ($upload === null) {
         return [null, $required ? ['Selecione uma thumbnail para o post.'] : []];
     }
@@ -134,7 +146,7 @@ function postThumbnailValidation($upload, bool $required): array
     if ($size === false || $size > 5 * 1024 * 1024) {
         return [null, ['A thumbnail deve ter no máximo 5 MB.']];
     }
-    // MIME detectado pelo conteúdo + getimagesize evita confiar apenas na extensão.
+    /* MIME e metadados da imagem evitam confiar na extensão fornecida pelo navegador. */
     $allowedTypes = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
     $mime = (new finfo(FILEINFO_MIME_TYPE))->file($upload['tmp_name']);
     $image = @getimagesize($upload['tmp_name']);
@@ -144,9 +156,10 @@ function postThumbnailValidation($upload, bool $required): array
     return [$allowedTypes[$mime], []];
 }
 
+/** Salva uma thumbnail validada com nome aleatório e retorna seu caminho relativo. */
 function savePostThumbnail(array $upload, string $extension): string
 {
-    // O nome criptograficamente aleatório evita colisões e nomes maliciosos.
+    /* O nome criptograficamente aleatório evita colisões e nomes controlados pelo usuário. */
     $directory = __DIR__ . '/../Images/posts';
     if (!is_dir($directory) && !@mkdir($directory, 0755, true) && !is_dir($directory)) {
         throw new RuntimeException('Falha ao criar diretório de thumbnails.');
@@ -158,10 +171,10 @@ function savePostThumbnail(array $upload, string $extension): string
     return $thumbnail;
 }
 
+/** Remove somente thumbnails cujo caminho corresponda ao padrão gerenciado. */
 function removeManagedPostThumbnail(?string $thumbnail): void
 {
-    // A whitelist do caminho garante que somente uploads criados por esta aplicação
-    // possam ser apagados; imagens antigas ou caminhos arbitrários são preservados.
+    /* A lista permitida impede que um valor inesperado provoque exclusão fora de Images/posts. */
     if ($thumbnail === null || !preg_match('~\AImages/posts/[a-f0-9]{32}\.(?:jpg|png|webp)\z~', $thumbnail)) {
         return;
     }
@@ -171,8 +184,8 @@ function removeManagedPostThumbnail(?string $thumbnail): void
     }
 }
 
+/** Autoriza administradores em qualquer post e autores apenas nos próprios registros. */
 function canManagePost(int $authorId): bool
 {
-    // Admin gerencia qualquer post; author somente quando o ID pertence à sua sessão.
     return isAdmin() || $_SESSION['user_id'] === $authorId;
 }

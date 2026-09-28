@@ -1,5 +1,9 @@
 <?php
-// Página pública: a sessão monta a navbar e o banco fornece as categorias do footer.
+/**
+ * Apresenta os serviços e tipos de conteúdo oferecidos pelo NF Blog.
+ * A sessão personaliza a navegação e as categorias do rodapé vêm do banco.
+ */
+
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/database.php';
@@ -16,7 +20,7 @@ $publicCategories = publicCategories($connection);
 
         <link rel="icon" href="./Images/favicon.ico" />
 
-        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -26,6 +30,7 @@ $publicCategories = publicCategories($connection);
 
     <body>
 
+        <!-- Navegação pública com acesso condicional ao perfil autenticado. -->
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -70,6 +75,7 @@ $publicCategories = publicCategories($connection);
             </div>
         </nav>
 
+        <!-- Apresentação dos serviços, conteúdos, indicadores e chamada para o blog. -->
         <section class="services">
             <div class="container services__container">
                 <div class="services__title">
@@ -197,6 +203,7 @@ $publicCategories = publicCategories($connection);
             </div>
         </section>
 
+        <!-- Rodapé público alimentado pelas categorias atuais do banco. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

@@ -1,12 +1,18 @@
 <?php
-// Exclusão de categoria é permitida somente para administradores.
+/**
+ * Exclui uma categoria pelo painel administrativo.
+ *
+ * Aceita somente POST autenticado com CSRF válido e usa transação para confirmar
+ * a existência do registro antes do DELETE.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
 
-// Exige formulário POST para evitar que uma simples visita a um link exclua dados.
+/* GET não pode provocar exclusão por visita, crawler ou pré-carregamento de link. */
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     setFlash('error', 'A exclusão de categoria exige envio pelo formulário.');
     header('Location: manage-categories.php', true, 303);
@@ -25,7 +31,7 @@ $inTransaction = false;
 try {
     $connection->begin_transaction();
     $inTransaction = true;
-    // Trava o registro até DELETE/ROLLBACK e também confirma que ele existe.
+    /* O lock confirma a existência e mantém o registro estável até o fim da transação. */
     $statement = $connection->prepare('SELECT id FROM categories WHERE id = ? FOR UPDATE');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -50,7 +56,7 @@ try {
             error_log('NF Blog: falha ao desfazer exclusão de categoria. Código: ' . $rollbackException->getCode());
         }
     }
-    // O erro 1451 vem da FOREIGN KEY RESTRICT quando ainda existem posts vinculados.
+    /* A chave estrangeira RESTRICT retorna 1451 quando ainda existem posts vinculados. */
     setFlash('error', $exception instanceof DomainException
         ? $exception->getMessage()
         : ($exception instanceof mysqli_sql_exception && $exception->getCode() === 1451

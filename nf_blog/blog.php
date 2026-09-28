@@ -1,6 +1,11 @@
 <?php
-// A página é pública: auth.php apenas inicia a sessão para montar a navbar,
-// sem chamar requireLogin(). A conexão é usada para buscar os cards reais.
+/**
+ * Listagem pública completa do NF Blog.
+ *
+ * Consulta todos os posts com suas categorias e autores, prepara os valores
+ * exibidos nos cards e mantém a navegação sensível à sessão sem exigir login.
+ */
+
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/database.php';
@@ -11,8 +16,10 @@ $publicCategories = publicCategories($connection);
 $posts = [];
 $listError = '';
 try {
-    // INNER JOIN traz, em uma única consulta, o post, sua categoria e seu autor.
-    // Como não há entrada externa nesta listagem, não existem parâmetros para bind.
+    /*
+     * Os JOINs recuperam post, categoria e autor em uma única consulta. Não há
+     * parâmetros externos nesta listagem; a ordenação usa somente campos fixos.
+     */
     $result = $connection->query(
         'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, p.is_featured, '
         . 'c.id AS category_id, c.title AS category_title, '
@@ -23,7 +30,7 @@ try {
         . 'ORDER BY p.created_at DESC'
     );
     while ($post = $result->fetch_assoc()) {
-        // Prepara somente valores de apresentação; os dados originais continuam intactos.
+        /* Acrescenta valores derivados usados apenas na apresentação dos cards. */
         $authorName = trim($post['first_name'] . ' ' . $post['last_name']);
         $post['author_name'] = $authorName !== '' ? $authorName : $post['username'];
         $post['excerpt'] = postExcerpt($post['body']);
@@ -32,7 +39,7 @@ try {
     }
     $result->free();
 } catch (Throwable $exception) {
-    // O visitante recebe uma mensagem genérica; detalhes técnicos ficam apenas no log.
+    /* O detalhe técnico permanece no log; a interface recebe uma mensagem segura. */
     error_log('NF Blog: falha ao listar posts públicos. Código: ' . $exception->getCode());
     $listError = 'Não foi possível carregar os posts. Tente novamente.';
 }
@@ -46,7 +53,7 @@ try {
 
         <link rel="icon" href="./Images/favicon.ico" />
 
-        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -56,6 +63,7 @@ try {
 
     <body>
 
+        <!-- Navegação pública com acesso ao painel quando existe uma sessão autenticada. -->
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -100,6 +108,7 @@ try {
             </div>
         </nav>
 
+        <!-- Pesquisa enviada por GET para search.php. -->
         <section class="search__bar">
 
             <form action="search.php" method="GET" class="container search__bar-container">
@@ -111,6 +120,7 @@ try {
             </form>
         </section>
 
+        <!-- Listagem completa dos posts carregados pelo bloco PHP deste arquivo. -->
         <section class="posts">
             <div class="container posts__container">
                 <?php if ($listError !== ''): ?>
@@ -154,6 +164,7 @@ try {
             </div>
         </section>
 
+        <!-- Atalhos gerados com as categorias atuais do banco. -->
         <section class="category__buttons-section">
             <div class="container category__buttons-container">
                 <?php foreach ($publicCategories as $publicCategory): ?>
@@ -162,6 +173,7 @@ try {
             </div>
         </section>
 
+        <!-- Rodapé público com categorias, suporte e navegação. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

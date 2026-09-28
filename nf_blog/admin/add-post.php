@@ -1,5 +1,11 @@
 <?php
-// Criação de posts exige login, mas aceita tanto admin quanto author.
+/**
+ * Formulário de criação de posts do painel.
+ *
+ * Permite acesso a administradores e autores, valida categoria e thumbnail e
+ * atribui a autoria exclusivamente à identidade autenticada na sessão.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireLogin();
@@ -8,14 +14,14 @@ require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/post-utils.php';
 refreshPostActor($connection);
 
-// Valores iniciais também servem para repopular o formulário após um erro.
+/* Estes valores também repopulam o formulário quando a validação falha. */
 $title = '';
 $body = '';
 $categoryId = null;
 $isFeatured = 0;
 $errors = [];
 try {
-    // As categorias vêm do banco para impedir opções fixas e desatualizadas no HTML.
+    /* As opções vêm do banco para que o formulário reflita as categorias atuais. */
     $categories = postCategories($connection);
 } catch (Throwable $exception) {
     error_log('NF Blog: falha ao carregar categorias para post. Código: ' . $exception->getCode());
@@ -28,8 +34,7 @@ if (!$categories && !$errors) {
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     requireValidCsrfToken();
-    // Todo valor recebido é normalizado/validado no servidor; o atributo required
-    // do HTML melhora a experiência, mas não é uma barreira de segurança.
+    /* A validação no servidor não depende de atributos HTML manipuláveis. */
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $body = is_string($_POST['body'] ?? null) ? $_POST['body'] : '';
     $categoryId = filter_var($_POST['category_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -47,12 +52,12 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     if (!$errors) {
         $thumbnail = null;
         try {
-            // Reconfirma a categoria porque ela pode ter sido removida após abrir a tela.
+            /* Reconfirma a categoria caso ela tenha sido removida após a abertura da tela. */
             if (!postCategoryExists($connection, $categoryId)) {
                 $errors[] = 'Categoria selecionada não existe. Escolha outra.';
             } else {
                 $thumbnail = savePostThumbnail($_FILES['thumbnail'], $thumbnailExtension);
-                // A autoria sempre vem da sessão autenticada, nunca de input do formulário.
+                /* A autoria vem da sessão e não pode ser escolhida pelo formulário. */
                 $authorId = $_SESSION['user_id'];
                 $statement = $connection->prepare('INSERT INTO posts (title, body, thumbnail, category_id, author_id, is_featured) VALUES (?, ?, ?, ?, ?, ?)');
                 $statement->bind_param('sssiii', $title, $body, $thumbnail, $categoryId, $authorId, $isFeatured);
@@ -63,7 +68,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
-            // Se o banco falhar depois do upload, remove o arquivo que ficaria órfão.
+            /* Uma falha posterior ao upload não deve deixar thumbnail órfã. */
             removeManagedPostThumbnail($thumbnail);
             $errors[] = $exception instanceof mysqli_sql_exception && $exception->getCode() === 1452
                 ? 'Categoria selecionada não está mais disponível. Escolha outra.'
@@ -82,7 +87,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -92,6 +97,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     <body>
 
+        <!-- Navegação do blog com caminhos relativos ao diretório administrativo. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -136,6 +142,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
+        <!-- Formulário multipart de criação de post e thumbnail. -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Adicionar Post</h2>
@@ -172,6 +179,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

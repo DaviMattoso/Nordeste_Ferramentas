@@ -1,9 +1,15 @@
 <?php
-// auth.php inicia a sessão segura usada para guardar a identidade autenticada.
+/**
+ * Autentica usuários do NF Blog por username ou email.
+ *
+ * Verifica a senha armazenada, renova o identificador e o token CSRF da sessão
+ * e direciona a conta autenticada ao painel administrativo.
+ */
+
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/csrf.php';
 
-// Usuário já autenticado não precisa visualizar o formulário novamente.
+/* Uma sessão já autenticada segue diretamente para o painel. */
 if (isLoggedIn()) {
     header('Location: admin/dashboard.php', true, 302);
     exit;
@@ -17,25 +23,24 @@ $login = '';
 $error = '';
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     requireValidCsrfToken();
-    // A mesma entrada aceita username ou email; a senha não recebe trim.
+    /* O identificador aceita username ou email; espaços continuam válidos na senha. */
     $login = is_string($_POST['login'] ?? null) ? trim($_POST['login']) : '';
     $password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
     if ($login === '' || $password === '') {
         $error = 'Preencha o usuário/email e a senha.';
     } else {
         try {
-            // Prepared statement impede que o texto do login altere a consulta SQL.
+            /* O statement mantém a entrada do visitante separada da consulta SQL. */
             $statement = $connection->prepare('SELECT id, first_name, last_name, username, email, password, avatar, role FROM users WHERE username = ? OR email = ? LIMIT 2');
             $statement->bind_param('ss', $login, $login);
             $statement->execute();
             $statement->store_result();
             $statement->bind_result($id, $firstName, $lastName, $username, $email, $hash, $avatar, $role);
-            // Em caso de username igual ao email de outra conta, não escolhe uma conta arbitrariamente.
+            /* Uma correspondência ambígua não autentica uma conta arbitrária. */
             $found = $statement->num_rows === 1 && $statement->fetch();
             $statement->close();
             if ($found && password_verify($password, $hash)) {
-                // Troca o identificador antes de gravar a identidade autenticada,
-                // protegendo contra fixação de sessão.
+                /* A troca do identificador antes do login protege contra fixação de sessão. */
                 if (!session_regenerate_id(true)) {
                     throw new RuntimeException('Falha ao renovar sessão.');
                 }
@@ -47,13 +52,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'avatar' => $avatar,
                     'csrf_token' => $newCsrfToken,
                 ];
-                // PRG evita reenviar a senha ao atualizar a página do dashboard.
+                /* POST/Redirect/GET impede o reenvio da senha ao atualizar o dashboard. */
                 header('Location: admin/dashboard.php', true, 303);
                 exit;
             }
             $error = 'Usuário/email ou senha inválidos.';
         } catch (Throwable $exception) {
-            // Nunca envia ao navegador a exceção ou detalhes da consulta/banco.
+            /* A resposta não expõe exceção, consulta ou detalhes do banco. */
             error_log('NF Blog: falha no login. Código: ' . $exception->getCode());
             $error = 'Não foi possível entrar. Tente novamente.';
         }
@@ -69,7 +74,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <link rel="icon" href="./Images/favicon.ico" />
 
-        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -79,6 +84,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     <body>
 
+        <!-- Navegação pública reduzida para visitantes ainda não autenticados. -->
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -105,6 +111,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
+        <!-- Formulário protegido por CSRF; o processamento ocorre antes do HTML. -->
         <section class="form__section">
             <div class="container form__section-container">
 
@@ -141,6 +148,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
+        <!-- Rodapé público com categorias, suporte e navegação. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

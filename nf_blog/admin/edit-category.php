@@ -1,5 +1,11 @@
 <?php
-// Edição de categoria é uma operação exclusiva de administrador.
+/**
+ * Edita uma categoria existente.
+ *
+ * Valida o ID e os campos, reabre o registro com lock dentro da transação e
+ * preserva a unicidade do título antes de confirmar a alteração.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
@@ -7,7 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/category-utils.php';
 
-// O ID recebido pela URL só entra na consulta depois de validado como inteiro positivo.
+/* O ID da URL só entra nas consultas depois de validado como inteiro positivo. */
 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {
     setFlash('error', 'ID de categoria inválido.');
@@ -16,7 +22,7 @@ if ($id === false || $id === null) {
 }
 
 try {
-    // Carrega o estado atual para preencher o formulário no primeiro acesso.
+    /* A leitura inicial preenche o formulário e detecta IDs inexistentes no GET. */
     $statement = $connection->prepare('SELECT title, description FROM categories WHERE id = ?');
     $statement->bind_param('i', $id);
     $statement->execute();
@@ -40,7 +46,7 @@ $description = $storedDescription ?? '';
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     requireValidCsrfToken();
-    // Revalida todo o conteúdo no servidor mesmo que o HTML tenha campos required.
+    /* O servidor repete a validação porque os controles do HTML podem ser contornados. */
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $descriptionInput = $_POST['description'] ?? '';
     $description = is_string($descriptionInput) ? $descriptionInput : '';
@@ -54,8 +60,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         try {
             $connection->begin_transaction();
             $inTransaction = true;
-            // FOR UPDATE confirma que a categoria ainda existe e impede mudança
-            // concorrente até o fim desta transação.
+            /* FOR UPDATE revalida a existência e estabiliza o registro durante o UPDATE. */
             $statement = $connection->prepare('SELECT id FROM categories WHERE id = ? FOR UPDATE');
             $statement->bind_param('i', $id);
             $statement->execute();
@@ -66,7 +71,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 throw new DomainException('Categoria não encontrada.');
             }
             if (categoryTitleExists($connection, $title, $id)) {
-                // Ao detectar duplicidade, desfaz o lock sem executar UPDATE.
+                /* Em duplicidade, encerra a transação sem persistir alterações. */
                 $errors[] = 'Categoria já existe.';
                 $connection->rollback();
                 $inTransaction = false;
@@ -83,7 +88,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 exit;
             }
         } catch (Throwable $exception) {
-            // Se qualquer etapa falhar, garante que nenhuma alteração parcial permaneça.
+            /* Qualquer falha desfaz a transação para não deixar estado parcial. */
             if ($inTransaction) {
                 try {
                     $connection->rollback();
@@ -113,7 +118,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -123,6 +128,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     <body>
 
+        <!-- Navegação do blog com caminhos relativos ao diretório administrativo. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -167,6 +173,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
+        <!-- Formulário preenchido com a categoria carregada e revalidada no backend. -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Editar categoria</h2>
@@ -188,6 +195,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

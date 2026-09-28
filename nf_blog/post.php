@@ -1,5 +1,11 @@
 <?php
-// A página é pública: auth.php inicia a sessão para a navbar, mas não exige login.
+/**
+ * Exibe um post público individual do NF Blog.
+ *
+ * Valida o ID da URL, consulta post, categoria e autor em conjunto e prepara
+ * metadados de apresentação antes de renderizar o conteúdo completo.
+ */
+
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/post-utils.php';
@@ -10,15 +16,17 @@ $publicCategories = publicCategories($connection);
 $post = null;
 $pageError = '';
 
-// O ID vem da URL e só é aceito quando representa um inteiro positivo.
+/* IDs ausentes, não numéricos ou fora da faixa válida são tratados como 404. */
 $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if ($id === false || $id === null) {
     http_response_code(404);
     $pageError = 'Post não encontrado.';
 } else {
     try {
-        // O prepared statement mantém o ID separado do SQL. Os JOINs carregam todos
-        // os dados de categoria e autor necessários para montar a página completa.
+        /*
+         * O ID permanece separado do SQL. Os JOINs carregam categoria e autor junto
+         * ao post para evitar consultas adicionais durante a renderização.
+         */
         $statement = $connection->prepare(
             'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, p.updated_at, p.is_featured, '
             . 'c.id AS category_id, c.title AS category_title, '
@@ -53,7 +61,7 @@ if ($id === false || $id === null) {
             http_response_code(404);
             $pageError = 'Post não encontrado.';
         } else {
-            // Nome completo é preferido; username cobre cadastros sem nome preenchido.
+            /* O username funciona como fallback quando o nome completo estiver vazio. */
             $authorName = trim($firstName . ' ' . $lastName);
             $post = [
                 'id' => $postId,
@@ -73,7 +81,7 @@ if ($id === false || $id === null) {
             ];
         }
     } catch (Throwable $exception) {
-        // Detalhes técnicos ficam no log; o visitante recebe somente uma mensagem segura.
+        /* Registra a falha internamente sem expor consulta ou banco ao visitante. */
         error_log('NF Blog: falha ao carregar post público. Código: ' . $exception->getCode());
         http_response_code(500);
         $pageError = 'Não foi possível carregar o post. Tente novamente.';
@@ -89,7 +97,7 @@ if ($id === false || $id === null) {
 
         <link rel="icon" href="./Images/favicon.ico" />
 
-        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -99,6 +107,7 @@ if ($id === false || $id === null) {
 
     <body>
 
+        <!-- Navegação pública com estado de login refletido no perfil. -->
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -143,6 +152,7 @@ if ($id === false || $id === null) {
             </div>
         </nav>
 
+        <!-- Conteúdo do post ou mensagem correspondente ao status HTTP definido no PHP. -->
         <section class="singlepost">
             <div class="container singlepost__container">
                 <?php if ($post === null): ?>
@@ -177,6 +187,7 @@ if ($id === false || $id === null) {
             </div>
         </section>
 
+        <!-- Rodapé público com categorias, suporte e navegação. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

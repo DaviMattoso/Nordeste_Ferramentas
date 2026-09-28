@@ -1,10 +1,16 @@
-/* =====================================================
-   RESET BÁSICO
-   ===================================================== */
+/* ==================================================
+   ESTILOS DA PÁGINA INSTITUCIONAL
+   Organiza a identidade visual, a vitrine integrada ao blog e os layouts
+   responsivos da página principal da Nordeste Ferramentas.
+   ================================================== */
+
+/* ==================================================
+   BASE E ELEMENTOS COMPARTILHADOS
+   ================================================== */
 * {
-    margin: 0; /* Remove margens padrão */
-    padding: 0; /* Remove espaçamentos padrão */
-    box-sizing: border-box; /* Inclui padding/borda no tamanho */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 a {
@@ -16,141 +22,114 @@ button {
     outline: none;
 }
 
-/* =====================================================
-   BASE DO SITE
-   Afeta TODO o HTML
-   ===================================================== */
 body {
-    font-family: "Inter", sans-serif; /* Fonte principal */
-    font-size: 16px; /* Tamanho base */
-    line-height: 1.6; /* Altura das linhas */
-    background-color: #ffffff; /* Fundo branco */
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: #ffffff;
 }
 
-/* 
-   Compensa o header fixo
-   Evita que cubra o conteúdo da página
-*/
+/* Reserva no fluxo a altura do cabeçalho fixo para o conteúdo não ficar encoberto. */
 body {
-    padding-top: 140px; /* valor inicial (desktop) */
+    padding-top: 140px;
 }
 
-/* Container padrão usado em várias seções */
 .container {
-    width: 90%; /* Usa 90% da largura */
-    max-width: 1000px; /* Limita largura máxima */
-    margin: auto; /* Centraliza */
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
 }
 
-/* Classe utilitária para centralizar texto */
 .center {
     text-align: center;
 }
 
-/* =====================================================
-   HEADER
-   <header class="header">
-   ===================================================== */
+/* ==================================================
+   CABEÇALHO E NAVEGAÇÃO
+   ================================================== */
 .header {
-    border-bottom: 1px solid #eee; /* Linha inferior */
-    position: fixed; /* Fixa no topo */
-    top: 0; /* Começa no topo */
+    border-bottom: 1px solid #eee;
+    position: fixed;
+    top: 0;
     left: 0;
-    width: 100%; /* Ocupa toda largura */
-    z-index: 9999; /* Fica acima de tudo */
-    transition: top 0.3s ease; /* Animação suave */
-    background: #ffffff; /* Fundo branco */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Pequena sombra */
+    width: 100%;
+    z-index: 9999;
+    transition: transform 0.3s ease;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Estrutura interna do header !! */
 .header-content {
-    display: flex; /* Layout flexível */
-    justify-content: space-between; /* Logo à esquerda, menu à direita */
-    align-items: center; /* Centraliza verticalmente */
-    padding: 20px 0; /* Espaço vertical */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
     gap: 20px;
 }
 
-/* Container do texto da marca */
 .logo-text {
-    display: flex; /* Organiza os textos */
-    flex-direction: column; /* Nome em cima, slogan embaixo */
-    justify-content: center; /* Centraliza verticalmente */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-/* Nome da empresa */
 .company-name {
-    font-size: 24px; /* Tamanho do nome */
-    font-weight: 700; /* Negrito */
-    line-height: 1.2; /* Espaçamento entre linhas */
-    color: #1e3a8a; /* Azul principal */
-    white-space: nowrap; /* ⬅ Impede quebra de linha oque soluciona o problema do espaçamento entre logo e menu*/
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #1e3a8a;
+    white-space: nowrap;
 }
 
-/* Slogan da empresa */
 .company-tagline {
-    font-size: 14px; /* Texto menor */
-    color: #6b7280; /* Cinza */
+    font-size: 14px;
+    color: #6b7280;
 }
 
-/* Imagem do logo */
 .logo-img {
     width: 250px;
     height: auto;
     object-fit: contain;
 }
 
-/* Nome da empresa */
 .company-name {
-    color: #1e3a8a; /* Azul da marca */
-    font-weight: 700; /* Negrito */
+    color: #1e3a8a;
+    font-weight: 700;
     font-size: 22px;
 }
 
-/* Slogan da empresa */
 .company-tagline {
-    color: #6b7280; /* Cinza */
-    font-size: 14px; /* Texto menor */
+    color: #6b7280;
+    font-size: 14px;
 }
 
-/* 
-   NOTA:
-   Não existe estado "active" no menu.
-   Todos os links só mudam visualmente no :hover.
-   Isso garante comportamento uniforme e evita bugs.
-*/
-/* Definições de estilo dos botoes do header*/
-/* Container do menu */
 .nav {
-    display: flex; /* Links lado a lado */
-    gap: 20px; /* Espaço entre botões */
-    align-items: center; /* Alinhamento vertical */
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
 
-/* Links do menu – estado normal */
 .nav-btn {
-    background: transparent; /* Botão sem fundo */
-    border: none; /* Remove borda padrão */
-    padding: 8px 14px; /* Área clicável */
-    border-radius: 6px; /* Cantos arredondados */
-    font-family: inherit; /* Usa a fonte do site */
-    font-size: 16px; /* Tamanho do texto */
-    color: #1f2937; /* Cor padrão do texto */
-    cursor: pointer; /* Cursor de clique */
+    background: transparent;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 16px;
+    color: #1f2937;
+    cursor: pointer;
     transition: color 0.3s ease;
 }
 
-/* Hover dos botões do menu */
 .nav-btn:hover {
-    background-color: #f1f5f9; /* Fundo cinza claro */
-    color: #ff6b35; /* Texto laranja */
-    transform: translateY(-2px); /* Leve subida */
+    background-color: #f1f5f9;
+    color: #ff6b35;
+    transform: translateY(-2px);
 }
 
-/* =====================================================
-   BOTÕES
-   ===================================================== */
+/* ==================================================
+   BOTÕES E AÇÕES
+   ================================================== */
 .btn-primary,
 .btn-secondary,
 button {
@@ -159,54 +138,46 @@ button {
     border-radius: 8px;
     text-decoration: none;
     display: inline-block;
-
-    /* Remove qualquer borda padrão */
     border: none;
     outline: none;
 }
 
-/* Botão principal (Portal de Locação)(laranja) */
 .btn-primary {
     background: #ff6b35;
     color: #ffffff;
     padding: 12px 20px;
 }
 
-/* Hover botão principal */
 .btn-primary:hover {
     background: #e85a28;
     transform: translateY(-2px);
 }
 
-/* Botão secundário (azul) */
 .btn-secondary {
     background: #1e3a8a;
     color: #ffffff;
     padding: 12px 20px;
 }
 
-/* Hover botão secundário */
 .btn-secondary:hover {
     background: #1e40af;
     transform: translateY(-2px);
 }
 
-/* =====================================================
-   HERO
-   <section class="hero">
-   ===================================================== */
+/* ==================================================
+   APRESENTAÇÃO PRINCIPAL
+   ================================================== */
 .hero {
-    padding: 80px 0; /* Espaço vertical */
+    padding: 80px 0;
 }
 
 .hero-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 colunas iguais */
-    align-items: center; /* Alinha verticalmente */
-    gap: 60px; /* Espaço entre texto e imagem */
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
 }
 
-/* TEXTO */
 .hero-text h1 {
     font-size: 48px;
     font-weight: 700;
@@ -224,7 +195,6 @@ button {
     max-width: 520px;
 }
 
-/* IMAGEM */
 .hero-image img {
     width: 100%;
     max-width: 500px;
@@ -232,119 +202,261 @@ button {
     object-fit: cover;
 }
 
-/* Botões do hero */
 .hero-buttons {
-    margin-top: 30px; /* Espaço entre texto e botões */
+    margin-top: 30px;
     display: flex;
-    gap: 20px; /* Espaço entre botões */
-    flex-wrap: wrap; /* Evita quebrar layout no mobile */
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-/* Botão específico do hero */
 .hero-btn {
     display: inline-flex;
     align-items: center;
-    gap: 10px; /* Espaço entre ícone e texto */
+    gap: 10px;
     font-size: 16px;
     font-weight: 600;
 }
 
-/* =====================================================
-   Blog
-   ===================================================== */
+/* ==================================================
+   VITRINE DE POSTS DO BLOG
+   Os cards desta seção são criados por script.js com os dados da API do NF Blog.
+   ================================================== */
 .blog {
     width: 100%;
     height: auto;
-    margin: 25px 0;
+    margin: 25px 0 0;
+    padding: clamp(3.5rem, 6vw, 5.5rem) 0;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border-top: 1px solid #eef2f7;
+    border-bottom: 1px solid #eef2f7;
 }
 
 .blog h1 {
+    position: relative;
+    width: fit-content;
+    max-width: calc(100% - 2rem);
+    margin: 0 auto clamp(2.25rem, 4vw, 3.25rem);
+    padding-bottom: 1rem;
     text-align: center;
-    font-size: 50px;
-    margin-bottom: 30px;
+    font-size: clamp(2.25rem, 4vw, 3.125rem);
+    line-height: 1.15;
     color: #1e3a8a;
 }
 
+.blog h1::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 72px;
+    height: 4px;
+    border-radius: 999px;
+    background: #ff6b35;
+    transform: translateX(-50%);
+}
+
 .blog .blog_box {
-    width: 95%;
+    width: min(92%, 1280px);
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 450px));
+    justify-content: center;
+    align-items: stretch;
+    gap: clamp(1.25rem, 2vw, 1.75rem);
 }
 
 .blog .blog_box .blog_card {
     margin: 0 auto;
-    width: 450px;
-    height: auto;
-    box-shadow: 0 0 8px rgba(255, 94, 0, 0.5);
+    width: 100%;
+    max-width: 450px;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(30, 58, 138, 0.1);
+    transition:
+        transform 220ms ease,
+        box-shadow 220ms ease,
+        border-color 220ms ease;
+}
+
+.blog .blog_box .blog_card:hover,
+.blog .blog_box .blog_card:focus-within {
+    border-color: rgba(255, 107, 53, 0.55);
+    box-shadow: 0 18px 38px rgba(30, 58, 138, 0.16);
+    transform: translateY(-6px);
 }
 
 .blog .blog_box .blog_card .blog_img {
-    width: 450px;
-    height: 300px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
+}
+
+.blog .blog_box .blog_card .blog_img > a {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .blog .blog_box .blog_card .blog_img img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
+    transition: filter 220ms ease;
+}
+
+.blog .blog_box .blog_card:hover .blog_img img {
+    filter: brightness(1.04);
 }
 
 .blog .blog_box .blog_card .blog_tag {
-    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.25rem, 2vw, 1.5rem);
+}
+
+.blog_category {
+    align-self: flex-start;
+    margin-bottom: 0.85rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(255, 107, 53, 0.11);
+    color: #d9480f;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
 }
 
 .blog .blog_box .blog_card .blog_tag h2 {
+    margin: 0;
     color: #ff6b35;
+    font-size: clamp(1.2rem, 1.6vw, 1.4rem);
+    line-height: 1.35;
 }
 
 .blog .blog_box .blog_card .blog_tag p {
-    margin-top: 10px;
-    text-align: justify;
-    line-height: 22px;
+    display: -webkit-box;
+    flex: 1;
+    margin: 0.85rem 0 1.25rem;
+    overflow: hidden;
+    color: #4b5563;
+    font-size: 0.96rem;
+    line-height: 1.65;
+    text-align: left;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
 }
 
 .blog .blog_box .blog_card .blog_tag .blog_icon {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: #ff6b35;
-    cursor: pointer;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #eef2f7;
 }
 
-/* Botão de acesso ao Blog */
+.blog_date,
+.blog_read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+}
+
+.blog_date {
+    color: #6b7280;
+}
+
+.blog_date i {
+    color: #ff6b35;
+}
+
+.blog_read-more {
+    color: #1e3a8a;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.blog_read-more i {
+    color: #ff6b35;
+    transition: transform 180ms ease;
+}
+
+.blog_read-more:hover i {
+    transform: translateX(3px);
+}
+
 .blog-actions {
     display: flex;
     justify-content: center;
-    margin-top: 40px; /* Espaço entre os cards e o botão */
+    margin-top: clamp(2rem, 4vw, 2.75rem);
 }
 
 .blog-btn {
-    padding: 14px 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0.875rem 1.8rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(255, 107, 53, 0.24);
     font-size: 16px;
     font-weight: 600;
 }
 
-/* Corrige cor dos títulos clicáveis do blog */
+.blog-btn:hover {
+    box-shadow: 0 12px 24px rgba(255, 107, 53, 0.32);
+}
+
 .blog .blog_box .blog_card .blog_tag h2 a {
-    color: #ff6b35; /* mantém o laranja */
-    text-decoration: none; /* remove sublinhado */
+    display: -webkit-box;
+    overflow: hidden;
+    color: #ff6b35;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
-/* Hover opcional (fica lindo) */
 .blog .blog_box .blog_card .blog_tag h2 a:hover {
-    color: #e85a28; /* laranja um pouco mais escuro */
+    color: #e85a28;
 }
 
-/* =====================================================
-   Ferramentas
-   ===================================================== */
-/* Cabeçalho da seção Ferramentas */
+.blog a:focus-visible {
+    outline: 3px solid rgba(255, 107, 53, 0.45);
+    outline-offset: 3px;
+}
+
+.blog-status {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 1rem;
+    color: #6b7280;
+    text-align: center;
+}
+
+.blog-status[data-state="error"] {
+    color: #e85a28;
+}
+
+/* ==================================================
+   CATEGORIAS DE EQUIPAMENTOS E DIÁLOGOS
+   ================================================== */
 .section-header {
-    text-align: center; /* Centraliza tudo */
-    margin-bottom: 3rem; /* Espaço antes dos cards */
+    text-align: center;
+    margin-bottom: 3rem;
 }
 
 .section-title {
@@ -355,21 +467,19 @@ button {
 
 .section-subtitle {
     font-size: 18px;
-    color: #4b5563; /* Cinza suave */
+    color: #4b5563;
 }
 
 .equipamentos {
     padding: 4rem 0;
 }
 
-/* Grid dos cards */
 .equipamentos-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 cards lado a lado */
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
 }
 
-/* Card individual */
 .equipamento-card {
     background: #ffffff;
     padding: 3rem;
@@ -380,14 +490,12 @@ button {
     border: 2px solid transparent;
 }
 
-/* Hover do card */
 .equipamento-card:hover {
     border-color: #ff6b35;
     transform: translateY(-5px);
     box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Ícone circular */
 .equipamento-icon {
     width: 80px;
     height: 80px;
@@ -401,7 +509,6 @@ button {
     font-size: 2rem;
 }
 
-/* Título do card */
 .equipamento-card h3 {
     font-size: 1.3rem;
     font-weight: 600;
@@ -409,44 +516,98 @@ button {
     margin-bottom: 1rem;
 }
 
-/* Texto do card */
 .equipamento-card p {
     color: #64748b;
     line-height: 1.6;
 }
 
-/* Área do botão */
 .equipamentos-actions {
     text-align: center;
     margin-top: 40px;
 }
 
-/* Card destacado */
+.availability-dialog {
+    width: min(480px, calc(100% - 32px));
+    max-width: none;
+    margin: auto;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    color: #334155;
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
+}
+
+.availability-dialog::backdrop {
+    background: rgba(15, 23, 42, 0.65);
+}
+
+.dialog-content {
+    position: relative;
+    padding: 40px 32px 32px;
+    text-align: center;
+}
+
+.dialog-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.dialog-close:hover {
+    color: #ff6b35;
+}
+
+.dialog-icon {
+    margin-bottom: 16px;
+    color: #ff6b35;
+    font-size: 36px;
+}
+
+.dialog-content h2 {
+    margin-bottom: 18px;
+    color: #1e3a8a;
+    font-size: 26px;
+}
+
+.dialog-placeholder {
+    padding: 18px;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #64748b;
+}
+
 .highlight {
     border: 2px solid #ff6b35;
 }
 
-/* =====================================================
-   SOBRE – Nordeste Ferramentas
-   ===================================================== */
+/* ==================================================
+   SOBRE A EMPRESA
+   ================================================== */
 .sobre {
     padding: 4rem 0;
-    background-color: #f8fafc; /* cinza claro do fundo */
+    background-color: #f8fafc;
 }
 
-/* Grid principal */
 .sobre-content {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* texto | imagem */
+    grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
 }
 
-/* Texto */
 .sobre-text .section-title {
     font-size: 42px;
     font-weight: 700;
-    color: #1e3a8a; /* azul principal */
+    color: #1e3a8a;
     margin-bottom: 20px;
 }
 
@@ -457,7 +618,6 @@ button {
     margin-bottom: 30px;
 }
 
-/* Lista de benefícios */
 .sobre-features {
     margin-bottom: 30px;
 }
@@ -472,11 +632,10 @@ button {
 }
 
 .feature i {
-    color: #10b981; /* verde de sucesso */
+    color: #10b981;
     font-size: 18px;
 }
 
-/* Botão outline */
 .btn-outline {
     display: inline-flex;
     align-items: center;
@@ -497,7 +656,6 @@ button {
     transform: translateY(-2px);
 }
 
-/* Imagem */
 .sobre-image {
     text-align: center;
 }
@@ -509,23 +667,19 @@ button {
     box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* =====================================================
-   CONTATO
-   ===================================================== */
+/* ==================================================
+   CONTATO E FORMULÁRIO
+   ================================================== */
 .contato {
     padding: 80px 0;
 }
 
-/* Grid principal */
 .contato-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
 }
 
-/* =========================
-   INFORMAÇÕES DE CONTATO
-   ========================= */
 .contato-info {
     display: flex;
     flex-direction: column;
@@ -557,16 +711,20 @@ button {
     font-size: 15px;
 }
 
-/* =========================
-   FORMULÁRIO
-   ========================= */
+.contato-item a {
+    color: inherit;
+}
+
+.contato-item a:hover {
+    color: #ff6b35;
+}
+
 .contato-form {
     background: #f8fafc;
     padding: 40px;
     border-radius: 12px;
 }
 
-/* Grupo de campos */
 .form-group {
     margin-bottom: 20px;
 }
@@ -584,7 +742,6 @@ button {
     background: #ffffff;
 }
 
-/* Foco */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -592,13 +749,11 @@ button {
     border-color: #ff6b35;
 }
 
-/* Textarea */
 .form-group textarea {
     resize: vertical;
     min-height: 120px;
 }
 
-/* Botão */
 .contato-form .btn-primary {
     margin-top: 10px;
     display: inline-flex;
@@ -606,23 +761,43 @@ button {
     gap: 10px;
 }
 
-/* =====================================================
-   FOOTER
-   ===================================================== */
+.contato-form .btn-primary:disabled {
+    cursor: wait;
+    opacity: 0.7;
+    transform: none;
+}
+
+.form-status {
+    min-height: 24px;
+    margin-top: 14px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.form-status[data-state="success"] {
+    color: #10b981;
+}
+
+.form-status[data-state="error"] {
+    color: #e85a28;
+}
+
+/* ==================================================
+   RODAPÉ
+   ================================================== */
 .footer {
     background: #1e3a8a;
     color: #ffffff;
-    padding: 48px 0 20px; /* MENOR altura */
+    padding: 48px 0 20px;
 }
 
 .footer-content {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 32px; /* menor espaçamento */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
     margin-bottom: 32px;
 }
 
-/* Logo */
 .footer-logo {
     display: flex;
     align-items: center;
@@ -635,21 +810,18 @@ button {
     height: 36px;
 }
 
-/* Texto */
 .footer-section p {
     color: #e5e7eb;
     font-size: 14px;
     line-height: 1.5;
 }
 
-/* Títulos */
 .footer-section h4 {
     font-size: 16px;
     font-weight: 600;
     margin-bottom: 12px;
 }
 
-/* Links */
 .footer-links {
     list-style: none;
     padding: 0;
@@ -659,7 +831,6 @@ button {
     margin-bottom: 6px;
 }
 
-/* LINKS SEM NAVEGAÇÃO REAL (visual apenas) */
 .footer-links a {
     color: #e5e7eb;
     text-decoration: none;
@@ -672,14 +843,12 @@ button {
     color: #ff6b35;
 }
 
-/* Redes sociais – lado a lado */
 .social-links {
     display: flex;
     gap: 10px;
     margin-top: 8px;
 }
 
-/* Ícones */
 .social-link {
     width: 36px;
     height: 36px;
@@ -698,7 +867,6 @@ button {
     color: #ffffff;
 }
 
-/* Linha inferior */
 .footer-bottom {
     text-align: center;
     padding-top: 16px;
@@ -707,31 +875,28 @@ button {
     color: #d1d5db;
 }
 
-/* =====================================================
-   RESPONSIVIDADE – TABLET
-   Até 1024px
-   ===================================================== */
-/* Bloco da marca (logo + nome) */
+/* Agrupa marca, logotipo e texto usados em todas as larguras do cabeçalho. */
 .brand {
     display: flex;
-    align-items: center; /* alinha verticalmente */
-    gap: 12px; /* espaço entre logo e texto */
+    align-items: center;
+    gap: 12px;
 }
 
-/* Logo */
 .logo-img {
-    width: 60px; /* tamanho equilibrado */
+    width: 60px;
     height: auto;
 }
 
-/* Texto da marca */
 .logo-text {
     display: flex;
     flex-direction: column;
 }
 
+/* ==================================================
+   RESPONSIVIDADE: NOTEBOOKS E TABLETS
+   ================================================== */
 @media (max-width: 1024px) {
-    /* MEDIA QUERIES */
+
     .logo-img {
         width: 56px;
     }
@@ -749,49 +914,71 @@ button {
     }
 
     .hero h1 {
-        font-size: 40px; /* Reduz título */
+        font-size: 40px;
     }
 
     .hero p {
         font-size: 17px;
     }
-}
 
-/* =====================================================
-   RESPONSIVIDADE – MOBILE
-   Até 768px
-   ===================================================== */
-@media (max-width: 768px) {
-    /* =====================================================
-       COMPENSAÇÃO DO HEADER FIXO (MOBILE)
-       ===================================================== */
-    body {
-        padding-top: 200px; /* Altura REAL do header no mobile */
+    .blog .blog_box,
+    .equipamentos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    /* =====================================================
-       HEADER
-       ===================================================== */
+    .blog .blog_box .blog_card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        justify-self: center;
+    }
+}
+
+/* Em tablets estreitos, a navegação passa para uma segunda linha do cabeçalho. */
+@media (max-width: 900px) {
+    body {
+        padding-top: 160px;
+    }
+
     .header-content {
-        flex-direction: column; /* Logo em cima, menu embaixo */
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+}
+
+/* ==================================================
+   RESPONSIVIDADE: CELULARES
+   ================================================== */
+@media (max-width: 768px) {
+
+    /* A navegação quebrada em várias linhas exige uma reserva vertical maior. */
+    body {
+        padding-top: 220px;
+    }
+
+    /* Cabeçalho e navegação */
+    .header-content {
+        flex-direction: column;
         text-align: center;
         gap: 12px;
     }
 
     .brand {
         display: flex;
-        align-items: center; /* Logo ao lado do nome */
+        align-items: center;
         gap: 10px;
     }
 
     .logo-img {
-        width: 60px; /* Logo proporcional no mobile */
+        width: 60px;
         height: auto;
     }
 
-    /* =====================================================
-       MENU
-       ===================================================== */
     .nav {
         display: flex;
         flex-wrap: wrap;
@@ -810,11 +997,9 @@ button {
         text-align: center;
     }
 
-    /* =====================================================
-       HERO
-       ===================================================== */
+    /* Apresentação principal */
     .hero-grid {
-        grid-template-columns: 1fr; /* 1 coluna */
+        grid-template-columns: 1fr;
     }
 
     .hero-text p {
@@ -825,7 +1010,6 @@ button {
         margin: 30px auto 0;
     }
 
-    /*Botão do hero*/
     .hero-buttons {
         justify-content: center;
     }
@@ -834,83 +1018,62 @@ button {
         justify-content: center;
     }
 
-    /* ===============================
-    BLOG – MOBILE
-    =============================== */
-    /* Container geral do blog */
+    /* Vitrine do blog */
     .blog {
-        margin: 40px 0;
+        margin: 0;
+        padding: 3.5rem 0;
     }
 
-    /* Título do blog */
     .blog h1 {
-        font-size: 32px; /* Menor que no desktop */
-        margin-bottom: 20px;
-        padding: 0 10px;
+        font-size: 32px;
+        margin-bottom: 32px;
+        padding: 0 10px 14px;
         text-align: center;
     }
 
-    /* Grid vira coluna única */
     .blog .blog_box {
-        grid-template-columns: 1fr; /* 1 card por linha */
+        grid-template-columns: 1fr;
         gap: 30px;
     }
 
-    /* Card ocupa toda a largura */
     .blog .blog_box .blog_card {
         width: 100%;
         max-width: 100%;
     }
 
-    /* Imagem responsiva */
     .blog .blog_box .blog_card .blog_img {
         width: 100%;
-        height: 220px; /* Altura equilibrada no mobile */
+        height: auto;
+        aspect-ratio: 16 / 9;
     }
 
-    /* Texto do card */
     .blog .blog_box .blog_card .blog_tag h2 {
         font-size: 20px;
     }
 
     .blog .blog_box .blog_card .blog_tag p {
         font-size: 15px;
-        line-height: 1.5;
+        line-height: 1.6;
     }
 
-    /* Ícones */
     .blog .blog_box .blog_card .blog_tag .blog_icon {
         margin-top: 15px;
         font-size: 14px;
     }
 
-    /* Botão de acesso ao Blog */
     .blog-actions {
-        width: 100%; /* garante largura total */
-        display: flex;
-        justify-content: center; /* centraliza horizontalmente */
-        margin: 50px 0 20px; /* espaço acima e abaixo */
-    }
-
-    .blog-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px; /* espaço entre ícone e texto */
-        padding: 14px 32px;
-        font-size: 16px;
-        font-weight: 600;
-        border: 2px solid #000000; /* padrão do site */
-    }
-
-    .blog-actions {
+        width: 100%;
         display: flex;
         justify-content: center;
-        margin-top: 30px;
+        margin: 30px 0 20px;
     }
 
     .blog-btn {
         width: 100%;
-        max-width: 280px; /* mesmo padrão do botão catálogo */
+        max-width: 280px;
+        padding: 14px 32px;
+        font-size: 16px;
+        font-weight: 600;
         text-align: center;
         justify-content: center;
         display: inline-flex;
@@ -918,17 +1081,14 @@ button {
         gap: 10px;
     }
 
-    /* =====================================================
-    FERRAMENTAS – MOBILE
-    ===================================================== */
-    /* Título e subtítulo centralizados */
+    /* Equipamentos */
     .section-header {
         text-align: center;
         margin-bottom: 30px;
     }
 
     .section-title {
-        font-size: 28px; /* Menor que desktop */
+        font-size: 28px;
     }
 
     .section-subtitle {
@@ -936,24 +1096,20 @@ button {
         line-height: 1.5;
     }
 
-    /* Grid vira coluna (1 card por linha) */
     .equipamentos-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
 
-    /* Cards ocupam largura total */
     .equipamento-card {
         width: 100%;
         padding: 24px;
     }
 
-    /* Ícone central continua ok */
     .equipamento-icon {
         margin-bottom: 16px;
     }
 
-    /* Botão do catálogo centralizado e confortável */
     .equipamentos-actions {
         text-align: center;
         margin-top: 30px;
@@ -961,14 +1117,12 @@ button {
 
     .equipamentos-actions .btn {
         width: 100%;
-        max-width: 280px; /* Evita botão gigante */
+        max-width: 280px;
     }
 
-    /* =====================================================
-   SOBRE – MOBILE
-   ===================================================== */
+    /* Sobre a empresa */
     .sobre-content {
-        grid-template-columns: 1fr; /*Vira coluna*/
+        grid-template-columns: 1fr;
         gap: 30px;
         text-align: center;
     }
@@ -982,12 +1136,11 @@ button {
     }
 
     .feature {
-        justify-content: flex-start; /* alinha tudo pela esquerda */
+        justify-content: flex-start;
         text-align: left;
         width: 100%;
     }
 
-    /* Alinhamento correto dos itens da lista no mobile */
     .sobre-features {
         align-items: flex-start;
     }
@@ -1007,22 +1160,17 @@ button {
         margin-top: 20px;
     }
 
-    /* =====================================================
-   CONTATO – MOBILE
-   ===================================================== */
-    /* Grid vira coluna única */
+    /* Contato */
     .contato-content {
         grid-template-columns: 1fr;
         gap: 40px;
     }
 
-    /* Centraliza cabeçalho */
     .contato .section-header {
         text-align: center;
         margin-bottom: 30px;
     }
 
-    /* Info de contato */
     .contato-info {
         gap: 24px;
     }
@@ -1036,12 +1184,10 @@ button {
         margin-top: 6px;
     }
 
-    /* Formulário ocupa toda largura */
     .contato-form {
         padding: 30px 20px;
     }
 
-    /* Inputs confortáveis no toque */
     .form-group input,
     .form-group select,
     .form-group textarea {
@@ -1049,27 +1195,22 @@ button {
         padding: 14px;
     }
 
-    /* Botão grande e fácil de clicar */
     .contato-form .btn-primary {
         width: 100%;
         justify-content: center;
     }
 
-    /* =====================================================
-   FOOTER – MOBILE
-   ===================================================== */
+    /* Rodapé */
     .footer {
         padding: 40px 0 20px;
         text-align: center;
     }
 
-    /* Grid vira coluna */
     .footer-content {
         grid-template-columns: 1fr;
         gap: 30px;
     }
 
-    /* Logo + nome centralizados */
     .footer-logo {
         justify-content: center;
     }
@@ -1084,7 +1225,6 @@ button {
         font-size: 16px;
     }
 
-    /* Links centralizados */
     .footer-links {
         padding: 0;
     }
@@ -1097,7 +1237,6 @@ button {
         font-size: 14px;
     }
 
-    /* Redes sociais lado a lado e centralizadas */
     .social-links {
         justify-content: center;
     }
@@ -1107,16 +1246,13 @@ button {
         height: 38px;
     }
 
-    /* Linha inferior mais compacta */
     .footer-bottom {
         margin-top: 20px;
         padding-top: 15px;
         font-size: 13px;
     }
 
-    /* =====================================================
-       OUTROS AJUSTES
-       ===================================================== */
+    /* Ajustes compartilhados para contêineres, filtros e grades */
     .container {
         width: 92%;
     }

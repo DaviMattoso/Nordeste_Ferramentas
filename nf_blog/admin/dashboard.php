@@ -1,5 +1,11 @@
 <?php
-// Qualquer usuário autenticado acessa o dashboard, mas a listagem varia pela role.
+/**
+ * Dashboard de posts do NF Blog.
+ *
+ * Administradores visualizam todos os registros; autores visualizam somente os
+ * próprios posts e mantêm acesso às operações autorizadas para sua conta.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireLogin();
@@ -8,15 +14,17 @@ require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/post-utils.php';
 refreshPostActor($connection);
 
-// Mensagens flash sobrevivem ao redirecionamento e são consumidas uma única vez.
+/* A mensagem do último CRUD é consumida uma única vez após o redirecionamento. */
 $userFlash = getFlash();
 $accessDenied = ($_SESSION['access_denied'] ?? false) === true;
 unset($_SESSION['access_denied']);
 $posts = [];
 $listError = '';
 try {
-    // Admin não recebe WHERE e enxerga todos os posts. Author recebe filtro obrigatório
-    // pelo user_id da sessão, nunca por um ID enviado pelo navegador.
+    /*
+     * O administrador não recebe filtro. Para autores, o WHERE usa obrigatoriamente
+     * o ID da sessão e nunca um identificador controlado pelo navegador.
+     */
     $sql = 'SELECT p.id, p.title, p.category_id, c.title AS category_title, p.author_id, p.is_featured, p.created_at '
         . 'FROM posts AS p INNER JOIN categories AS c ON c.id = p.category_id';
     if (!isAdmin()) {
@@ -36,7 +44,7 @@ try {
     }
     $statement->close();
 } catch (Throwable $exception) {
-    // Mantém o painel utilizável mesmo se somente a listagem falhar.
+    /* A estrutura do painel permanece disponível mesmo quando a listagem falha. */
     error_log('NF Blog: falha ao listar posts. Código: ' . $exception->getCode());
     $listError = 'Não foi possível carregar os posts. Tente novamente.';
 }
@@ -50,7 +58,7 @@ try {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -60,6 +68,7 @@ try {
 
     <body>
 
+        <!-- Navegação do blog com acesso ao perfil autenticado. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -104,6 +113,7 @@ try {
             </div>
         </nav>
 
+        <!-- Menu de gestão e tabela de posts filtrada conforme o papel da sessão. -->
         <section class="dashboard">
             <div class="container dashboard__container">
                 <aside>
@@ -186,8 +196,8 @@ try {
                         <tbody>
                             <?php foreach ($posts as $post): ?>
                             <tr>
-                                <td><?= authEscape($post['title']) ?></td>
-                                <td><?= authEscape($post['category_title']) ?></td>
+                                <td><?= authEscape((string) $post['title']) ?></td>
+                                <td><?= authEscape((string) $post['category_title']) ?></td>
                                 <td><a href="edit-post.php?id=<?= (int) $post['id'] ?>" class="btn sm">Editar</a></td>
                                 <td>
                                     <form action="delete-post.php" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este post?')">
@@ -207,6 +217,7 @@ try {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

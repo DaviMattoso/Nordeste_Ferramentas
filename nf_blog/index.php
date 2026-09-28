@@ -1,5 +1,11 @@
 <?php
-// A homepage é pública: auth.php inicia a sessão para a navbar sem exigir login.
+/**
+ * Página inicial pública do NF Blog.
+ *
+ * Seleciona o post em destaque, completa a grade com os posts recentes e
+ * reutiliza o cabeçalho compartilhado para montar a navegação da página.
+ */
+
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/post-utils.php';
@@ -10,7 +16,7 @@ $featuredPost = null;
 $recentPosts = [];
 $loadError = '';
 
-// Centraliza os valores derivados usados tanto no destaque quanto nos cards recentes.
+/* Deriva os valores de apresentação usados pelo destaque e pelos cards recentes. */
 $preparePublicPost = static function (array $post): array {
     $authorName = trim($post['first_name'] . ' ' . $post['last_name']);
     $post['author_name'] = $authorName !== '' ? $authorName : $post['username'];
@@ -22,8 +28,10 @@ $preparePublicPost = static function (array $post): array {
 };
 
 try {
-    // As duas consultas usam os mesmos campos e JOINs. Não há input externo,
-    // portanto uma consulta direta é segura e mais simples que um statement preparado.
+    /*
+     * As consultas compartilham os mesmos JOINs para obter categoria e autor.
+     * Como não recebem entrada externa, podem reutilizar diretamente este fragmento.
+     */
     $postSelect = 'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, p.is_featured, '
         . 'c.id AS category_id, c.title AS category_title, '
         . 'u.id AS author_id, u.username, u.first_name, u.last_name, u.avatar '
@@ -31,7 +39,7 @@ try {
         . 'INNER JOIN categories AS c ON c.id = p.category_id '
         . 'INNER JOIN users AS u ON u.id = p.author_id';
 
-    // Se houver vários destaques, somente o mais recente ocupa a área principal.
+    /* Se houver vários registros marcados, o mais recente ocupa a área principal. */
     $result = $connection->query(
         $postSelect . ' WHERE p.is_featured = 1 ORDER BY p.created_at DESC LIMIT 1'
     );
@@ -41,8 +49,10 @@ try {
         $featuredPost = $preparePublicPost($featuredRow);
     }
 
-    // O layout possui sete cards. São carregados oito candidatos para ainda restarem
-    // sete quando o destaque principal também estiver entre os posts mais recentes.
+    /*
+     * Oito candidatos permitem preencher sete cards mesmo quando o destaque também
+     * aparece entre os registros mais recentes.
+     */
     $recentCandidates = [];
     $result = $connection->query($postSelect . ' ORDER BY p.created_at DESC LIMIT 8');
     while ($post = $result->fetch_assoc()) {
@@ -50,12 +60,12 @@ try {
     }
     $result->free();
 
-    // Sem nenhum is_featured, o post geral mais recente assume o destaque.
+    /* Sem marcação explícita, o post geral mais recente assume o destaque. */
     if ($featuredPost === null && $recentCandidates) {
         $featuredPost = array_shift($recentCandidates);
     }
 
-    // Evita repetir o destaque e mantém no máximo os sete cards do design original.
+    /* Remove a duplicação do destaque e respeita a capacidade de sete cards. */
     foreach ($recentCandidates as $post) {
         if ($featuredPost !== null && (int) $post['id'] === (int) $featuredPost['id']) {
             continue;
@@ -66,7 +76,7 @@ try {
         }
     }
 } catch (Throwable $exception) {
-    // O visitante recebe uma mensagem genérica; o detalhe técnico fica apenas no log.
+    /* Mantém detalhes técnicos no log e apresenta ao visitante uma mensagem genérica. */
     error_log('NF Blog: falha ao carregar posts da homepage. Código: ' . $exception->getCode());
     http_response_code(500);
     $featuredPost = null;
@@ -74,10 +84,11 @@ try {
     $loadError = 'Não foi possível carregar os posts. Tente novamente.';
 }
 
-// O header compartilhado monta o início do HTML e a navbar existente.
+/* O partial abre o documento HTML e monta a mesma navbar usada nas páginas públicas. */
 require_once __DIR__ . '/admin/partials/header.php';
 ?>
 
+        <!-- Post em destaque; usa o registro marcado mais recente ou o post geral mais novo como fallback. -->
         <section class="featured">
 
             <div class="container featured__container">
@@ -126,6 +137,7 @@ require_once __DIR__ . '/admin/partials/header.php';
             </div>
         </section>
 
+        <!-- Grade de posts recentes, sem repetir o registro já exibido no destaque. -->
         <?php if ($recentPosts): ?>
         <section class="posts">
             <div class="container posts__container">
@@ -163,6 +175,7 @@ require_once __DIR__ . '/admin/partials/header.php';
         </section>
         <?php endif; ?>
 
+        <!-- Atalhos gerados com as categorias atuais do banco. -->
         <section class="category__buttons-section">
             <div class="container category__buttons-container">
                 <?php foreach ($publicCategories as $publicCategory): ?>
@@ -171,6 +184,7 @@ require_once __DIR__ . '/admin/partials/header.php';
             </div>
         </section>
 
+        <!-- Rodapé público do blog. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

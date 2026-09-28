@@ -1,5 +1,11 @@
 <?php
-// Categorias são administradas somente por usuários com role admin.
+/**
+ * Formulário administrativo de criação de categorias.
+ *
+ * Restringe a operação a administradores, valida título e descrição e utiliza
+ * o índice único do banco como proteção final contra cadastros concorrentes.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
@@ -7,13 +13,13 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
 require_once __DIR__ . '/../config/category-utils.php';
 
-// Mantém os valores preenchidos para mostrar novamente o formulário após um erro.
+/* Preserva os campos preenchidos para repopular o formulário após uma falha. */
 $title = '';
 $description = '';
 $errors = [];
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     requireValidCsrfToken();
-    // Verifica o tipo antes de usar os dados, pois requisições podem ser manipuladas.
+    /* O servidor verifica tipos mesmo que o formulário HTML controle a interface comum. */
     $title = is_string($_POST['title'] ?? null) ? trim($_POST['title']) : '';
     $descriptionInput = $_POST['description'] ?? '';
     $description = is_string($descriptionInput) ? $descriptionInput : '';
@@ -24,12 +30,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     if (!$errors) {
         try {
-            // A checagem permite uma mensagem clara; o índice UNIQUE no banco ainda
-            // protege contra cadastros simultâneos com o mesmo título.
+            /* A consulta antecipa uma mensagem clara; o índice UNIQUE resolve a concorrência. */
             if (categoryTitleExists($connection, $title)) {
                 $errors[] = 'Categoria já existe.';
             } else {
-                // Descrição vazia vira NULL, refletindo que esse campo é opcional.
+                /* Descrição vazia vira NULL para representar a ausência do campo opcional. */
                 $storedDescription = $description === '' ? null : $description;
                 $statement = $connection->prepare('INSERT INTO categories (title, description) VALUES (?, ?)');
                 $statement->bind_param('ss', $title, $storedDescription);
@@ -57,7 +62,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -67,6 +72,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 
     <body>
 
+        <!-- Navegação do blog com caminhos relativos ao diretório administrativo. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -111,6 +117,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </nav>
 
+        <!-- Formulário administrativo de criação de categoria. -->
         <section class="form__section">
             <div class="container form__section-container">
                 <h2>Adicionar categoria</h2>
@@ -134,6 +141,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

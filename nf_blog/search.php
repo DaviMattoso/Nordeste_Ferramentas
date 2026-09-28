@@ -1,6 +1,11 @@
 <?php
-// A pesquisa é pública: auth.php inicia a sessão para montar a navbar, mas não
-// chama requireLogin(). post-utils.php fornece o resumo e a data dos cards.
+/**
+ * Pesquisa pública de posts por título ou conteúdo.
+ *
+ * Valida o termo recebido por GET, executa uma busca parametrizada e reutiliza
+ * os helpers de posts para montar os mesmos cards das demais listagens.
+ */
+
 require_once __DIR__ . '/config/auth.php';
 require_once __DIR__ . '/config/csrf.php';
 require_once __DIR__ . '/config/post-utils.php';
@@ -17,8 +22,7 @@ $searchMessage = '';
 $searchError = '';
 $searchWasPerformed = false;
 
-// Valida antes de executar a consulta de posts. Além de limitar a entrada, isto impede uma
-// consulta LIKE '%%', que retornaria todos os posts para uma busca vazia.
+/* A validação também impede LIKE '%%', que transformaria uma busca vazia em listagem geral. */
 if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')) {
     $searchMessage = 'Digite algo para pesquisar.';
 } elseif (!is_string($rawSearchTerm) || preg_match('//u', $searchTerm) !== 1) {
@@ -29,8 +33,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
     $searchWasPerformed = true;
 
     try {
-        // Os curingas pertencem apenas ao valor. O texto do visitante é enviado
-        // separadamente pelos parâmetros e nunca é concatenado ao comando SQL.
+        /* Os curingas pertencem ao parâmetro; o texto do visitante não é concatenado ao SQL. */
         $searchPattern = '%' . $searchTerm . '%';
         $statement = $connection->prepare(
             'SELECT p.id, p.title, p.body, p.thumbnail, p.created_at, '
@@ -47,7 +50,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
         $result = $statement->get_result();
 
         while ($post = $result->fetch_assoc()) {
-            // Prefere o nome completo; username é o fallback para perfis sem nome.
+            /* Usa o username como fallback quando o nome completo estiver vazio. */
             $authorName = trim($post['first_name'] . ' ' . $post['last_name']);
             $post['author_name'] = $authorName !== '' ? $authorName : $post['username'];
             $post['excerpt'] = postExcerpt($post['body']);
@@ -58,7 +61,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
         $result->free();
         $statement->close();
     } catch (Throwable $exception) {
-        // O código técnico vai para o log; o visitante recebe somente uma mensagem genérica.
+        /* A exceção fica no log e não revela a consulta ou o banco na resposta pública. */
         error_log('NF Blog: falha na pesquisa pública. Código: ' . $exception->getCode());
         http_response_code(500);
         $searchError = 'Não foi possível realizar a pesquisa agora. Tente novamente.';
@@ -74,7 +77,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
 
         <link rel="icon" href="./Images/favicon.ico" />
 
-        <link rel="stylesheet" href="./css/style.css" />
+        <link rel="stylesheet" href="./css/style.css?v=<?= filemtime(__DIR__ . '/css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -84,6 +87,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
 
     <body>
 
+        <!-- Navegação pública com estado de login refletido no perfil. -->
         <nav>
             <div class="container nav__container">
                 <a href="index.php" class="nav__logo">
@@ -128,6 +132,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
             </div>
         </nav>
 
+        <!-- Formulário GET que preserva o termo validado no campo de pesquisa. -->
         <section class="search__bar">
 
             <form action="search.php" method="GET" class="container search__bar-container">
@@ -145,6 +150,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
             </form>
         </section>
 
+        <!-- Resultado da consulta parametrizada ou mensagem do estado da pesquisa. -->
         <section class="posts">
             <div class="container">
                 <?php if ($searchWasPerformed): ?>
@@ -199,6 +205,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
             <?php endif; ?>
         </section>
 
+        <!-- Atalhos para continuar a navegação por categoria. -->
         <section class="category__buttons-section">
             <div class="container category__buttons-container">
                 <?php foreach ($publicCategories as $publicCategory): ?>
@@ -207,6 +214,7 @@ if ($rawSearchTerm === null || (is_string($rawSearchTerm) && $searchTerm === '')
             </div>
         </section>
 
+        <!-- Rodapé público com categorias, suporte e navegação. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"

@@ -1,17 +1,19 @@
--- Importar pelo phpMyAdmin. Não apaga nem substitui tabelas ou dados existentes.
+-- Estrutura inicial do banco do NF Blog.
+-- Pode ser importada pelo phpMyAdmin: IF NOT EXISTS preserva estruturas e dados existentes.
 CREATE DATABASE IF NOT EXISTS nf_blog
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
 USE nf_blog;
 
+-- Contas usadas na autenticação e na autoria das publicações.
 CREATE TABLE IF NOT EXISTS users (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     username VARCHAR(100) NOT NULL,
     email VARCHAR(254) NOT NULL,
-    -- Armazenar somente hashes gerados por password_hash(), nunca senhas em texto puro.
+    -- Recebe somente hashes produzidos por password_hash(); senhas puras não são persistidas.
     password VARCHAR(255) NOT NULL,
     avatar VARCHAR(255) NULL DEFAULT NULL,
     role ENUM('admin', 'author') NOT NULL DEFAULT 'author',
@@ -22,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
     UNIQUE KEY users_email_unique (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Classificação pública dos posts e opções dos formulários administrativos.
 CREATE TABLE IF NOT EXISTS categories (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     title VARCHAR(150) NOT NULL,
@@ -32,6 +35,8 @@ CREATE TABLE IF NOT EXISTS categories (
     UNIQUE KEY categories_title_unique (title)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Conteúdo publicado. O modelo atual considera todo registro público e usa is_featured
+-- apenas para escolher o destaque da homepage; ainda não existe status de rascunho.
 CREATE TABLE IF NOT EXISTS posts (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
@@ -48,8 +53,10 @@ CREATE TABLE IF NOT EXISTS posts (
     KEY posts_featured_idx (is_featured),
     CONSTRAINT posts_category_fk
         FOREIGN KEY (category_id) REFERENCES categories(id)
+        -- RESTRICT evita excluir uma categoria enquanto houver posts associados.
         ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT posts_author_fk
         FOREIGN KEY (author_id) REFERENCES users(id)
+        -- RESTRICT preserva a autoria e exige tratar os posts antes de excluir a conta.
         ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

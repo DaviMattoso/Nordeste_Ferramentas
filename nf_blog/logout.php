@@ -1,4 +1,11 @@
 <?php
+/**
+ * Encerra de forma explícita uma sessão autenticada.
+ *
+ * Aceita somente POST com CSRF válido, limpa os dados em memória, expira o
+ * cookie correspondente e remove a sessão no servidor antes do redirecionamento.
+ */
+
 require_once __DIR__ . '/config/csrf.php';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
@@ -8,10 +15,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
 }
 requireValidCsrfToken();
 
-// Remove primeiro os dados da memória da sessão.
+/* Descarta os dados associados à identidade antes de invalidar o armazenamento. */
 $_SESSION = [];
 if (ini_get('session.use_cookies')) {
-    // Expira no navegador o mesmo cookie e com os mesmos atributos usados na criação.
+    /* Expira o cookie com os mesmos atributos usados quando a sessão foi criada. */
     $cookie = session_get_cookie_params();
     setcookie(session_name(), '', [
         'expires' => time() - 3600,
@@ -22,7 +29,7 @@ if (ini_get('session.use_cookies')) {
         'samesite' => $cookie['samesite'],
     ]);
 }
-// Invalida o armazenamento da sessão no servidor e evita cache da página protegida.
+/* Invalida a sessão no servidor e impede o cache da resposta de logout. */
 session_destroy();
 header('Cache-Control: no-store');
 header('Location: signin.php?logout=1', true, 303);

@@ -1,3 +1,9 @@
+/* ==================================================
+   ESTILOS DO NF BLOG
+   Reúne os layouts públicos, formulários de autenticação e telas do painel
+   administrativo. As variáveis abaixo mantêm dimensões e transições comuns.
+   ================================================== */
+
 :root {
     --transition: all 300ms ease;
 
@@ -12,7 +18,9 @@
     --card-border-radius-5: 5rem;
 }
 
-/* ======= Config. Geral ======= */
+/* ==================================================
+   BASE E ELEMENTOS COMPARTILHADOS
+   ================================================== */
 
 * {
     margin: 0;
@@ -27,9 +35,9 @@
 body {
     font-family: "Montserrat", sans-serif;
     line-height: 1.6;
-    color: gray; /* Cor das letras */
+    color: gray;
     overflow-x: hidden;
-    background-color: rgb(255, 255, 255); /* Cor de fundo */
+    background-color: rgb(255, 255, 255);
     font-size: 0.9rem;
     min-height: 100vh;
     display: flex;
@@ -52,7 +60,7 @@ h2,
 h3,
 h4,
 h5 {
-    color: #111111; /* Cor dos títulos */
+    color: #111111;
     line-height: 1.3;
 }
 
@@ -76,7 +84,7 @@ h4 {
 }
 
 a {
-    color: #e67e22; /* Cor dos links */
+    color: #e67e22;
     transition: var(--transition);
 }
 
@@ -86,9 +94,11 @@ img {
     object-fit: cover;
 }
 
-/* ======= Nav ======= */
+/* ==================================================
+   NAVEGAÇÃO E PERFIL AUTENTICADO
+   ================================================== */
 nav {
-    background-color: #1a1a1a; /* Cor de fundo da navegação */
+    background-color: #1a1a1a;
     width: 100vw;
     height: 4.5rem;
     position: fixed;
@@ -109,15 +119,13 @@ nav button {
 }
 
 .avatar {
-    /* Estilo do avatar na nav bar */
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
     overflow: hidden;
-    border: 0.3rem solid #e67e22; /* Cor da borda do avatar */
+    border: 0.3rem solid #e67e22;
 }
 
-/* ======= Nav ======= */
 .nav__logo {
     display: flex;
     align-items: center;
@@ -155,31 +163,45 @@ nav button {
     position: absolute;
     top: 125%;
     right: 0;
+    width: 9rem;
     display: flex;
     flex-direction: column;
     box-shadow: 0 3rem 3rem rgba(0, 0, 0, 0.4);
-    background: #1a1a1a; /* Cor de fundo do menu suspenso */
-    visibility: hidden; /* Esconder a lista de navegação por padrão. */
+    background: #1a1a1a;
+    visibility: hidden;
     opacity: 0;
     transition: var(--transition);
 }
 
-/* Exibir a lista de navegação ao passar o cursor sobre o perfil de navegação. */
+/* O submenu permanece fora da interação até o perfil receber hover. */
 .nav__profile:hover > ul {
     visibility: visible;
     opacity: 1;
 }
 
-.nav__profile ul li a {
-    padding: 1rem;
-    background: #1a1a1a; /* Cor de fundo dos itens do menu suspenso */
-    display: block;
+.nav__profile ul li,
+.nav__profile ul li .logout__form {
     width: 100%;
 }
 
+.nav__profile ul li a,
+.nav__profile ul li .logout__button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 3.5rem;
+    padding: 1rem;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.nav__profile ul li a {
+    background: #1a1a1a;
+}
+
 .nav__profile ul li:last-child a {
-    background: #d35400; /* Cor de fundo do último item do menu suspenso */
-    color: #1a1a1a; /* Cor do texto do último item do menu suspenso */
+    background: #d35400;
+    color: #1a1a1a;
 }
 
 .nav__profile ul li .logout__form {
@@ -187,20 +209,16 @@ nav button {
 }
 
 .nav__profile ul li .logout__button {
-    display: block;
-    width: 100%;
-    padding: 1rem;
     border: 0;
     border-radius: 0;
     background: #d35400;
     color: #1a1a1a;
     font: inherit;
-    text-align: left;
     cursor: pointer;
 }
-/* ======= Fim Nav ======= */
-
-/* ======== Category button (botões de categoria) ======== */
+/* ==================================================
+   CATEGORIAS E ELEMENTOS DE POSTS
+   ================================================== */
 .category__buttons {
     background-color: #ececec;
     color: #e67e22;
@@ -219,11 +237,7 @@ nav button {
     color: #ececec;
     transition: var(--transition);
 }
-/* ======== Fim category button  ======== */
-
-/* ======== General post ======== */
 .post__thumbnail {
-    /* ======== Borda da imagem ======== */
     border-radius: var(--card-border-radius-2) 0;
     margin-bottom: 1.6rem;
     border: 0.7rem solid #1d1d1d;
@@ -247,9 +261,9 @@ nav button {
     overflow: hidden;
 }
 
-/* ======== Fim general post ======== */
-
-/* ======== Featured ======== */
+/* ==================================================
+   DESTAQUE E LISTAGENS DE POSTS
+   ================================================== */
 
 .featured {
     margin-top: 8rem;
@@ -266,7 +280,6 @@ nav button {
     height: fit-content;
 }
 
-/* ======== Posts  ======== */
 .posts__container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -274,7 +287,7 @@ nav button {
     margin-bottom: 5rem;
 }
 
-/* ======== Categorias btns ======== */
+/* Agrupa os atalhos de categorias exibidos após as listagens públicas. */
 .category__buttons-container {
     padding: 4rem 0;
     justify-content: center;
@@ -289,15 +302,16 @@ nav button {
     gap: 1rem;
 }
 
-/* ======== Footer ======== */
+/* ==================================================
+   RODAPÉ
+   ================================================== */
 footer {
-    background: #1a1a1a; /* Cor de fundo do rodapé */
+    background: #1a1a1a;
     padding: 5rem 0 0;
     box-shadow: inset 0 1.5rem 1.5rem rgba(0, 0, 0, 0.2);
 }
 
 .footer__socials {
-    /* ======== Posicao dos ícones ======== */
     margin-inline: auto;
     width: fit-content;
     margin-bottom: 5rem;
@@ -308,9 +322,8 @@ footer {
 }
 
 .footer__socials a {
-    /* ======== Conf. vis. dos icones ======== */
-    font-size: 1.5rem; /* ======== Tamanho dos ícones ======== */
-    background: #1a1a1a; /* Cor de fundo dos ícones = cor de fundo do blog */
+    font-size: 1.5rem;
+    background: #1a1a1a;
     border-radius: 50%;
     width: 2.3rem;
     height: 2.3rem;
@@ -320,8 +333,8 @@ footer {
 }
 
 .footer__socials a:hover {
-    background: #e67e22; /* Cor de fundo dos ícones ao passar o mouse */
-    color: #1a1a1a; /* Cor dos ícones ao passar o mouse */
+    background: #e67e22;
+    color: #1a1a1a;
     transition: var(--transition);
 }
 
@@ -335,7 +348,7 @@ footer {
 }
 
 footer h4 {
-    color: #e67e22; /* Cor dos títulos do rodapé */
+    color: #e67e22;
     margin-bottom: 0.6rem;
 }
 
@@ -360,8 +373,9 @@ footer ul a:hover {
     color: #e67e22;
 }
 
-/* ======== Barra de pesquisa ======== */
-/* ======== class="container search__bar-container ======== */
+/* ==================================================
+   PESQUISA E BOTÕES
+   ================================================== */
 .search__bar {
     margin-top: 7rem;
 }
@@ -386,7 +400,6 @@ footer ul a:hover {
 }
 
 .search__bar input {
-    /* ======== Fundo transparente ======== */
     background: transparent;
     margin-left: 0.7rem;
     padding: 0.5rem 0;
@@ -397,9 +410,6 @@ footer ul a:hover {
     color: #e67e22;
     font-size: 0.9rem;
 }
-/* ======== Fim da barra de pesquisa ======== */
-
-/* ======== Estilo do botao de pesquisa ======== */
 .btn {
     display: inline-block;
     width: fit-content;
@@ -424,9 +434,9 @@ footer ul a:hover {
     background: red;
     color: white;
 }
-/* ======== Fim do estilo do botao de pesquisa ======== */
-
-/* ======== Pagina e posts unicos ======== */
+/* ==================================================
+   LEITURA DE POST INDIVIDUAL
+   ================================================== */
 .singlepost {
     margin: 6rem 0 2rem;
 }
@@ -445,9 +455,9 @@ footer ul a:hover {
 .singlepost__thumbnail {
     margin: 1.5rem 0;
 }
-/* ======== Fim da pagina e posts unicos ======== */
-
-/* ======== About ======== */
+/* ==================================================
+   PÁGINA SOBRE
+   ================================================== */
 
 .about {
     margin-top: 8rem;
@@ -472,7 +482,7 @@ footer ul a:hover {
     text-align: justify;
 }
 
-/* ================= CARDS ================= */
+/* Cards de valores apresentados na página institucional do blog. */
 
 .about__cards {
     margin-top: 2rem;
@@ -514,7 +524,7 @@ footer ul a:hover {
     margin-bottom: 0.8rem;
 }
 
-/* ================= VÍDEO ================= */
+/* Bloco de vídeo institucional. */
 .about__video {
     width: 100%;
     max-width: 900px;
@@ -541,9 +551,9 @@ footer ul a:hover {
     transform: scale(1.02);
 }
 
-/* ======== Fim About ======== */
-
-/* ======== Contacto ======== */
+/* ==================================================
+   PÁGINA DE CONTATO
+   ================================================== */
 
 .contact {
     margin-top: 8rem;
@@ -635,7 +645,7 @@ footer ul a:hover {
     cursor: pointer;
 }
 
-/* ========= MAPA ========= */
+/* Mapa incorporado abaixo dos canais de atendimento. */
 
 .contact__map {
     margin: 6rem 0;
@@ -661,9 +671,9 @@ footer ul a:hover {
     display: block;
 }
 
-/* ======== Fim Contacto ======== */
-
-/* ======== Serviços ======== */
+/* ==================================================
+   PÁGINA DE SERVIÇOS
+   ================================================== */
 .services {
     margin-top: 8rem;
 }
@@ -684,7 +694,7 @@ footer ul a:hover {
     line-height: 1.8;
 }
 
-/* ================= TOPO ================= */
+/* Apresentação inicial dos serviços. */
 .services__top {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -719,7 +729,7 @@ footer ul a:hover {
     color: #666666;
 }
 
-/* ================= MEIO ================= */
+/* Conteúdo detalhado e imagem de apoio. */
 .services__middle {
     display: grid;
     grid-template-columns: 45% 50%;
@@ -748,7 +758,7 @@ footer ul a:hover {
     line-height: 1.8;
 }
 
-/* ================= LISTA ================= */
+/* Lista dos tipos de conteúdo oferecidos pelo blog. */
 .services__list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -766,7 +776,7 @@ footer ul a:hover {
     font-size: 1.1rem;
 }
 
-/* ================= NÚMEROS ================= */
+/* Indicadores exibidos em cards. */
 .services__numbers {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -783,14 +793,13 @@ footer ul a:hover {
     transition: var(--transition);
 }
 
-/* Altera as cores do texto quando o usuário passa o mouse sobre o card */
+/* Mantém contraste de todos os textos quando o card assume o fundo laranja. */
 .services__numbers article:hover {
     background: #e67e22;
     transform: translateY(-6px);
 }
 
-/* Ao passar o mouse, os números e o texto mudam para preto
-para manter um bom contraste com o fundo laranja */
+/* O título e a legenda acompanham a mesma mudança de contraste do card. */
 .services__numbers article:hover h2,
 .services__numbers article:hover small {
     color: #1a1a1a;
@@ -806,7 +815,7 @@ para manter um bom contraste com o fundo laranja */
     font-size: 0.9rem;
 }
 
-/* ================= CTA ================= */
+/* Chamada final para a listagem de posts. */
 .services__cta {
     text-align: center;
     background: #f7f7f7;
@@ -830,20 +839,19 @@ para manter um bom contraste com o fundo laranja */
     display: inline-block;
 }
 
-/* ======== Fim Serviços ======== */
+/* ==================================================
+   FORMULÁRIOS DE AUTENTICAÇÃO E CRUD
+   O escopo em `.form__section` evita que estas regras atinjam a pesquisa.
+   ================================================== */
 
-/* ======== FORMULÁRIOS (Login e Cadastro) ======== */
-/* ======== Área principal da página ======== */
-/* Centraliza o formulário na tela e cria um espaçamento
-   para que ele não fique escondido atrás da navbar fixa. */
+/* Centraliza o formulário e o afasta da navegação fixa. */
 .form__section {
     display: grid;
     place-items: center;
     padding: 8rem 0 3rem;
 }
 
-/* ======== Container do formulário ======== */
-/* Caixa principal onde ficam todos os elementos do formulário. */
+/* Caixa compartilhada por login, cadastro e formulários administrativos. */
 .form__section-container {
     width: var(--form-width);
     background: #f0f0f0;
@@ -851,8 +859,7 @@ para manter um bom contraste com o fundo laranja */
     border-radius: var(--card-border-radius-3);
 }
 
-/* ======== Mensagens de Alerta ======== */
-/* Estilo base utilizado por qualquer mensagem de alerta. */
+/* Mensagens de validação, falha e confirmação. */
 .alert__message {
     padding: 1rem;
     margin-bottom: 1rem;
@@ -860,29 +867,24 @@ para manter um bom contraste com o fundo laranja */
     border-radius: var(--card-border-radius-2);
 }
 
-/* Mensagem de erro */
 .alert__message.error {
     background: hsl(346, 87%, 46%, 15%);
     color: hsl(346, 87%, 46%);
 }
 
-/* Mensagem de sucesso */
 .alert__message.success {
     background: hsl(142, 71%, 45%);
     color: #ffffff;
 }
 
-/* ======== Formulário ======== */
-/* Organiza todos os campos em coluna com espaçamento uniforme.
-   O seletor foi limitado à .form__section para não alterar
-   outros formulários do site, como a barra de pesquisa. */
+/* Organiza os campos sem modificar outros formulários do site. */
 .form__section form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-/* Organiza grupos como Label + Input (Avatar). */
+/* Agrupa controles compostos, como rótulo e campo de upload. */
 .form__control {
     display: flex;
     flex-direction: column;
@@ -894,9 +896,7 @@ para manter um bom contraste com o fundo laranja */
     align-items: center;
 }
 
-/* ======== Campos dos formulários ======== */
-/* Aplica o estilo apenas aos campos dos formulários de Login
-   e Cadastro, evitando modificar inputs de outras páginas. */
+/* Campos compartilhados pelos formulários públicos e administrativos. */
 .form__section input,
 .form__section textarea,
 .form__section select {
@@ -911,7 +911,6 @@ para manter um bom contraste com o fundo laranja */
     transition: var(--transition);
 }
 
-/* Destaque do campo quando recebe foco. */
 .form__section input:focus,
 .form__section textarea:focus,
 .form__section select:focus {
@@ -919,8 +918,7 @@ para manter um bom contraste com o fundo laranja */
     border-color: #e67e22;
 }
 
-/* ======== Link dos formularios ======== */
-/* Texto abaixo do botão (Login / Cadastro). */
+/* Atalhos entre login e cadastro. */
 .form__section small {
     display: block;
     margin-top: 0.2rem;
@@ -929,14 +927,12 @@ para manter um bom contraste com o fundo laranja */
     color: #e67e22;
 }
 
-/* Link destacado. */
 .form__section small a {
     color: #1a1a1a;
     text-decoration: underline;
 }
 
-/* ======== imagem das pag de login e cadastro ======== */
-/* Centraliza a imagem acima do formulário */
+/* Ilustração das páginas de login e cadastro. */
 .form__image {
     display: flex;
     justify-content: center;
@@ -950,7 +946,6 @@ para manter um bom contraste com o fundo laranja */
     border-radius: 50%;
 }
 
-/* ======== h2 dos formulários ======== */
 .form__section h2 {
     margin-bottom: 1.5rem;
     font-size: 2rem;
@@ -959,31 +954,30 @@ para manter um bom contraste com o fundo laranja */
     text-align: left;
 }
 
-/* -------- Dashboard -------- */
-/* Espaçamento da navbar */
+/* ==================================================
+   PAINEL ADMINISTRATIVO
+   ================================================== */
+
 .dashboard {
     margin-top: 6rem;
     margin-bottom: 5rem;
 }
 
-/* -------- Container -------- */
 .dashboard__container {
-    /* Divide o painel em menu lateral e conteúdo */
+    /* Divide o painel entre menu lateral e conteúdo principal. */
     display: grid;
     grid-template-columns: 14rem auto;
-    /* Espaço entre as colunas */
     gap: 1rem;
     background: #f8f9fa;
-    /* Espaçamento interno */
     padding: 2rem;
 }
 
-/* -------- Menu lateral -------- */
+/* Menu lateral de ações. */
 .dashboard aside {
     background: #e67e22;
     border-radius: var(--card-border-radius-2);
     overflow: hidden;
-    /* Impede o menu de esticar até a altura do conteúdo */
+    /* Mantém o menu na altura dos próprios itens. */
     align-self: start;
 }
 
@@ -992,11 +986,9 @@ para manter um bom contraste com o fundo laranja */
 }
 
 .dashboard aside a {
-    /* Alinha ícone e texto lado a lado */
     display: flex;
     align-items: center;
     gap: 1rem;
-    /* Faz o link ocupar toda a largura */
     width: 100%;
     padding: 1.6rem;
     color: white;
@@ -1012,27 +1004,24 @@ para manter um bom contraste com o fundo laranja */
     font-size: 1rem;
 }
 
-/* Linha entre os itens */
 .dashboard aside ul li:not(:last-child) a {
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* Hover */
 .dashboard aside a:hover {
     background: #d35400;
 }
 
-/* Página atual */
+/* Destaca a área administrativa correspondente à página atual. */
 .dashboard aside li.active a {
     background: #c85a00;
 }
 
-/* -------- Conteúdo -------- */
+/* Conteúdo principal do painel. */
 .dashboard__content {
     background: white;
     border-radius: var(--card-border-radius-2);
     padding: 2rem;
-    /* Sombra do painel */
     box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.08);
 }
 
@@ -1040,39 +1029,32 @@ para manter um bom contraste com o fundo laranja */
     margin-bottom: 2rem;
 }
 
-/* -------- Tabela -------- */
+/* Tabelas de posts, usuários e categorias. */
 .dashboard table {
-    /* Ocupa toda a largura do painel */
     width: 100%;
-    /* Remove espaços entre as células */
     border-collapse: collapse;
     text-align: left;
 }
 
-/* Cabeçalho */
 .dashboard thead th {
     padding: 0.9rem;
     background: #e67e22;
     color: white;
 }
 
-/* Células */
 .dashboard tbody td {
     padding: 0.9rem;
     border-bottom: 1px solid #ececec;
 }
 
-/* Linhas pares */
 .dashboard tbody tr:nth-child(even) {
     background: #fafafa;
 }
 
-/* Hover da tabela */
 .dashboard tbody tr:hover {
     background: #f2f2f2;
 }
 
-/* Destaque da linha */
 .dashboard table tbody tr:hover td {
     background: #1a1a1a;
     color: white;
@@ -1080,39 +1062,38 @@ para manter um bom contraste com o fundo laranja */
     transition: var(--transition);
 }
 
-/* -------- Botões -------- */
+/* Ações compactas das tabelas. */
 .dashboard .btn.sm {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
 }
 
-/* Botão excluir */
 .dashboard .danger {
     background: #dc3545;
 }
 
-/* Hover botão excluir */
 .dashboard .danger:hover {
     background: #bb2d3b;
 }
 
-/* ======== Media Queries (Medium Devices) ======== */
+/* ==================================================
+   RESPONSIVIDADE: TABLETS E TELAS MÉDIAS
+   ================================================== */
 @media screen and (max-width: 1024px) {
-    /* ======== Config do primeiro post em 1024px ======== */
+    /* Empilha o destaque e controla a distância entre imagem e categoria. */
     .featured__container {
         grid-template-columns: 1fr;
-        gap: 1.5rem; /* Diminui o espaço geral entre os blocos empilhados */
-        align-items: start; /* CRUCIAL: Remove o alinhamento central vertical que criava o espaço vazio */
+        gap: 1.5rem;
+        align-items: start;
     }
 
     .featured .post__thumbnail {
-        margin-bottom: 0; /* Remove a margem inferior da imagem apenas no destaque empilhado */
+        margin-bottom: 0;
     }
 
     .featured .post__info .category__buttons {
-        margin-top: 2em; /* Controla exatamente a distância do botão para a imagem acima */
+        margin-top: 2em;
     }
-    /* ================================================== */
 
     .container {
         width: var(--container-width-md);
@@ -1142,12 +1123,11 @@ para manter um bom contraste com o fundo laranja */
         grid-template-columns: 1fr;
     }
 
-    /* ======== Nav ======== */
+    /* Navegação recolhida, controlada por js/main.js. */
     .nav__items {
         display: none;
     }
 
-    /* ======== Btn da nav no mobile ======== */
     nav button {
         display: inline-block;
         background: transparent;
@@ -1165,7 +1145,7 @@ para manter um bom contraste com o fundo laranja */
     }
 
     .nav__items {
-        display: none; /* Esconde a lista de navegação por padrão. */
+        display: none;
         position: absolute;
         top: 100%;
         right: 0;
@@ -1186,25 +1166,25 @@ para manter um bom contraste com o fundo laranja */
         align-items: center;
         background: #1a1a1a;
         border-top: 1px solid #e67e22;
-        animation: animationDropdown 1s 0s ease forwards; /* Nav animation */
-        opacity: 0; /* Inicia com opacidade 0 para a animação */
-        transform-origin: top; /* Define a origem da transformação para o topo para a animação de dropdown */
+        animation: animationDropdown 1s 0s ease forwards;
+        opacity: 0;
+        transform-origin: top;
     }
 
     .nav__items li:nth-child(2) {
-        animation-delay: 200ms; /* Atraso para o segundo item */
+        animation-delay: 200ms;
     }
     .nav__items li:nth-child(3) {
-        animation-delay: 400ms; /* Atraso para o terceiro item */
+        animation-delay: 400ms;
     }
     .nav__items li:nth-child(4) {
-        animation-delay: 600ms; /* Atraso para o quarto item */
+        animation-delay: 600ms;
     }
     .nav__items li:nth-child(5) {
-        animation-delay: 800ms; /* Atraso para o quinto item */
+        animation-delay: 800ms;
     }
 
-    /* Nav animation */
+    /* Anima cada item a partir do topo quando o menu é exibido. */
     @keyframes animationDropdown {
         0% {
             transform: rotateX(90deg);
@@ -1215,9 +1195,8 @@ para manter um bom contraste com o fundo laranja */
         }
     }
 
-    /* Config do itens da lista dentro do btn da nav */
     .nav__items li a {
-        justify-content: center; /* Centraliza */
+        justify-content: center;
         border-radius: 0;
         width: 100%;
         height: 100%;
@@ -1231,42 +1210,40 @@ para manter um bom contraste com o fundo laranja */
         display: none;
     }
 
-    /* Corrige o item do avatar no menu mobile */
+    /* O perfil ocupa uma linha própria; seu submenu desktop permanece oculto. */
     .nav__items .nav__profile {
         width: 100%;
-        height: auto; /* Remove a altura travada de 2.5rem do 'li' */
+        height: auto;
         display: flex;
-        justify-content: center; /* Centraliza horizontalmente dentro dos 12rem */
+        justify-content: center;
         align-items: center;
-        padding: 1rem 0; /* Dá um espaçamento confortável acima e abaixo do avatar */
+        padding: 1rem 0;
         background: transparent;
     }
 
-    /* Remove estilos globais extras caso existam interferindo */
     .nav__profile {
         width: auto;
         height: auto;
         margin: 0;
     }
 
-    /* Define o tamanho exato e comportamento do círculo do avatar */
     .nav__profile .avatar {
-        width: 3rem; /* Tamanho proporcional ideal para caber nos 12rem do menu */
-        height: 3rem; /* Mantém a proporção idêntica para não achatar */
+        width: 3rem;
+        height: 3rem;
         border-radius: 50%;
         overflow: hidden;
-        border: 2px solid #e67e22; /* Mantém a borda laranja elegante */
+        border: 2px solid #e67e22;
         display: block;
     }
 
-    /* Garante que a foto preencha o círculo sem distorcer */
+    /* `object-fit` preserva o enquadramento circular sem distorcer a foto. */
     .nav__profile .avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    /* ======== Featured para tablets ======== */
+    /* Destaque e grade de posts em tablets. */
     .featured__container {
         gap: 0.3rem;
     }
@@ -1289,7 +1266,7 @@ para manter um bom contraste com o fundo laranja */
         gap: 3rem;
     }
 
-    /* ======== Footer para tablets ======== */
+    /* Rodapé em duas colunas, com o último grupo centralizado. */
     .footer__container {
         grid-template-columns: repeat(2, 1fr);
         text-align: center;
@@ -1302,18 +1279,18 @@ para manter um bom contraste com o fundo laranja */
         justify-self: center;
     }
 
-    /* ======== Blog ======== */
+    /* Pesquisa */
     .search__bar-container {
         width: 60%;
     }
 
-    /* ======== Sgn post ======== */
+    /* Post individual */
     .singlepost {
         margin-top: 6rem;
     }
 }
 
-/* ======== About 1024 ======== */
+/* Ajustes compartilhados das páginas internas após o layout médio. */
 .about__container {
     grid-template-columns: 1fr;
     gap: 3rem;
@@ -1327,9 +1304,6 @@ para manter um bom contraste com o fundo laranja */
     grid-template-columns: repeat(3, 1fr);
 }
 
-/* ======== Fim About 1024 ======== */
-
-/* ======== Video 1024 ======== */
 .about__video {
     width: 90%;
     max-width: 800px;
@@ -1339,15 +1313,14 @@ para manter um bom contraste com o fundo laranja */
     width: 60%;
 }
 
-/* ======== img sgnin/sgnup ======== */
 .form__image img {
     width: 8rem;
     height: 8rem;
 }
 
-/* -------- Tablet (1024px) -------- */
+/* Painel em largura intermediária. */
 .dashboard__container {
-    /* Diminui o menu lateral */
+    /* Reduz o menu lateral sem alterar a ordem das áreas. */
     grid-template-columns: 12rem auto;
 
     padding: 1.5rem;
@@ -1373,7 +1346,9 @@ para manter um bom contraste com o fundo laranja */
     padding: 0.45rem 0.8rem;
 }
 
-/* ======== Media Queries (Small Devices) ======== */
+/* ==================================================
+   RESPONSIVIDADE: CELULARES
+   ================================================== */
 @media screen and (max-width: 600px) {
     section {
         margin-top: 2rem;
@@ -1407,18 +1382,18 @@ para manter um bom contraste com o fundo laranja */
         gap: 2rem;
     }
 
-    /* ======== Blog ======== */
+    /* Pesquisa */
     .search__bar-container {
         width: var(--container-width-md);
     }
 
-    /* ======== Sgn post ======== */
+    /* Post individual */
     .singlepost__container {
         background-color: transparent;
         padding: 0;
     }
 
-    /* ======== About 600 ======== */
+    /* Página sobre */
 
     .about {
         margin-top: 6rem;
@@ -1442,7 +1417,7 @@ para manter um bom contraste com o fundo laranja */
         border-width: 0.4rem;
     }
 
-    /* ======== img sgnin/sgnup ======== */
+    /* Formulários */
     .form__image {
         margin-bottom: 1rem;
     }
@@ -1457,7 +1432,7 @@ para manter um bom contraste com o fundo laranja */
     }
 
     .dashboard__container {
-        /* Menu acima do conteúdo */
+        /* Move o menu do painel para cima do conteúdo. */
         grid-template-columns: 1fr;
         padding: 1rem;
     }
@@ -1472,7 +1447,7 @@ para manter um bom contraste com o fundo laranja */
 
     .dashboard__content {
         padding: 1rem;
-        /* Permite rolar a tabela horizontalmente */
+        /* Preserva todas as colunas por meio de rolagem horizontal. */
         overflow-x: auto;
     }
 

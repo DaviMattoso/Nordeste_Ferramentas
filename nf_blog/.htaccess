@@ -1,15 +1,18 @@
+# Proteções aplicadas pelo Apache ao diretório público do NF Blog.
+# Mantém listagem de diretórios desativada, bloqueia arquivos internos e impede
+# execução de scripts nas pastas que recebem avatars e thumbnails.
 Options -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Impede acesso HTTP a arquivos ocultos, preservando o caminho ACME usado por HTTPS.
+    # Bloqueia arquivos ocultos, preservando apenas o caminho ACME usado por HTTPS.
     RewriteRule "(^|/)\.(?!well-known(?:/|$))" - [F,L]
 
-    # Estes diretórios existem apenas para inclusões PHP ou apoio ao desenvolvimento.
+    # Diretórios internos são acessíveis pelo PHP, mas nunca diretamente por HTTP.
     RewriteRule "^(?:config|admin/config|database|txt|\.vscode)(?:/|$)" - [F,L,NC]
 
-    # Defesa adicional: uploads de imagens nunca devem executar scripts.
+    # Mesmo que um arquivo malicioso chegue ao upload, ele não pode executar como script.
     RewriteRule "^Images/(?:avatars|posts)/.*\.(?:php[0-9]?|phtml|phar|cgi|pl|py|sh|shtml)$" - [F,L,NC]
 </IfModule>
 

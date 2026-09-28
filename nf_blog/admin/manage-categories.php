@@ -1,5 +1,11 @@
 <?php
-// Lista administrativa de categorias; requireAdmin bloqueia authors.
+/**
+ * Lista administrativa de categorias.
+ *
+ * Restringe o acesso a administradores e apresenta os registros que podem ser
+ * editados ou excluídos pelos fluxos protegidos correspondentes.
+ */
+
 require_once __DIR__ . '/../config/auth.php';
 require_once __DIR__ . '/../config/csrf.php';
 requireAdmin();
@@ -9,7 +15,7 @@ require_once __DIR__ . '/../config/flash.php';
 $flash = getFlash();
 $categories = [];
 try {
-    // Não há filtro vindo do navegador, então uma consulta direta é suficiente.
+    /* A consulta não recebe filtros externos e mantém uma ordem estável pelo ID. */
     $result = $connection->query('SELECT id, title, description, created_at, updated_at FROM categories ORDER BY id ASC');
     while ($category = $result->fetch_assoc()) {
         $categories[] = $category;
@@ -29,7 +35,7 @@ try {
 
         <link rel="icon" href="../Images/favicon.ico" />
 
-        <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>" />
 
         <link
             rel="stylesheet"
@@ -39,6 +45,7 @@ try {
 
     <body>
 
+        <!-- Navegação do blog com acesso ao perfil administrativo. -->
         <nav>
             <div class="container nav__container">
                 <a href="../index.php" class="nav__logo">
@@ -83,6 +90,7 @@ try {
             </div>
         </nav>
 
+        <!-- Menu de gestão e tabela das categorias cadastradas. -->
         <section class="dashboard">
             <div class="container dashboard__container">
                 <aside>
@@ -178,6 +186,7 @@ try {
             </div>
         </section>
 
+        <!-- Rodapé compartilhado pelas páginas do painel. -->
         <footer>
             <div class="footer__socials">
                 <a href="https://www.youtube.com/" target="_blank"
