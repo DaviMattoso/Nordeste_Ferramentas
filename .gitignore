@@ -1,3 +1,10 @@
 .env
+.env.*
+!.env.example
+
+database/backups/
+*_backup.sql
+*_full.sql
+
 *.log
 *.tmp
