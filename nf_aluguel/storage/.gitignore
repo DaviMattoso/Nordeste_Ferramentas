@@ -1,0 +1,13 @@
+# Mantém apenas a estrutura; dados gerados em execução não devem ser versionados.
+/logs/*
+!/logs/.gitkeep
+/exports/*
+!/exports/.gitkeep
+/uploads/clientes/*
+!/uploads/clientes/.gitkeep
+/uploads/produtos/*
+!/uploads/produtos/.gitkeep
+/uploads/patrimonio/*
+!/uploads/patrimonio/.gitkeep
+/uploads/inspecoes/*
+!/uploads/inspecoes/.gitkeep

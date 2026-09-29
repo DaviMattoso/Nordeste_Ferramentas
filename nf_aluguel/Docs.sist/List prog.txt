@@ -1,0 +1,847 @@
+0. Preparação e arquitetura do projeto
+•	 Criar módulo nf_aluguel/ dentro do projeto Nordeste Ferramentas.
+•	 Não alterar nem quebrar:
+o	 nf_blog/
+o	 site_principal/
+o	 banco existente
+o	 arquivos da raiz.
+•	 Analisar como o NF Blog atualmente conecta ao banco.
+•	 Fazer o sistema de aluguel utilizar o mesmo MySQL 8.0.
+•	 Não duplicar credenciais do banco desnecessariamente.
+•	 Criar configuração própria do módulo de aluguel.
+•	 Criar estrutura de páginas.
+•	 Criar estrutura de módulos.
+•	 Criar estrutura de API/backend.
+•	 Criar estrutura de assets.
+•	 Criar estrutura de uploads.
+•	 Criar estrutura de logs.
+•	 Criar estrutura de documentação.
+•	 Criar estrutura para migrations SQL.
+•	 Criar estrutura para seeds.
+•	 Criar .htaccess do módulo.
+•	 Preparar URLs amigáveis, caso sejam utilizadas.
+•	 Criar constantes/caminhos globais.
+•	 Preparar sistema de mensagens de sucesso/erro.
+•	 Preparar tratamento global de erros.
+•	 Preparar organização de código reutilizável.
+•	 Documentar a arquitetura criada.
+________________________________________
+1. Banco de dados compartilhado
+1.1 Estrutura geral
+•	 Conferir banco atual do Nordeste Ferramentas.
+•	 Identificar tabelas já utilizadas pelo blog.
+•	 Evitar nomes que entrem em conflito.
+•	 Definir prefixo/padrão das tabelas do aluguel.
+•	 Definir padrão dos IDs.
+•	 Definir relacionamentos.
+•	 Criar foreign keys.
+•	 Criar índices.
+•	 Criar campos created_at.
+•	 Criar campos updated_at.
+•	 Criar status padronizados.
+•	 Definir exclusão lógica onde necessário.
+1.2 Tabelas principais
+Criar posteriormente tabelas equivalentes a:
+•	 usuários do sistema;
+•	 clientes;
+•	 endereços de clientes;
+•	 categorias;
+•	 produtos;
+•	 unidades físicas/patrimônio;
+•	 estoque;
+•	 movimentações;
+•	 reservas;
+•	 itens de reservas;
+•	 aluguéis;
+•	 itens de aluguel;
+•	 retiradas;
+•	 entregas;
+•	 devoluções;
+•	 inspeções;
+•	 danos;
+•	 manutenção;
+•	 histórico de status;
+•	 notificações;
+•	 logs;
+•	 configurações.
+1.3 Pagamentos
+Não implementar agora.
+•	 Reservar arquitetura para módulo futuro.
+•	 Adicionar comentários:
+o	TODO: SESSÃO FUTURA DE PAGAMENTOS
+•	 Prever futuramente:
+o	 dinheiro;
+o	 cartão;
+o	 PIX.
+________________________________________
+2. Sistema de usuários
+Como será um sistema interno:
+•	 Criar autenticação.
+•	 Tela de login.
+•	 Logout.
+•	 Sessões PHP.
+•	 Proteção de páginas privadas.
+•	 Impedir acesso direto sem login.
+•	 Hash seguro de senha.
+•	 Controle de sessão expirada.
+•	 Regeneração do ID da sessão.
+•	 Proteção contra session fixation.
+Administrador
+•	 Criar perfil ADMIN.
+•	 Administrador poderá:
+o	 cadastrar usuários;
+o	 editar usuários;
+o	 desativar usuários;
+o	 cadastrar clientes;
+o	 cadastrar produtos;
+o	 cadastrar unidades;
+o	 registrar aluguel;
+o	 registrar devolução;
+o	 editar aluguel;
+o	 aplicar desconto;
+o	 cancelar/estornar operações;
+o	 dar baixa em patrimônio;
+o	 desbloquear cliente;
+o	 acessar relatórios;
+o	 acessar logs;
+o	 alterar configurações.
+________________________________________
+3. Dashboard
+Indicadores
+•	 Quantidade total de ferramentas.
+•	 Ferramentas disponíveis.
+•	 Ferramentas alugadas.
+•	 Ferramentas reservadas.
+•	 Ferramentas em manutenção.
+•	 Ferramentas indisponíveis.
+•	 Ferramentas baixadas.
+•	 Aluguéis ativos.
+•	 Aluguéis vencendo hoje.
+•	 Aluguéis atrasados.
+•	 Reservas próximas.
+•	 Entregas previstas.
+•	 Devoluções previstas.
+Dashboard operacional
+•	 Lista de aluguéis recentes.
+•	 Lista de devoluções pendentes.
+•	 Lista de atrasos.
+•	 Alertas importantes.
+•	 Ferramentas com problema.
+•	 Clientes bloqueados.
+Atalhos
+•	 Novo aluguel.
+•	 Novo cliente.
+•	 Nova ferramenta.
+•	 Registrar devolução.
+•	 Consultar estoque.
+________________________________________
+4. Cadastro de clientes
+Dados obrigatórios
+•	 ID interno.
+•	 Nome completo.
+•	 CPF.
+•	 RG.
+•	 E-mail.
+•	 Número de celular.
+Dados complementares
+•	 Telefone secundário.
+•	 Data de nascimento.
+•	 Observações.
+•	 Endereço.
+•	 CEP.
+•	 Rua.
+•	 Número.
+•	 Complemento.
+•	 Bairro.
+•	 Cidade.
+•	 Estado.
+Controle
+•	 Data de cadastro.
+•	 Última atualização.
+•	 Cliente ativo/inativo.
+•	 Cliente bloqueado.
+•	 Motivo do bloqueio.
+•	 Histórico.
+Validações
+•	 CPF válido.
+•	 CPF não duplicado.
+•	 RG não duplicado quando aplicável.
+•	 E-mail válido.
+•	 Celular válido.
+•	 Campos obrigatórios.
+Tela do cliente
+•	 Dados pessoais.
+•	 Endereços.
+•	 Histórico de aluguéis.
+•	 Aluguéis ativos.
+•	 Atrasos.
+•	 Danos registrados.
+•	 Observações.
+•	 Histórico de bloqueio.
+________________________________________
+5. Categorias de ferramentas
+•	 Criar categoria.
+•	 Editar categoria.
+•	 Ativar/desativar categoria.
+•	 Nome.
+•	 Descrição.
+•	 Imagem/ícone opcional.
+•	 Produtos relacionados.
+Exemplos:
+•	Furadeiras;
+•	serras;
+•	marteletes;
+•	lixadeiras;
+•	ferramentas manuais;
+•	máquinas;
+•	equipamentos.
+________________________________________
+6. Cadastro de produtos
+Produto representa o modelo/tipo, não a ferramenta física.
+Exemplo:
+Furadeira Bosch GSB 13 RE
+Dados
+•	 ID do produto.
+•	 Código interno.
+•	 Nome.
+•	 Categoria.
+•	 Marca.
+•	 Modelo.
+•	 Descrição.
+•	 Especificações.
+•	 Imagem.
+•	 Manual opcional.
+•	 Status.
+Valores de aluguel
+•	 Valor diário.
+•	 Valor semanal.
+•	 Valor mensal.
+•	 Permitir configurar quais modalidades estão disponíveis.
+Exemplo:
+Diária: R$ 50
+Semanal: R$ 250
+Mensal: R$ 700
+________________________________________
+7. Patrimônio / unidade física
+Essa é uma das partes mais importantes do sistema.
+Cada ferramenta real terá seu próprio registro.
+Exemplo:
+Produto:
+Furadeira Bosch GSB
+
+Unidades:
+PAT-000001
+PAT-000002
+PAT-000003
+Dados
+•	 ID interno.
+•	 Código patrimonial.
+•	 Produto relacionado.
+•	 Número de série.
+•	 Data de aquisição.
+•	 Valor de aquisição opcional.
+•	 Estado.
+•	 Observações.
+•	 Foto da unidade.
+•	 Localização.
+Status
+•	 Disponível.
+•	 Reservada.
+•	 Alugada.
+•	 Aguardando devolução.
+•	 Em inspeção.
+•	 Em manutenção.
+•	 Indisponível.
+•	 Baixada.
+Identificação
+•	 Código QR.
+•	 Código de barras futuramente.
+•	 Pesquisa por patrimônio.
+________________________________________
+8. Estoque / armazém
+Mesmo existindo apenas uma operação:
+•	 Criar controle interno de estoque.
+•	 Quantidade total.
+•	 Quantidade disponível.
+•	 Quantidade alugada.
+•	 Quantidade reservada.
+•	 Quantidade em manutenção.
+•	 Quantidade indisponível.
+Localização
+Opcionalmente permitir:
+Setor A
+Prateleira 03
+Posição B
+•	 setor;
+•	 estante;
+•	 prateleira;
+•	 posição.
+Movimentações
+•	 Entrada.
+•	 Saída para aluguel.
+•	 Retorno.
+•	 Manutenção.
+•	 Retorno da manutenção.
+•	 Baixa.
+•	 Ajuste manual.
+Cada movimentação deverá registrar:
+•	 quem fez;
+•	 quando;
+•	 ferramenta;
+•	 motivo;
+•	 status anterior;
+•	 novo status.
+________________________________________
+9. Pesquisa
+Criar pesquisa global por:
+•	 produto;
+•	 código;
+•	 patrimônio;
+•	 número de série;
+•	 cliente;
+•	 CPF;
+•	 celular;
+•	 aluguel;
+•	 reserva.
+Filtros:
+•	 categoria;
+•	 disponibilidade;
+•	 status;
+•	 período.
+________________________________________
+10. Reservas
+Mesmo sendo sistema interno:
+•	 Funcionário poderá criar reserva para cliente.
+•	 Selecionar cliente.
+•	 Selecionar produto.
+•	 Quantidade.
+•	 Data inicial.
+•	 Data final.
+•	 Modalidade.
+•	 Observações.
+Sistema deve verificar
+•	 disponibilidade no período;
+•	 conflitos;
+•	 reservas existentes;
+•	 aluguéis existentes.
+Status
+•	 pendente;
+•	 confirmada;
+•	 convertida em aluguel;
+•	 cancelada;
+•	 expirada.
+________________________________________
+11. Disponibilidade
+Esse módulo será fundamental.
+Ao selecionar:
+Produto
++
+Data inicial
++
+Data final
+o sistema deve informar:
+Total: 10
+Alugadas: 4
+Reservadas: 2
+Disponíveis: 4
+•	 Não permitir dupla locação da mesma unidade.
+•	 Não permitir conflito de reservas.
+•	 Considerar datas futuras.
+•	 Considerar aluguel atrasado.
+•	 Considerar manutenção.
+________________________________________
+12. Novo aluguel
+Criar fluxo completo.
+Etapa 1 — cliente
+•	 Pesquisar cliente.
+•	 Selecionar cliente.
+•	 Criar cliente rapidamente se necessário.
+•	 Verificar bloqueio.
+Etapa 2 — ferramentas
+•	 Buscar produto.
+•	 Selecionar ferramenta.
+•	 Selecionar unidade física.
+•	 Verificar disponibilidade.
+•	 Adicionar múltiplos itens.
+Etapa 3 — período
+•	 Data da retirada.
+•	 Data prevista de devolução.
+•	 Modalidade:
+o	diária;
+o	semanal;
+o	mensal.
+Etapa 4 — valores
+•	 Calcular período.
+•	 Buscar valor cadastrado.
+•	 Calcular subtotal.
+•	 Permitir desconto somente ao admin.
+•	 Mostrar total estimado.
+Pagamento não entra nesta etapa inicialmente.
+Etapa 5 — entrega
+Selecionar:
+•	 retirada;
+•	 entrega em obra.
+Se entrega:
+•	 endereço;
+•	 responsável;
+•	 telefone;
+•	 referência;
+•	 data;
+•	 horário/período;
+•	 observações;
+•	 frete opcional.
+Etapa 6 — confirmação
+•	 Resumo.
+•	 Cliente.
+•	 Ferramentas.
+•	 Datas.
+•	 Valores.
+•	 Entrega.
+•	 Observações.
+•	 Confirmar aluguel.
+________________________________________
+13. Contrato do aluguel
+Gerar identificação única:
+ALG-2026-000001
+•	 Número do aluguel.
+•	 Cliente.
+•	 CPF.
+•	 RG.
+•	 Endereço.
+•	 Ferramentas.
+•	 Patrimônios.
+•	 Valores.
+•	 Datas.
+•	 Local de entrega.
+•	 Condições.
+•	 Observações.
+Futuramente:
+•	 impressão;
+•	 PDF;
+•	 assinatura.
+________________________________________
+14. Retirada
+•	 Confirmar ferramenta.
+•	 Confirmar patrimônio.
+•	 Registrar funcionário.
+•	 Registrar horário.
+•	 Registrar estado da ferramenta.
+•	 Fotografias opcionais.
+•	 Checklist visual.
+•	 Marcar unidade como ALUGADA.
+________________________________________
+15. Entrega em obra
+•	 Endereço da obra.
+•	 Responsável.
+•	 Contato.
+•	 Data planejada.
+•	 Data realizada.
+•	 Status.
+Status:
+•	 aguardando;
+•	 preparando;
+•	 saiu para entrega;
+•	 entregue;
+•	 cancelada.
+________________________________________
+16. Aluguéis ativos
+Tela específica contendo:
+•	 número;
+•	 cliente;
+•	 ferramentas;
+•	 retirada;
+•	 previsão de devolução;
+•	 status;
+•	 atraso.
+Filtros:
+•	 hoje;
+•	 vencendo;
+•	 atrasados;
+•	 todos.
+________________________________________
+17. Prorrogação de aluguel
+•	 Selecionar aluguel.
+•	 Informar nova data.
+•	 Verificar reservas futuras.
+•	 Verificar disponibilidade.
+•	 Recalcular período.
+•	 Registrar alteração.
+•	 Guardar data antiga no histórico.
+________________________________________
+18. Devolução
+Localizar aluguel
+•	 Número.
+•	 Cliente.
+•	 CPF.
+•	 Patrimônio.
+Devolver
+•	 Selecionar item.
+•	 Registrar data.
+•	 Registrar responsável.
+•	 Estado da ferramenta.
+•	 Observações.
+Devolução parcial
+Exemplo:
+Cliente alugou cinco ferramentas e devolveu três.
+•	 Sistema deve permitir devolver itens individualmente.
+•	 Manter restantes como alugados.
+________________________________________
+19. Inspeção da ferramenta
+Na devolução:
+•	 Estado externo.
+•	 Funcionamento.
+•	 Acessórios.
+•	 Cabo.
+•	 Plugue.
+•	 Proteções.
+•	 Estojo.
+•	 Observações.
+•	 Fotos.
+Resultado:
+•	 aprovada;
+•	 dano identificado;
+•	 enviar para manutenção.
+________________________________________
+20. Danos
+•	 Registrar dano.
+•	 Ferramenta.
+•	 Aluguel.
+•	 Cliente.
+•	 Descrição.
+•	 Fotos.
+•	 Data.
+•	 Responsável.
+•	 Gravidade.
+•	 Observações.
+Status:
+•	 aberto;
+•	 em análise;
+•	 manutenção;
+•	 resolvido.
+________________________________________
+21. Manutenção
+Não usaremos horímetro/calibração nesta versão.
+Ordem
+•	 Número.
+•	 Ferramenta.
+•	 Motivo.
+•	 Descrição.
+•	 Data.
+•	 Responsável.
+•	 Observações.
+Status
+•	 aguardando;
+•	 em manutenção;
+•	 concluída;
+•	 descartada.
+Ao iniciar:
+DISPONÍVEL -> MANUTENÇÃO
+Ao concluir:
+MANUTENÇÃO -> DISPONÍVEL
+________________________________________
+22. Baixa de patrimônio
+Somente administrador.
+Motivos:
+•	 perda;
+•	 roubo;
+•	 dano irreparável;
+•	 venda;
+•	 descarte;
+•	 outro.
+Registrar:
+•	 administrador;
+•	 data;
+•	 motivo;
+•	 observação.
+Nunca apagar o histórico.
+________________________________________
+23. Atrasos
+Sistema deverá detectar automaticamente:
+data_atual > data_prevista_devolucao
+•	 Marcar aluguel atrasado.
+•	 Mostrar dias de atraso.
+•	 Dashboard.
+•	 Tela específica.
+•	 Cliente associado.
+________________________________________
+24. Bloqueio de cliente
+Possíveis motivos:
+•	 atraso;
+•	 danos;
+•	 equipamento não devolvido;
+•	 decisão administrativa.
+Apenas administrador:
+•	 bloquear;
+•	 desbloquear.
+Guardar histórico.
+________________________________________
+25. Histórico completo
+Para cada ferramenta:
+•	 cadastros;
+•	 aluguéis;
+•	 clientes;
+•	 movimentações;
+•	 devoluções;
+•	 inspeções;
+•	 danos;
+•	 manutenção;
+•	 baixa.
+Para cliente:
+•	 reservas;
+•	 aluguéis;
+•	 atrasos;
+•	 devoluções;
+•	 danos;
+•	 bloqueios.
+________________________________________
+26. Relatórios
+Ferramentas
+•	 mais alugadas;
+•	 menos alugadas;
+•	 disponíveis;
+•	 alugadas;
+•	 manutenção;
+•	 baixadas.
+Clientes
+•	 mais frequentes;
+•	 alugueis ativos;
+•	 atrasos;
+•	 bloqueados.
+Operação
+•	 aluguéis por período;
+•	 reservas;
+•	 devoluções;
+•	 atrasos;
+•	 manutenções.
+Exportação futura
+•	 CSV.
+•	 PDF.
+•	 Excel.
+________________________________________
+27. Logs e auditoria
+Essa parte é importante porque é sistema administrativo.
+Registrar:
+•	 login;
+•	 logout;
+•	 criação;
+•	 edição;
+•	 exclusão/desativação;
+•	 aluguel;
+•	 cancelamento;
+•	 desconto;
+•	 devolução;
+•	 manutenção;
+•	 baixa;
+•	 bloqueio;
+•	 desbloqueio.
+Cada log:
+usuario
+acao
+registro
+data
+hora
+IP
+detalhes
+________________________________________
+28. Segurança
+•	 Prepared statements.
+•	 PDO.
+•	 Proteção SQL Injection.
+•	 Escape de HTML.
+•	 Proteção XSS.
+•	 CSRF Token.
+•	 Validação backend.
+•	 Validação frontend.
+•	 Senhas com password_hash.
+•	 password_verify.
+•	 Sessões seguras.
+•	 Controle de permissões.
+•	 Upload seguro.
+•	 Limite de tamanho de arquivos.
+•	 Tipos permitidos.
+•	 Renomear uploads.
+•	 Não expor arquivos internos.
+•	 .htaccess.
+•	 Logs de erro sem mostrar detalhes ao usuário.
+•	 Credenciais fora de arquivos públicos.
+________________________________________
+29. Interface
+Manter identidade Nordeste Ferramentas.
+•	 Dashboard.
+•	 Sidebar.
+•	 Navbar.
+•	 Responsividade.
+•	 Desktop.
+•	 Tablet.
+•	 Mobile quando possível.
+Design
+•	 Laranja NF.
+•	 Preto.
+•	 Branco.
+•	 Cinza.
+•	 Montserrat.
+•	 Cards.
+•	 Tabelas.
+•	 Modais.
+•	 Formulários.
+•	 Alerts.
+•	 Badges de status.
+________________________________________
+30. Sistema de mensagens
+Padronizar:
+Cliente cadastrado com sucesso.
+Ferramenta indisponível.
+Aluguel criado.
+Devolução registrada.
+Cliente bloqueado.
+•	 sucesso;
+•	 informação;
+•	 aviso;
+•	 erro.
+________________________________________
+31. API interna
+Preparar endpoints organizados para:
+•	 clientes;
+•	 produtos;
+•	 unidades;
+•	 disponibilidade;
+•	 estoque;
+•	 aluguel;
+•	 reservas;
+•	 devoluções;
+•	 entregas;
+•	 manutenção;
+•	 dashboard;
+•	 relatórios.
+Retorno preferencial:
+{
+    "success": true,
+    "data": {},
+    "message": ""
+}
+________________________________________
+32. Integração com Nordeste Ferramentas
+O projeto ficará conceitualmente:
+Nordeste_Ferramentas/
+│
+├── database/
+├── nf_blog/
+├── nf_aluguel/
+├── site_principal/
+│
+├── .vscode/
+├── .gitattributes
+├── .gitignore
+├── index.html
+└── LICENSE
+•	 Compartilhar banco MySQL.
+•	 Não misturar tabelas desnecessariamente.
+•	 Não quebrar NF Blog.
+•	 Não quebrar site principal.
+•	 Manter módulos independentes.
+•	 Permitir integração futura.
+________________________________________
+33. Testes
+Clientes
+•	 cadastrar;
+•	 editar;
+•	 CPF duplicado;
+•	 excluir/desativar;
+•	 bloquear.
+Produtos
+•	 cadastrar;
+•	 editar;
+•	 valores.
+Patrimônio
+•	 cadastrar;
+•	 mudar status;
+•	 pesquisar.
+Aluguel
+•	 aluguel simples;
+•	 vários produtos;
+•	 diária;
+•	 semanal;
+•	 mensal;
+•	 ferramenta indisponível;
+•	 conflito de datas;
+•	 cliente bloqueado.
+Reserva
+•	 criar;
+•	 cancelar;
+•	 converter;
+•	 conflito.
+Devolução
+•	 normal;
+•	 parcial;
+•	 atrasada;
+•	 com dano.
+Manutenção
+•	 entrada;
+•	 saída;
+•	 indisponibilidade.
+________________________________________
+34. Testes de segurança
+•	 SQL Injection.
+•	 XSS.
+•	 CSRF.
+•	 acesso sem login.
+•	 acesso sem permissão.
+•	 manipulação de IDs.
+•	 upload malicioso.
+•	 sessão expirada.
+________________________________________
+35. Testes de integração
+•	 NF Blog funcionando.
+•	 site principal funcionando.
+•	 sistema de aluguel funcionando.
+•	 banco compartilhado funcionando.
+•	 nenhuma tabela conflitante.
+•	 nenhuma rota conflitante.
+________________________________________
+36. Documentação
+Criar:
+•	 README do sistema.
+•	 arquitetura.
+•	 estrutura das pastas.
+•	 configuração.
+•	 banco.
+•	 migrations.
+•	 instalação.
+•	 login inicial.
+•	 regras do sistema.
+•	 fluxo de aluguel.
+•	 fluxo de devolução.
+•	 permissões.
+•	 comentários importantes no código.
+________________________________________
+37. Preparação para produção
+•	 Remover dados de teste.
+•	 Configurar ambiente de produção.
+•	 Configurar banco.
+•	 HTTPS.
+•	 permissões de arquivos.
+•	 backups.
+•	 logs.
+•	 erros de produção.
+•	 testar hospedagem.
+•	 testar PHP utilizado pelo servidor.
+•	 testar MySQL.
+•	 testar uploads.
+•	 testar sessões.
+________________________________________
+38. Funcionalidades futuras
+Não implementar agora, mas deixar arquitetura preparada:
+•	 pagamentos;
+•	 PIX;
+•	 cartão;
+•	 caixa;
+•	 financeiro;
+•	 emissão fiscal;
+•	 assinatura digital;
+•	 WhatsApp;
+•	 e-mail automático;
+•	 catálogo público;
+•	 reserva pelo site;
+•	 múltiplas filiais;
+•	 aplicativo mobile;
+•	 leitura de QR pelo celular.
