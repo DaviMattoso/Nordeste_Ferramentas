@@ -8,3 +8,12 @@ database/backups/
 
 *.log
 *.tmp
+
+# Documentação interna do Sistema de Locação e Vendas
+sistema_locacao/docs/01_REQUISITOS.md
+sistema_locacao/docs/02_REGRAS_NEGOCIO.md
+sistema_locacao/docs/03_ARQUITETURA.md
+sistema_locacao/docs/04_PLANO_DESENVOLVIMENTO.md
+sistema_locacao/docs/05_DECISOES_PENDENTES.md
+sistema_locacao/docs/06_INTEGRACAO_ECOSSISTEMA.md
+sistema_locacao/docs/07_PADROES_DESENVOLVIMENTO.md
