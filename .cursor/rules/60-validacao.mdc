@@ -1,0 +1,45 @@
+---
+description: Como verificar mudanças no Nordeste Ferramentas sem inventar suíte de testes
+alwaysApply: true
+---
+
+# Validação de mudanças
+
+- Comece pelo trecho alterado e pelos fluxos dependentes. Não exija um CRUD completo para correção só de texto ou cor.
+- Confira as ferramentas antes de executar. Este projeto não tem `npm test`, `npm run dev`, Composer ou PHPUnit.
+- Execute `php -l caminho/do/arquivo.php` nos PHPs alterados. No Windows, descubra o executável do PHP do XAMPP se necessário; não assuma unidade ou pasta de instalação.
+- Para JS alterado, use `node --check caminho/do/script.js` se Node estiver disponível; isso verifica sintaxe, não o navegador. Node não é dependência de execução da aplicação.
+- Para PHP com mysqli, confirme MySQL/MariaDB ativo, banco e extensões `mysqli`, `fileinfo` e suporte a `get_result` onde usado (`search.php`). No aluguel o banco é `nf_aluguel`; no blog, `nf_blog`.
+- Prefira Apache/XAMPP para o projeto completo e `.htaccess`. Live Server (porta 5501 no `.vscode`) não executa PHP. O servidor PHP embutido serve verificações locais limitadas.
+- Revise o diff e caminhos de assets/includes. Não substitua imagens ou dados existentes durante a validação.
+- Nunca afirme que testou algo que não executou.
+
+## Se a mudança envolve interface
+
+- Verifique a página afetada em desktop, tablet e celular. No blog, confira 1024px e 600px, grade 3/2/1, navbar e borda da thumbnail conforme o escopo.
+- No institucional, use os próprios breakpoints (1024px, 900px e 768px).
+- Ao alterar componente compartilhado, confira uma página pública e uma administrativa que realmente o utilizem. O header em `admin/partials/header.php` só é incluído por `nf_blog/index.php`.
+- Se não houver navegador disponível, descreva a limitação e o roteiro manual.
+
+## Se a mudança envolve backend
+
+- Consulte o checklist do domínio em `nf_blog/database/`: `auth`, `signup`, `users-crud`, `categories-crud`, `posts-crud` e `production`.
+- Confira sucesso, entrada inválida e erro relevante. Para rotas protegidas, considere visitante, author e admin.
+- Para posts, confirme que author não edita/exclui post de outra conta.
+- Para mutações, confira CSRF ausente/inválido e rejeição de GET quando aplicável.
+- Para usuários, confira duplicidade, role, último admin e autoexclusão conforme a mudança.
+- Para uploads, confira arquivo válido, tipo/tamanho inválido e preservação/remoção correta na troca ou falha.
+- Para exclusões, confira vínculos com posts e a mensagem de FK.
+- Para busca, confira termo vazio, caracteres especiais, ausência de resultados e tipo inesperado.
+- Para homepage, confira destaque, fallback e ausência de duplicação quando o fluxo for alterado.
+- Para a API, confira JSON/headers/status, vazio, até três itens e consumo no institucional.
+- Use dados de teste próprios; limpe só o que a tarefa criou.
+- Para mudança de banco, compare a estrutura real antes e depois. Confira o arquivo em `nf_blog/database/migrations/` e a linha correspondente em `schema_migrations`. O backup fica em `database/backups/` e não entra no Git.
+- Separe o que foi conferido pelo cliente `mysql` do que foi conferido pelas ferramentas MCP do Cursor. Não declare o MCP validado sem uma chamada dessas ferramentas.
+
+## Relato de conclusão
+
+- Informe o que mudou, por quê, arquivos envolvidos, verificações executadas e pendências reais.
+- Não chame lint de teste funcional, nem use resultados históricos dos checklists como execução atual.
+- Se PHP, banco, Apache ou navegador faltarem, conclua o que for possível e explique o que o usuário deve validar.
+- Só crie infraestrutura de testes quando o pedido exigir; não adicione dezenas de testes para uma mudança simples.

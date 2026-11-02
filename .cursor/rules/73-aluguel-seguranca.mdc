@@ -1,0 +1,19 @@
+---
+description: Autenticação, permissões, CSRF e uploads do sistema de aluguel
+globs: nf_aluguel/**/*.php,nf_aluguel/**/.htaccess
+alwaysApply: false
+---
+
+# Segurança do aluguel
+
+- Contas do aluguel nascem em `nf_aluguel.users`. Não há cadastro público: quem cria operador é quem tem `user.manage`.
+- Login futuro aceita e-mail ou username. Senha com `password_hash(PASSWORD_DEFAULT)` e `password_verify`. Não use `trim` em senha.
+- Autorização no servidor, em toda ação. Esconder botão não basta. Confira a permissão da seção 3.1; não invente chave nova.
+- Inspeção e inventário ainda não têm chave própria. Nesses dois casos, exija o papel `armazem` ou `administrador` e registre a lacuna.
+- `pricing.override`, `asset.retire`, `rental.cancel`, `user.manage`, `settings.manage` e `audit.view` começam só no administrador.
+- O teto numérico de desconto não existe. Não trate `pricing.discount` como aprovação ilimitada sem deixar isso visível na pendência.
+- Formulário que altera estado usa POST e token CSRF comparado com `hash_equals`. Logout e exclusão não acontecem por GET.
+- Upload: erro do PHP, `is_uploaded_file`, tamanho, MIME com `fileinfo` e bloqueio de caminho com `..`, unidade de disco ou barra inicial. SVG fica fora até haver um desenho específico.
+- Grave arquivo só em `uploads/` e sirva por uma ação autenticada. O Apache nega acesso direto a `config`, `database`, `docs` e `uploads`.
+- Não exponha SQL, hash, senha, documento completo em log público nem em JSON de catálogo. Catálogo público futuro não devolve custo, cliente nem ID interno.
+- Recuperação de senha, rate limit e HTTPS de produção continuam pendentes. Não declare o módulo pronto para produção.

@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mariadb": {
+      "type": "stdio",
+      "command": "C:/Users/David/.local/bin/uv.exe",
+      "args": [
+        "--directory",
+        "G:/Nordeste_Ferramentas/tools/mariadb-mcp",
+        "run",
+        "src/server.py"
+      ],
+      "envFile": "G:/Nordeste_Ferramentas/tools/mariadb-mcp/.env"
+    }
+  }
+}

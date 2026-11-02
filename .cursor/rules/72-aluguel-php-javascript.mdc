@@ -1,0 +1,23 @@
+---
+description: PHP procedural e JavaScript puro do sistema de aluguel
+globs: nf_aluguel/**/*.php,nf_aluguel/**/*.js,nf_aluguel/**/*.css
+alwaysApply: false
+---
+
+# PHP e interface do aluguel
+
+- PHP 8 procedural, HTML renderizado no servidor, mysqli e JavaScript puro. Sem framework, ORM, Composer ou bundler.
+- Não adicione `declare(strict_types=1)` num arquivo isolado. Tipos em assinatura nova são bem-vindos quando o arquivo inteiro os respeita.
+- Arquivo só de PHP fica sem `?>`. Include com `require_once __DIR__ . '/arquivo.php'`.
+- Validação no servidor antes de gravar. JavaScript não é a única barreira.
+- Entrada externa pode ser array: confirme o tipo antes de `trim` ou consulta. ID novo é inteiro positivo.
+- Depois de POST bem-sucedido, redirecione com HTTP 303 e `exit`.
+- Escape de HTML no helper do próprio módulo. Não importe `authEscape` do blog.
+- CSS do aluguel não usa classe do blog (`.post__thumbnail`) nem do institucional (`.blog_card`).
+- Versionar CSS e JS com `filemtime`. Foco visível no teclado. Texto dinâmico com `textContent`.
+- Acentos e mensagens ficam em português. Código de status no banco permanece o ENUM já gravado; a tela traduz.
+
+```php
+// A conexão do blog não pode ser reaproveitada aqui.
+require_once __DIR__ . '/config/database.php';
+```

@@ -7,6 +7,8 @@
  * regra que limita autores aos próprios posts.
  */
 
+require_once __DIR__ . '/constants.php';
+
 /** Revalida no banco a conta que está prestes a criar ou gerenciar um post. */
 function refreshPostActor(mysqli $connection): void
 {
@@ -25,7 +27,7 @@ function refreshPostActor(mysqli $connection): void
     }
     if (!$found) {
         unset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['role'], $_SESSION['avatar']);
-        header('Location: ../signin.php', true, 303);
+        header('Location: ' . ROOT_URL . 'signin.php', true, 303);
         exit;
     }
     $_SESSION['username'] = $username;
@@ -54,6 +56,18 @@ function postValidationErrors(string $title, string $body): array
         $errors[] = 'O conteúdo é longo demais.';
     }
     return $errors;
+}
+
+/** Completa um post de listagem com nome, avatar, resumo e data de exibição. */
+function preparePublicPost(array $post): array
+{
+    $authorName = trim((string) ($post['first_name'] ?? '') . ' ' . (string) ($post['last_name'] ?? ''));
+    $post['author_name'] = $authorName !== '' ? $authorName : (string) ($post['username'] ?? '');
+    $avatar = $post['avatar'] ?? null;
+    $post['avatar'] = is_string($avatar) && trim($avatar) !== '' ? $avatar : 'Images/avatar2.jpg';
+    $post['excerpt'] = postExcerpt((string) ($post['body'] ?? ''));
+    $post['display_date'] = postDisplayDate((string) ($post['created_at'] ?? ''));
+    return $post;
 }
 
 /** Produz texto simples e curto para cards sem cortar marcação HTML no meio. */

@@ -1,0 +1,9 @@
+# Documentos, fotos e manuais são lidos pelo PHP, nunca executados nem servidos direto.
+# Em produção o ideal é colocar esta pasta fora do diretório publicado.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

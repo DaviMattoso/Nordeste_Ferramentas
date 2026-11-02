@@ -1,0 +1,73 @@
+---
+description: Modelo MySQL/MariaDB do blog, consultas parametrizadas e migrações em nf_blog
+globs: nf_blog/**/*.php,nf_blog/**/*.sql,database/**/*.sql
+alwaysApply: false
+---
+
+# Banco de dados do blog
+
+- Esta regra vale para `nf_blog`. O aluguel usa o banco `nf_aluguel` e a regra `74-aluguel-banco.mdc`.
+- Use MySQL/MariaDB por mysqli. Não aplique sintaxe de PostgreSQL/SQLite nem introduza PDO/ORM por preferência pessoal.
+- Use `nf_blog/database/database.sql` como referência de estrutura inicial e compare com `database/schema.sql` quando relevante.
+- Ambos descrevem estrutura; não contêm os registros reais do blog. Imagens estáticas no ZIP não provam que o banco está preenchido.
+- Diferença a considerar: `database.sql` declara `ON DELETE RESTRICT` nas FKs. O dump da raiz omite `ON DELETE` (o padrão do InnoDB equivale a restringir a exclusão). A aplicação trata o código 1451 nessa situação. Não assuma `ON DELETE CASCADE`.
+
+## Modelo existente
+
+| Tabela | Regras principais |
+| --- | --- |
+| `users` | `first_name`/`last_name`/`username` até 100, `email` até 254, `password` com hash, `avatar` opcional, `role` admin/author; username e email únicos |
+| `categories` | `title` até 150 e único, `description` TEXT opcional |
+| `posts` | `title` até 255, `body` TEXT, `thumbnail`, `category_id`, `author_id`, `is_featured` |
+
+- Preserve InnoDB, `utf8mb4`/`utf8mb4_unicode_ci`, IDs `INT UNSIGNED` e os índices atuais.
+- `posts.category_id → categories.id` e `posts.author_id → users.id`: atualização em cascata e exclusão restrita. Não apague posts em cascata para permitir excluir conta/categoria vinculada.
+- Pré-consulta de duplicidade melhora mensagens, mas não substitui UNIQUE.
+- TEXT tem limite em bytes; não troque a verificação por contagem de caracteres sem avaliar UTF-8.
+- `is_featured` é 0/1; vários posts podem estar marcados. Não imponha exclusividade de destaque sem pedido.
+- Não há coluna de status/rascunho, tabela de comentários, recuperação de senha ou mensagens de contato.
+
+## Consultas e transações
+
+- Parametrize qualquer entrada externa com `prepare`/`bind_param`, incluindo IDs e termos de busca. Constantes SQL sem entrada externa podem continuar em `query()`.
+- Nomes de tabela/coluna e ordenação dinâmica precisam de lista permitida.
+- Reutilize os JOINs para autor e categoria em vez de consultar dentro de cada card.
+- Preserve transações e `SELECT ... FOR UPDATE` nos fluxos de exclusão/autoria/último admin.
+- `search.php` usa `get_result()` e depende de mysqlnd. Não suponha que todo mysqli inclui esse recurso.
+- Trate duplicidade 1062 e conflitos de FK 1451/1452 com mensagens compreensíveis, sem revelar o SQL.
+
+## Acesso local pelo agente
+
+- O Cursor inicia o servidor MCP MariaDB 0.2.6 por stdio, conforme `.cursor/mcp.json`. O comando local é `uv run src/server.py` dentro de `tools/mariadb-mcp`. A revisão instalada em 01/11/2026 é o commit `64876fb1a4cb81bf51564c46eb60401097c067cc`.
+- Esse diretório é um clone do repositório oficial MariaDB/mcp e está no `.gitignore`. Não copie o servidor para `nf_blog/` nem para `site_principal/`.
+- As credenciais ficam em `tools/mariadb-mcp/.env`. O Cursor carrega esse arquivo com `envFile`, e o servidor também o lê com `load_dotenv`. Use `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` e `DB_NAME`. As variáveis `NF_DB_*` da aplicação não configuram o MCP.
+- O usuário dedicado é `cursor_nf`. Os privilégios são SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX e REFERENCES em `nf_blog.*` e, desde 02/11/2026, o mesmo conjunto em `nf_aluguel.*`. Não há `GRANT OPTION` nem privilégio global. Nesta máquina, TCP em `127.0.0.1` autentica como `cursor_nf@localhost`.
+- `MCP_READ_ONLY=false` faz o `execute_sql` aceitar escrita. Com `true`, a versão 0.2.6 só deixa passar `SELECT`, `SHOW`, `DESCRIBE` e `USE`. A garantia de limite continua sendo o privilégio do usuário, não essa opção.
+- `MCP_BLOCK_SENSITIVE_SHOW` permanece ativo. A ferramenta recusa `SHOW GRANTS`, `SHOW PROCESSLIST` e outras variantes sensíveis. Confira privilégios por `information_schema` ou pelo cliente `mysql`, sem imprimir senha nem hash.
+- Não aponte o MCP para `root`. A aplicação PHP mantém a conexão de `nf_blog/config/constants.php`; trocar o usuário do site é outra tarefa.
+- XAMPP confirmado em `G:\Down\Xampp\exe`, MariaDB 10.4.32 na porta 3306. Confirme de novo se a instalação mudar.
+
+## Alterações de estrutura e dados
+
+- Antes de escrever SQL de mudança, consulte a estrutura real com `list_tables`, `get_table_schema` e `get_table_schema_with_relations` no banco `nf_blog`. Compare com `nf_blog/database/database.sql` e, quando a diferença importar, com `database/schema.sql`.
+- Faça, na mesma tarefa, a alteração necessária no código e a alteração correspondente no banco local.
+- Grave cada mudança de estrutura em `nf_blog/database/migrations/AAAAMMDD-HHMM-descricao.sql`. Crie a pasta na primeira migração. O arquivo contém só aquela mudança.
+- Antes da primeira migração, crie a tabela de controle se ela ainda não existir e registre o arquivo que a criou:
+
+```sql
+CREATE TABLE IF NOT EXISTS schema_migrations (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    filename VARCHAR(255) NOT NULL,
+    applied_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY schema_migrations_filename_unique (filename)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+- Antes de aplicar um arquivo, consulte `schema_migrations`. Se o `filename` já existir, não execute de novo. Depois do sucesso, registre com `INSERT INTO schema_migrations (filename) VALUES ('nome-do-arquivo.sql');`.
+- Aplique a migração pelo MCP, no banco `nf_blog`, com o usuário `cursor_nf`.
+- Antes de mudança de estrutura ou de operação com risco de perda de dados, gere um backup com `G:\Down\Xampp\exe\mysql\bin\mysqldump.exe` e salve em `database/backups/`. A pasta já está no `.gitignore`. Não commite o dump e não escreva a senha no comando, na regra ou no chat; deixe o cliente pedi-la localmente. Use `--single-transaction --skip-lock-tables`, porque `cursor_nf` não tem `LOCK TABLES`.
+- Atualize `nf_blog/database/database.sql` para uma instalação nova refletir a estrutura resultante. Não reimporte esse arquivo em um banco preenchido: `IF NOT EXISTS` não altera tabela existente.
+- No MariaDB, DDL provoca commit implícito. `ROLLBACK` não desfaz `CREATE`, `ALTER` nem `DROP`. Não trate rollback como proteção para mudança de estrutura. Para desfazer, restaure o backup ou escreva uma migração nova.
+- Confira a estrutura real depois da aplicação e explique o que foi aplicado, em qual banco e como a verificação foi feita.
+- Não execute DROP, TRUNCATE, promoção de contas reais ou exclusões em massa sem autorização. Para validação, use registros de teste identificáveis e remova apenas os criados na tarefa.

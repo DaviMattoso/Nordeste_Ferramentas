@@ -10,7 +10,7 @@ Options -Indexes
     RewriteRule "(^|/)\.(?!well-known(?:/|$))" - [F,L]
 
     # Diretórios internos são acessíveis pelo PHP, mas nunca diretamente por HTTP.
-    RewriteRule "^(?:config|admin/config|database|txt|\.vscode)(?:/|$)" - [F,L,NC]
+    RewriteRule "^(?:config|admin/config|database|txt|partials|\.vscode)(?:/|$)" - [F,L,NC]
 
     # Mesmo que um arquivo malicioso chegue ao upload, ele não pode executar como script.
     RewriteRule "^Images/(?:avatars|posts)/.*\.(?:php[0-9]?|phtml|phar|cgi|pl|py|sh|shtml)$" - [F,L,NC]

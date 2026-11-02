@@ -1,0 +1,41 @@
+---
+description: Fluxo de trabalho do agente, escopo das mudanças e práticas gerais de continuidade
+alwaysApply: true
+---
+
+# Fluxo de trabalho
+
+1. Identifique a página e o fluxo envolvidos. Leia arquivo, includes, estilos, scripts e consultas relacionados antes de propor uma correção.
+2. Siga `02-organizacao-codigo-e-comentarios.mdc` ao desenvolver e consulte as regras específicas de PHP, segurança, banco, frontend, integração e validação conforme a tarefa. Não dependa apenas deste contexto geral.
+3. Diga brevemente o que será alterado. Faça a menor mudança completa que resolva a causa e preserve o restante do projeto.
+4. Reutilize os helpers do módulo certo. No blog, `nf_blog/config/`. No aluguel, `nf_aluguel/config/`. Não leve sessão, papéis ou conexão de um para o outro.
+5. Banco do blog: siga `30-mysql-e-dados.mdc` e aplique a migração em `nf_blog`. Banco do aluguel: siga `74-aluguel-banco.mdc`, crie a migração, aplique em `nf_aluguel`, verifique e atualize o código. Não deixe o SQL para o usuário executar, salvo impedimento técnico. Faça backup antes de mudar estrutura que já tenha dados.
+6. Verifique a mudança de acordo com `60-validacao.mdc`; reporte o que foi executado e as verificações que dependem do ambiente do usuário.
+7. Entregue um resumo com o resultado, os arquivos alterados, o motivo e como conferir localmente. Se precisar de SQL ou configuração, forneça passos reproduzíveis.
+
+## Entender, focar e corrigir a causa
+
+- Identifique objetivo, restrições e resultado observável esperado. Não invente funcionalidades ou critérios que o usuário não pediu.
+- Confira nomes, caminhos, comandos e dependências no repositório. Diferencie fato confirmado de hipótese.
+- Para APIs ou recursos incertos, consulte documentação oficial compatível com a versão usada. Não instale dependências só para copiar um exemplo externo.
+- Em bugs, registre entrada, resultado esperado e resultado obtido. Use erro, logs e fluxo de dados para uma causa testável. Altere uma hipótese por vez.
+- Corrija a origem da falha; não esconda o problema com retorno fictício, captura silenciosa ou desativação de validações.
+
+## Escopo e preservação
+
+- Execute alterações solicitadas; quando o pedido for apenas análise ou um prompt, entregue esse formato sem editar a aplicação.
+- Não substitua arquivos completos, reformate o projeto inteiro ou reorganize pastas para resolver ajustes pequenos.
+- Preserve alterações do usuário e examine o diff quando Git estiver disponível. Não use reset/clean destrutivos, force push ou exclusões em massa como atalho.
+- Não faça commit, push ou deploy por iniciativa própria. A autorização precisa estar no pedido atual.
+- Use os caminhos existentes, inclusive a diferença entre `Images/` do blog e `images/` do institucional.
+- Não invente requisitos como estoque, loja virtual, pagamentos, comentários persistentes ou editor rico.
+- Se uma melhoria importante estiver fora do escopo, descreva-a separadamente e continue o trabalho autorizado.
+- Só pergunte quando faltar uma decisão que afete o resultado. Resolva escolhas técnicas rotineiras de acordo com o código atual.
+
+## Clareza
+
+- Use comentários em português para explicar decisões, regras de negócio e cuidados relevantes; evite comentar cada linha óbvia.
+- Preserve nomes e estilo do trecho editado: funções PHP e variáveis geralmente usam camelCase; colunas SQL usam snake_case; nomes de arquivos usam hífens.
+- Mantenha UTF-8, acentos e mensagens em português.
+- Diferencie implementado, verificado agora e documentado historicamente. Não repita números antigos de testes como resultado da tarefa atual.
+- Atualize documentação e regras somente quando a mudança alterar os fatos ou o procedimento descritos nelas.

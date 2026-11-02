@@ -6,6 +6,8 @@
  * e bloqueios de acesso possam ser enviados corretamente.
  */
 
+require_once __DIR__ . '/constants.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     /* Restringe a sessão a IDs do servidor e ao transporte por cookie. */
     ini_set('session.use_strict_mode', '1');
@@ -34,7 +36,8 @@ function requireLogin(): void
     /* Evita reutilizar conteúdo protegido armazenado em cache após o logout. */
     header('Cache-Control: no-store');
     if (!isLoggedIn()) {
-        header('Location: ../signin.php', true, 302);
+        /* ROOT_URL permite o redirecionamento a partir de qualquer pasta, não só de admin/. */
+        header('Location: ' . ROOT_URL . 'signin.php', true, 302);
         exit;
     }
 }
@@ -70,7 +73,7 @@ function requireAdmin(): void
     }
     if (!$found) {
         unset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['role'], $_SESSION['avatar']);
-        header('Location: ../signin.php', true, 303);
+        header('Location: ' . ROOT_URL . 'signin.php', true, 303);
         exit;
     }
     /* Atualiza os dados usados pela navbar e pelas verificações seguintes. */
@@ -80,7 +83,7 @@ function requireAdmin(): void
     if (!isAdmin()) {
         /* Registra a negativa apenas quando uma rota administrativa foi solicitada. */
         $_SESSION['access_denied'] = true;
-        header('Location: dashboard.php?denied=1', true, 303);
+        header('Location: ' . ROOT_URL . 'admin/dashboard.php?denied=1', true, 303);
         exit;
     }
 }

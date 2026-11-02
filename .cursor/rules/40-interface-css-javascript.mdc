@@ -1,0 +1,38 @@
+---
+description: Identidade visual, CSS, JavaScript puro e acessibilidade do blog e do institucional
+globs: nf_blog/**/*.{css,js,php},site_principal/**/*.{css,js,html},index.html
+alwaysApply: false
+---
+
+# Interface, CSS e JavaScript
+
+- O aluguel tem folha própria em `nf_aluguel/css/` e não herda estas classes. Siga `72-aluguel-php-javascript.mdc` dentro de `nf_aluguel/`.
+
+## Estilos e identidade
+
+- Blog: `nf_blog/css/style.css`. Institucional: `site_principal/style.css`. Não carregue um no lugar do outro.
+- No blog, preserve base branca, títulos `#111111`, navbar `#1a1a1a`, links/destaques `#e67e22` e logout `#d35400`, salvo pedido de mudança visual.
+- O institucional usa Inter e paleta própria (azul `#1e3a8a` e laranja `#ff6b35`). Não presuma a mesma fonte nos dois.
+- Reutilize variáveis existentes de largura, bordas e transição. Não adicione Tailwind/Bootstrap para ajustes locais.
+- Preserve classes do blog (`.nav__items`, `.category__buttons`, `.post__thumbnail`, `.posts__container`, `.featured__container`, `.form__section`, `.dashboard`) e do institucional (`.blog_card`). Não renomeie só para padronizar.
+
+## Layout e regressões
+
+- Os artigos da grade devem ser irmãos dentro do mesmo `.posts__container`. Não envolva cada card em uma seção `.posts` própria.
+- Grade efetiva do blog: 3 colunas no desktop; 2 colunas até 1024px (a regra posterior no mesmo `@media` vence a declaração de 1 coluna); 1 coluna até 600px. Leia a cascata completa antes de concluir qual regra vale.
+- O destaque tem duas colunas no desktop e empilha em telas menores.
+- Preserve a borda das thumbnails: `.post__thumbnail` usa `0.7rem solid #1d1d1d`.
+- O reset do blog zera `outline`. Em interfaces novas ou alteradas, acrescente foco visível no escopo modificado.
+- No blog, preserve `?v=` baseado em `filemtime`. No institucional, os assets usam versões manuais (`style.css?v=20260928-4`, `script.js?v=20260928-3`); atualize-as ao alterar esses arquivos.
+- Teste navegação fixa, menu do perfil, menu móvel, formulários e tabelas.
+
+## JavaScript e acessibilidade
+
+- Use JavaScript puro, DOM e `fetch`. Não introduza jQuery, React ou TypeScript sem requisito concreto.
+- Preserve o contrato de `.nav__items`, `#open__nav-btn` e `#close__nav-btn` com `nf_blog/js/main.js`.
+- Ao generalizar scripts, proteja seletores opcionais contra `null` e evite listeners duplicados.
+- Trate carregamento, vazio, falha HTTP/JSON e sucesso ao consumir API. Não use dados fictícios para esconder falhas.
+- Renderize textos externos com `textContent`, não com `innerHTML`.
+- Use HTML semântico, labels associados, botões para ações, links para navegação e `alt` útil.
+- Em links novos para outra aba, use `rel="noopener noreferrer"`.
+- Preserve imagens, vídeos, favicon e proporções. Não substitua mídia existente por placeholders sem pedido.

@@ -1,0 +1,41 @@
+---
+description: Arquitetura PHP procedural, configuração central, formulários e templates do NF Blog
+globs: nf_blog/**/*.php
+alwaysApply: false
+---
+
+# PHP e estrutura
+
+- Mantenha processamento PHP no começo da página e HTML abaixo. Extraia lógica realmente compartilhada para os helpers existentes.
+- Execute sessão, autorização, validação, headers e redirecionamentos antes de qualquer saída HTML. Evite BOM e espaços antes de `<?php`.
+- Use `require_once __DIR__ . '/caminho.php'` para includes locais. Não monte caminhos de include a partir de GET/POST.
+- Arquivos só de PHP (config/helpers) devem permanecer sem fechamento `?>`.
+- Preserve compatibilidade com PHP 8. Não adicione `declare(strict_types=1)` indiscriminadamente: hoje só `nf_blog/api/latest-posts.php` usa; os demais recebem tipos do mysqli e de formulários.
+
+## Configuração central
+
+- Leia `nf_blog/config/constants.php` e `nf_blog/config/database.php` antes de mexer em URL ou conexão.
+- Reutilize `$connection`, mysqli com exceções e charset `utf8mb4`; não abra uma conexão por componente.
+- Preserve as variáveis `NF_ROOT_URL`, `NF_DB_HOST`, `NF_DB_USER`, `NF_DB_PASS` e `NF_DB_NAME`.
+- `ROOT_URL` termina em `/`. Caminhos persistidos de mídia são relativos, como `Images/posts/<arquivo>.png`.
+- O fallback `http://localhost/blog/` não prova a URL da instalação. Confirme a pasta servida e configure `NF_ROOT_URL`.
+- A aplicação usa `getenv()`. Não há carregador de `.env`; criar um arquivo `.env` sozinho não configura o PHP. O exemplo versionado é `.env.example`. As variáveis `NF_DB_*` não configuram o MCP.
+- `admin/config/constants.php` e `admin/config/database.php` apenas encaminham para a configuração central.
+
+## Formulários e apresentação
+
+- Valide tipos antes de `trim`, contagens ou consultas: entradas externas podem ser arrays. IDs devem ser inteiros positivos.
+- Reaproveite `postValidationErrors`, `userFieldErrors`, `userPasswordErrors`, `categoryValidationErrors` e demais helpers do domínio.
+- Após sucesso em POST, preserve POST/Redirect/GET com HTTP 303 e `exit` após `header('Location: ...')`.
+- Use `setFlash`/`getFlash` para avisos temporários no painel. Preserve textos não sensíveis após erro; não repopule senhas.
+- Escape valores para HTML com `authEscape`. No post individual, o conteúdo é texto com `nl2br(authEscape($post['body']))`; não passe a interpretar HTML salvo sem requisito explícito e sanitização.
+- Para cards e datas, reutilize `postExcerpt` e `postDisplayDate`.
+- Mantenha estados vazios, 404 para post/categoria inexistente e mensagens genéricas em falhas.
+- Não exponha SQL, stack traces, senhas, hashes ou dados de sessão na interface.
+
+## Templates existentes
+
+- `admin/partials/header.php` abre o HTML da homepage pública (`nf_blog/index.php`). Não protege rotas administrativas e usa caminhos relativos da raiz do blog.
+- As demais páginas públicas e o painel ainda têm navbar e footer próprios. Verifique cada consumidor antes de alterar um trecho compartilhado.
+- Não existe `admin/partials/footer.php`. Não suponha um rodapé central.
+- Preserve o versionamento do CSS via `filemtime` nas páginas PHP.

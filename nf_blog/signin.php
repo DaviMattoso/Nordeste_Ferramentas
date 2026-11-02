@@ -11,7 +11,7 @@ require_once __DIR__ . '/config/csrf.php';
 
 /* Uma sessão já autenticada segue diretamente para o painel. */
 if (isLoggedIn()) {
-    header('Location: admin/dashboard.php', true, 302);
+    header('Location: ' . ROOT_URL . 'admin/dashboard.php', true, 302);
     exit;
 }
 
@@ -53,7 +53,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     'csrf_token' => $newCsrfToken,
                 ];
                 /* POST/Redirect/GET impede o reenvio da senha ao atualizar o dashboard. */
-                header('Location: admin/dashboard.php', true, 303);
+                header('Location: ' . ROOT_URL . 'admin/dashboard.php', true, 303);
                 exit;
             }
             $error = 'Usuário/email ou senha inválidos.';

@@ -32,5 +32,5 @@ if (ini_get('session.use_cookies')) {
 /* Invalida a sessão no servidor e impede o cache da resposta de logout. */
 session_destroy();
 header('Cache-Control: no-store');
-header('Location: signin.php?logout=1', true, 303);
+header('Location: ' . ROOT_URL . 'signin.php?logout=1', true, 303);
 exit;

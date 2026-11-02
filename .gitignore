@@ -8,3 +8,7 @@ database/backups/
 
 *.log
 *.tmp
+
+# Servidor MCP MariaDB, ambiente virtual e credenciais locais.
+# Fica fora de nf_blog/ e de site_principal/.
+/tools/mariadb-mcp/
