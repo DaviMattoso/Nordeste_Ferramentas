@@ -21,6 +21,12 @@ SET time_zone = "+00:00";
 -- Banco de dados: `nf_blog`
 --
 
+CREATE DATABASE IF NOT EXISTS `nf_blog`
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE `nf_blog`;
+
 -- --------------------------------------------------------
 
 --

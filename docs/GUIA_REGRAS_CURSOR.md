@@ -70,4 +70,4 @@ Ao editar uma regra:
 - Não comprovam que o ambiente local está configurado.
 - Não registram resultados antigos de checklist como teste da cópia atual.
 
-Para executar o projeto, use Apache/XAMPP com MySQL/MariaDB. O blog usa o banco `nf_blog` e `NF_ROOT_URL` apontando para a pasta pública real (o fallback do código é `http://localhost/blog/`). O aluguel usa o banco `nf_aluguel` e o fallback `http://localhost/aluguel/`. Live Server não executa PHP.
+Para executar o projeto, use Apache/XAMPP com MySQL/MariaDB. O blog usa o banco `nf_blog` e `NF_ROOT_URL` apontando para a pasta pública real (o fallback do código é `http://localhost/Nordeste_Ferramentas/nf_blog/`). O aluguel usa o banco `nf_aluguel` e o fallback `http://localhost/aluguel/`. Live Server não executa PHP.

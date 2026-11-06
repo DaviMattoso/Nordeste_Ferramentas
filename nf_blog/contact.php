@@ -1,8 +1,8 @@
 <?php
 /**
  * Página pública de contato do NF Blog.
- * Reúne os canais da empresa, o formulário visual e o mapa incorporado; a
- * sessão personaliza a navegação e o banco alimenta as categorias do rodapé.
+ * Reúne os canais da empresa, o formulário que abre o WhatsApp e o mapa;
+ * a sessão personaliza a navegação e o banco alimenta as categorias do rodapé.
  */
 
 require_once __DIR__ . '/config/auth.php';
@@ -113,11 +113,22 @@ $publicCategories = publicCategories($connection);
                 </div>
 
                 <div class="contact__right">
-                    <form class="contact__form">
-                        <input type="text" placeholder="Seu nome" required />
-                        <input type="email" placeholder="Seu e-mail" required />
-                        <input type="text" placeholder="Assunto" />
+                    <!--
+                        Não existe endpoint de contato no servidor. O formulário
+                        envia para esta própria página e o contact.js abre o WhatsApp.
+                    -->
+                    <form
+                        id="blog-contact-form"
+                        class="contact__form"
+                        action="contact.php"
+                        method="post"
+                        data-whatsapp="5581995607222"
+                    >
+                        <input type="text" name="nome" placeholder="Seu nome" autocomplete="name" required />
+                        <input type="email" name="email" placeholder="Seu e-mail" autocomplete="email" required />
+                        <input type="text" name="assunto" placeholder="Assunto" />
                         <textarea
+                            name="mensagem"
                             rows="8"
                             placeholder="Digite sua mensagem..."
                             required
@@ -125,6 +136,7 @@ $publicCategories = publicCategories($connection);
                         <button class="btn" type="submit">
                             Enviar mensagem
                         </button>
+                        <p id="blog-contact-status" role="status"></p>
                     </form>
                 </div>
             </div>
@@ -224,5 +236,6 @@ $publicCategories = publicCategories($connection);
         </footer>
 
         <script src="./js/main.js"></script>
+        <script src="./js/contact.js"></script>
     </body>
 </html>

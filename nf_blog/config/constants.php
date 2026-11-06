@@ -13,8 +13,12 @@ $environmentValue = static function (string $name, string $localDefault): string
     return is_string($value) && $value !== '' ? $value : $localDefault;
 };
 
-/* ROOT_URL sempre termina com barra porque as páginas concatenam caminhos relativos. */
-$rootUrl = rtrim($environmentValue('NF_ROOT_URL', 'http://localhost/blog/'), '/') . '/';
+/*
+ * ROOT_URL é a base pública do blog nesta instalação do XAMPP.
+ * A pasta publicada é /Nordeste_Ferramentas/nf_blog/; /blog/ não existe no Apache.
+ * A barra final permanece porque páginas e redirects concatenam o caminho.
+ */
+$rootUrl = rtrim($environmentValue('NF_ROOT_URL', 'http://localhost/Nordeste_Ferramentas/nf_blog/'), '/') . '/';
 define('ROOT_URL', $rootUrl);
 
 /* Parâmetros usados pela conexão mysqli compartilhada. */

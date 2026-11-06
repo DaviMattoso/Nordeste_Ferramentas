@@ -18,7 +18,7 @@ alwaysApply: false
 - Reutilize `$connection`, mysqli com exceções e charset `utf8mb4`; não abra uma conexão por componente.
 - Preserve as variáveis `NF_ROOT_URL`, `NF_DB_HOST`, `NF_DB_USER`, `NF_DB_PASS` e `NF_DB_NAME`.
 - `ROOT_URL` termina em `/`. Caminhos persistidos de mídia são relativos, como `Images/posts/<arquivo>.png`.
-- O fallback `http://localhost/blog/` não prova a URL da instalação. Confirme a pasta servida e configure `NF_ROOT_URL`.
+- O fallback local é `http://localhost/Nordeste_Ferramentas/nf_blog/`. `NF_ROOT_URL` continua podendo apontar para outra pasta publicada.
 - A aplicação usa `getenv()`. Não há carregador de `.env`; criar um arquivo `.env` sozinho não configura o PHP. O exemplo versionado é `.env.example`. As variáveis `NF_DB_*` não configuram o MCP.
 - `admin/config/constants.php` e `admin/config/database.php` apenas encaminham para a configuração central.
 
