@@ -171,14 +171,15 @@ button:focus-visible,
    APRESENTAÇÃO PRINCIPAL
    ================================================== */
 .hero {
-    padding: 80px 0;
+    padding: 64px 0 72px;
 }
 
 .hero-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
-    gap: 60px;
+    column-gap: 32px;
+    row-gap: 28px;
 }
 
 .hero-text h1 {
@@ -198,11 +199,21 @@ button:focus-visible,
     max-width: 520px;
 }
 
+.hero-image {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
 .hero-image img {
-    width: 100%;
-    max-width: 500px;
+    width: min(640px, calc(50vw - 32px));
+    max-width: none;
+    height: auto;
     border-radius: 12px;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .hero-buttons {
@@ -1024,7 +1035,14 @@ button:focus-visible,
     }
 
     .hero-image {
+        grid-column: auto;
+        grid-row: auto;
         margin: 30px auto 0;
+    }
+
+    .hero-image img {
+        width: 100%;
+        max-width: 520px;
     }
 
     .hero-buttons {
