@@ -12,12 +12,53 @@ Prints de tela cheia do site institucional e do blog. Coloque as imagens nestes 
 
 ![Blog da Nordeste Ferramentas](docs/blog.png)
 
-## Stack
+## Stack Tecnológica
+Site Institucional
 
-- **Site institucional:** HTML, CSS e JavaScript, sem framework. A página usa a fonte Inter e ícones do Font Awesome.
-- **Blog:** PHP 8 e MariaDB/MySQL, com consultas via `mysqli`. Em desenvolvimento, roda no Apache do XAMPP.
-- **Ligação entre os dois:** a vitrine do site consome a API pública `nf_blog/api/latest-posts.php`, que responde em JSON.
-- **Configuração:** URL e banco vêm das variáveis `NF_*`. Os valores locais de desenvolvimento ficam como fallback. O modelo está em `.env.example`.
+<p align="left">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/Font_Awesome-528DD7?style=for-the-badge&logo=fontawesome&logoColor=white" />
+  <img src="https://img.shields.io/badge/Inter-Font-000000?style=for-the-badge" />
+</p>
+
+Site desenvolvido com HTML, CSS e JavaScript puro, sem utilização de frameworks.
+Blog
+
+<p align="left">
+  <img src="https://img.shields.io/badge/PHP_8-777BB4?style=for-the-badge&logo=php&logoColor=white" />
+  <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white" />
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Apache-D22128?style=for-the-badge&logo=apache&logoColor=white" />
+  <img src="https://img.shields.io/badge/XAMPP-FB7A24?style=for-the-badge&logo=xampp&logoColor=white" />
+</p>
+
+Blog desenvolvido em PHP 8, com banco de dados MariaDB/MySQL e consultas utilizando mysqli. Durante o desenvolvimento, utiliza Apache através do XAMPP.
+Integração entre os sistemas
+
+<p align="left">
+  <img src="https://img.shields.io/badge/API-JSON-000000?style=for-the-badge&logo=json&logoColor=white" />
+  <img src="https://img.shields.io/badge/HTTP-API-00599C?style=for-the-badge&logo=fastapi&logoColor=white" />
+</p>
+
+O site institucional consome a API pública:
+
+nf_blog/api/latest-posts.php
+
+A API retorna os posts mais recentes em formato JSON, permitindo que o site institucional exiba automaticamente os conteúdos publicados no blog.
+Configuração e Ambiente
+
+<p align="left">
+  <img src="https://img.shields.io/badge/.env-Environment-ecd53f?style=for-the-badge&logo=dotenv&logoColor=black" />
+  <img src="https://img.shields.io/badge/Development-Local-2EA44F?style=for-the-badge&logo=visualstudiocode&logoColor=white" />
+</p>
+
+    Variáveis de ambiente: URLs e configurações do banco de dados são definidas pelas variáveis NF_*.
+
+    Fallback local: valores padrão são utilizados durante o desenvolvimento.
+
+    Modelo de configuração: disponível no arquivo .env.example.
 
 ## Arquitetura
 
