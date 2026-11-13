@@ -15,11 +15,6 @@
 
 a {
     text-decoration: none;
-    outline: none;
-}
-
-button {
-    outline: none;
 }
 
 body {
@@ -139,7 +134,15 @@ button {
     text-decoration: none;
     display: inline-block;
     border: none;
-    outline: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+.nav-btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+    outline: 3px solid #1e3a8a;
+    outline-offset: 3px;
 }
 
 .btn-primary {
@@ -729,6 +732,14 @@ button {
     margin-bottom: 20px;
 }
 
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 600;
+}
+
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -745,8 +756,14 @@ button {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    outline: none;
     border-color: #ff6b35;
+}
+
+.form-group input:focus-visible,
+.form-group select:focus-visible,
+.form-group textarea:focus-visible {
+    outline: 3px solid #1e3a8a;
+    outline-offset: 2px;
 }
 
 .form-group textarea {

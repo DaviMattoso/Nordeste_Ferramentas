@@ -36,20 +36,44 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $statement->execute();
             $statement->store_result();
             $statement->bind_result($id, $firstName, $lastName, $username, $email, $hash, $avatar, $role);
-            /* Uma correspondência ambígua não autentica uma conta arbitrária. */
-            $found = $statement->num_rows === 1 && $statement->fetch();
+            /*
+             * Username de uma conta pode coincidir com o email de outra em dados antigos.
+             * Só entra a conta cuja senha confere. Se as duas conferirem, nenhuma é escolhida.
+             */
+            $accounts = [];
+            while ($statement->fetch()) {
+                $accounts[] = [
+                    'id' => (int) $id,
+                    'username' => $username,
+                    'hash' => $hash,
+                    'avatar' => $avatar,
+                    'role' => $role,
+                ];
+            }
             $statement->close();
-            if ($found && password_verify($password, $hash)) {
+            $authenticated = null;
+            $ambiguous = false;
+            foreach ($accounts as $account) {
+                if (!password_verify($password, $account['hash'])) {
+                    continue;
+                }
+                if ($authenticated !== null) {
+                    $ambiguous = true;
+                    break;
+                }
+                $authenticated = $account;
+            }
+            if (!$ambiguous && $authenticated !== null) {
                 /* A troca do identificador antes do login protege contra fixação de sessão. */
                 if (!session_regenerate_id(true)) {
                     throw new RuntimeException('Falha ao renovar sessão.');
                 }
                 $newCsrfToken = regenerateCsrfToken();
                 $_SESSION = [
-                    'user_id' => (int) $id,
-                    'username' => $username,
-                    'role' => $role,
-                    'avatar' => $avatar,
+                    'user_id' => $authenticated['id'],
+                    'username' => $authenticated['username'],
+                    'role' => $authenticated['role'],
+                    'avatar' => $authenticated['avatar'],
                     'csrf_token' => $newCsrfToken,
                 ];
                 /* POST/Redirect/GET impede o reenvio da senha ao atualizar o dashboard. */
@@ -85,31 +109,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     <body>
 
         <!-- Navegação pública reduzida para visitantes ainda não autenticados. -->
-        <nav>
-            <div class="container nav__container">
-                <a href="index.php" class="nav__logo">
-                    <img
-                        src="./Images/logo.png"
-                        alt="Logo NFB"
-                        class="nav__logo-image"
-                    />
-                    <span>NF BLOG</span>
-                </a>
-                <ul class="nav__items">
-                    <li><a href="blog.php">Posts</a></li>
-                    <li><a href="about.php">Sobre</a></li>
-                    <li><a href="services.php">Serviços</a></li>
-                    <li><a href="contact.php">Contato</a></li>
-                </ul>
-
-                <button id="open__nav-btn">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <button id="close__nav-btn">
-                    <i class="fa-solid fa-x"></i>
-                </button>
-            </div>
-        </nav>
+        <?php $hideAuthNav = true; require __DIR__ . '/partials/public-nav.php'; ?>
 
         <!-- Formulário protegido por CSRF; o processamento ocorre antes do HTML. -->
         <section class="form__section">
@@ -140,7 +140,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     <div class="form__control">
                         <button type="submit" class="btn">Entrar</button>
                         <small
-                            >Nao tem uma conta?
+                            >Não tem uma conta?
                             <a href="signup.php">Cadastrar</a></small
                         >
                     </div>
@@ -149,77 +149,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         </section>
 
         <!-- Rodapé público com categorias, suporte e navegação. -->
-        <footer>
-            <div class="footer__socials">
-                <a href="https://www.youtube.com/" target="_blank"
-                    ><i class="fa-brands fa-youtube"></i
-                ></a>
-
-                <a href="https://www.facebook.com/?locale=pt_BR" target="_blank"
-                    ><i class="fa-brands fa-facebook"></i
-                ></a>
-
-                <a href="https://x.com/?lang=pt" target="_blank"
-                    ><i class="fa-brands fa-twitter"></i
-                ></a>
-
-                <a href="https://pt.linkedin.com/" target="_blank"
-                    ><i class="fa-brands fa-linkedin"></i
-                ></a>
-
-                <a href="https://www.instagram.com/" target="_blank"
-                    ><i class="fa-brands fa-instagram"></i
-                ></a>
-            </div>
-
-            <div class="container footer__container">
-                <article>
-                    <h4>Categorias</h4>
-                    <ul>
-                        <?php foreach ($publicCategories as $publicCategory): ?>
-                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </article>
-
-                <article>
-                    <h4>Suporte</h4>
-                    <ul>
-                        <li>
-                            <a
-                                href="https://wa.me/5581995607222"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Suporte Online</a
-                            >
-                        </li>
-                        <li><a href="contact.php">Numeros</a></li>
-                        <li><a href="contact.php">Email</a></li>
-                        <li><a href="contact.php">Localização</a></li>
-                    </ul>
-                </article>
-
-                <article>
-                    <h4>Navegação</h4>
-                    <ul>
-                        <li><a href="index.php">Home</a></li>
-                        <li><a href="blog.php">Blog</a></li>
-                        <li><a href="about.php">Sobre</a></li>
-                        <li><a href="services.php">Serviços</a></li>
-                        <li><a href="contact.php">Contato</a></li>
-                    </ul>
-                </article>
-
-                <div class="footer__copyright">
-                    <small>
-                        &copy; 2026 NF Ferramentas - Todos os direitos
-                        reservados
-                    </small>
-                </div>
-            </div>
-        </footer>
-
-        <script src="./js/main.js"></script>
+        <?php require __DIR__ . '/partials/public-footer.php'; ?>
     </body>
 </html>

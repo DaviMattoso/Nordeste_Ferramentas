@@ -13,6 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/flash.php';
 $flash = getFlash();
 $users = [];
+$listFailed = false;
 try {
     /* A consulta não recebe entrada externa e mantém os resultados ordenados por ID. */
     $result = $connection->query('SELECT id, first_name, last_name, username, role FROM users ORDER BY id ASC');
@@ -23,6 +24,7 @@ try {
 } catch (Throwable $exception) {
     /* Um erro desta listagem substitui mensagens anteriores para não sugerir sucesso parcial. */
     error_log('NF Blog: falha ao listar usuários. Código: ' . $exception->getCode());
+    $listFailed = true;
     $flash = ['type' => 'error', 'message' => 'Não foi possível carregar os usuários. Tente novamente.'];
 }
 ?>
@@ -46,49 +48,7 @@ try {
     <body>
 
         <!-- Navegação do blog com acesso ao perfil administrativo. -->
-        <nav>
-            <div class="container nav__container">
-                <a href="../index.php" class="nav__logo">
-                    <img
-                        src="../Images/logo.png"
-                        alt="Logo NFB"
-                        class="nav__logo-image"
-                    />
-                    <span>NF BLOG</span>
-                </a>
-                <ul class="nav__items">
-                    <li><a href="../blog.php">Posts</a></li>
-                    <li><a href="../about.php">Sobre</a></li>
-                    <li><a href="../services.php">Serviços</a></li>
-                    <li><a href="../contact.php">Contato</a></li>
-                    <?php if (!isLoggedIn()): ?>
-                    <li><a href="../signin.php">Signin</a></li>
-                    <?php else: ?>
-                    <li class="nav__profile">
-                        <div class="avatar">
-                            <img src="<?= authEscape('../' . authAvatar()) ?>" alt="<?= authEscape($_SESSION['username'] ?? '') ?>" />
-                        </div>
-                        <ul>
-                            <li><a href="dashboard.php">Dashboard</a></li>
-                            <li>
-                                <form action="../logout.php" method="POST" class="logout__form">
-                                    <?= csrfField() ?>
-                                    <button type="submit" class="logout__button">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                    <?php endif; ?>
-                </ul>
-
-                <button id="open__nav-btn">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <button id="close__nav-btn">
-                    <i class="fa-solid fa-x"></i>
-                </button>
-            </div>
-        </nav>
+        <?php $blogBase = '../'; $dashboardHref = 'dashboard.php'; require __DIR__ . '/../partials/public-nav.php'; ?>
 
         <!-- Menu de gestão e tabela das contas cadastradas. -->
         <section class="dashboard">
@@ -157,7 +117,7 @@ try {
                         <thead>
                             <tr>
                                 <th>Nome</th>
-                                <th>Nome de Usuario</th>
+                                <th>Nome de usuário</th>
                                 <th>Editar</th>
                                 <th>Excluir</th>
                                 <th>Admin</th>
@@ -179,7 +139,7 @@ try {
                                 <td><?= $user['role'] === 'admin' ? 'Sim' : 'Não' ?></td>
                             </tr>
                             <?php endforeach; ?>
-                            <?php if (!$users): ?>
+                            <?php if (!$users && !$listFailed): ?>
                             <tr><td colspan="5">Nenhum usuário encontrado.</td></tr>
                             <?php endif; ?>
                         </tbody>
@@ -189,80 +149,6 @@ try {
         </section>
 
         <!-- Rodapé compartilhado pelas páginas do painel. -->
-        <footer>
-            <div class="footer__socials">
-                <a href="https://www.youtube.com/" target="_blank"
-                    ><i class="fa-brands fa-youtube"></i
-                ></a>
-
-                <a href="https://www.facebook.com/?locale=pt_BR" target="_blank"
-                    ><i class="fa-brands fa-facebook"></i
-                ></a>
-
-                <a href="https://x.com/?lang=pt" target="_blank"
-                    ><i class="fa-brands fa-twitter"></i
-                ></a>
-
-                <a href="https://pt.linkedin.com/" target="_blank"
-                    ><i class="fa-brands fa-linkedin"></i
-                ></a>
-
-                <a href="https://www.instagram.com/" target="_blank"
-                    ><i class="fa-brands fa-instagram"></i
-                ></a>
-            </div>
-
-            <div class="container footer__container">
-                <article>
-                    <h4>Categorias</h4>
-                    <ul>
-                        <li>Ferramentas</li>
-                        <li>Construção</li>
-                        <li>Marcenaria</li>
-                        <li>Seg. no Trabalho</li>
-                        <li>Dicas e Tutoriais</li>
-                        <li>Maquinaria Pesada</li>
-                    </ul>
-                </article>
-
-                <article>
-                    <h4>Suporte</h4>
-                    <ul>
-                        <li>
-                            <a
-                                href="https://wa.me/5581995607222"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Suporte Online</a
-                            >
-                        </li>
-                        <li><a href="../contact.php">Numeros</a></li>
-                        <li><a href="../contact.php">Email</a></li>
-                        <li><a href="../contact.php">Localização</a></li>
-                    </ul>
-                </article>
-
-                <article>
-                    <h4>Navegação</h4>
-                    <ul>
-                        <li><a href="../index.php">Home</a></li>
-                        <li><a href="../blog.php">Blog</a></li>
-                        <li><a href="../about.php">Sobre</a></li>
-                        <li><a href="../services.php">Serviços</a></li>
-                        <li><a href="../contact.php">Contato</a></li>
-                    </ul>
-                </article>
-
-                <div class="footer__copyright">
-                    <small>
-                        &copy; 2026 NF Ferramentas - Todos os direitos
-                        reservados
-                    </small>
-                </div>
-            </div>
-        </footer>
-
-        <script src="../js/main.js"></script>
+        <?php $blogBase = '../'; require __DIR__ . '/../partials/public-footer.php'; ?>
     </body>
 </html>

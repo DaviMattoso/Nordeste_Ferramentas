@@ -32,49 +32,7 @@ $publicCategories = publicCategories($connection);
     <body>
 
         <!-- Navegação pública com acesso condicional ao perfil autenticado. -->
-        <nav>
-            <div class="container nav__container">
-                <a href="index.php" class="nav__logo">
-                    <img
-                        src="./Images/logo.png"
-                        alt="Logo NFB"
-                        class="nav__logo-image"
-                    />
-                    <span>NF BLOG</span>
-                </a>
-                <ul class="nav__items">
-                    <li><a href="blog.php">Posts</a></li>
-                    <li><a href="about.php">Sobre</a></li>
-                    <li><a href="services.php">Serviços</a></li>
-                    <li><a href="contact.php">Contato</a></li>
-                    <?php if (!isLoggedIn()): ?>
-                    <li><a href="signin.php">Signin</a></li>
-                    <?php else: ?>
-                    <li class="nav__profile">
-                        <div class="avatar">
-                            <img src="<?= authEscape(authAvatar()) ?>" alt="<?= authEscape($_SESSION['username'] ?? '') ?>" />
-                        </div>
-                        <ul>
-                            <li><a href="admin/dashboard.php">Dashboard</a></li>
-                            <li>
-                                <form action="logout.php" method="POST" class="logout__form">
-                                    <?= csrfField() ?>
-                                    <button type="submit" class="logout__button">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                    <?php endif; ?>
-                </ul>
-
-                <button id="open__nav-btn">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-                <button id="close__nav-btn">
-                    <i class="fa-solid fa-x"></i>
-                </button>
-            </div>
-        </nav>
+        <?php require __DIR__ . '/partials/public-nav.php'; ?>
 
         <!-- Canais de atendimento e formulário visual de contato. -->
         <section class="contact">
@@ -164,78 +122,7 @@ $publicCategories = publicCategories($connection);
         </section>
 
         <!-- Rodapé público alimentado pelas categorias atuais do banco. -->
-        <footer>
-            <div class="footer__socials">
-                <a href="https://www.youtube.com/" target="_blank"
-                    ><i class="fa-brands fa-youtube"></i
-                ></a>
-
-                <a href="https://www.facebook.com/?locale=pt_BR" target="_blank"
-                    ><i class="fa-brands fa-facebook"></i
-                ></a>
-
-                <a href="https://x.com/?lang=pt" target="_blank"
-                    ><i class="fa-brands fa-twitter"></i
-                ></a>
-
-                <a href="https://pt.linkedin.com/" target="_blank"
-                    ><i class="fa-brands fa-linkedin"></i
-                ></a>
-
-                <a href="https://www.instagram.com/" target="_blank"
-                    ><i class="fa-brands fa-instagram"></i
-                ></a>
-            </div>
-
-            <div class="container footer__container">
-                <article>
-                    <h4>Categorias</h4>
-                    <ul>
-                        <?php foreach ($publicCategories as $publicCategory): ?>
-                        <li><a href="category-post.php?id=<?= (int) $publicCategory['id'] ?>"><?= authEscape((string) $publicCategory['title']) ?></a></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </article>
-
-                <article>
-                    <h4>Suporte</h4>
-                    <ul>
-                        <li>
-                            <a
-                                href="https://wa.me/5581995607222"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Suporte Online</a
-                            >
-                        </li>
-                        <li><a href="contact.php">Numeros</a></li>
-                        <li><a href="contact.php">Email</a></li>
-                        <li><a href="contact.php">Localização</a></li>
-                    </ul>
-                </article>
-
-                <article>
-                    <h4>Navegação</h4>
-                    <ul>
-                        <li><a href="index.php">Home</a></li>
-                        <li><a href="blog.php">Blog</a></li>
-                        <li><a href="about.php">Sobre</a></li>
-                        <li><a href="services.php">Serviços</a></li>
-                        <li><a href="contact.php">Contato</a></li>
-                    </ul>
-                </article>
-
-                <div class="footer__copyright">
-                    <small>
-                        &copy; 2026 NF Ferramentas - Todos os direitos
-                        reservados
-                    </small>
-                </div>
-            </div>
-        </footer>
-
-        <script src="./js/main.js"></script>
+        <?php require __DIR__ . '/partials/public-footer.php'; ?>
         <script src="./js/contact.js"></script>
     </body>
 </html>

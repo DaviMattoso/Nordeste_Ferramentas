@@ -36,9 +36,26 @@ function isValidCsrfToken(mixed $token): bool
         && hash_equals($expectedToken, $token);
 }
 
+/**
+ * O PHP esvazia $_POST e $_FILES quando o corpo passa de post_max_size.
+ * Nesse caso o token some junto com o arquivo, e a falha não é de sessão.
+ */
+function requestBodyWasDiscarded(): bool
+{
+    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+        return false;
+    }
+    $length = filter_var($_SERVER['CONTENT_LENGTH'] ?? 0, FILTER_VALIDATE_INT);
+    return $length !== false && $length > 0 && $_POST === [] && $_FILES === [];
+}
+
 /** Interrompe a requisição com 403 quando o token enviado é ausente ou inválido. */
 function requireValidCsrfToken(): void
 {
+    if (requestBodyWasDiscarded()) {
+        http_response_code(413);
+        exit('O envio passou do limite aceito pelo servidor. Reduza o arquivo e tente novamente.');
+    }
     if (isValidCsrfToken($_POST['csrf_token'] ?? null)) {
         return;
     }

@@ -112,25 +112,56 @@ function removeManagedUserAvatar(?string $avatar): void
 /**
  * Retorna conflitos de username e email.
  * Na edição, exclui o ID atual para permitir que seus valores permaneçam inalterados.
+ * Também impede que o username de uma conta seja o email de outra: o login aceita os dois campos.
  */
 function userDuplicateErrors(mysqli $connection, array $values, ?int $excludedId = null): array
 {
+    $username = $values['username'];
+    $email = $values['email'];
+    $sql = 'SELECT username = ? AS same_username, email = ? AS same_email, '
+        . 'email = ? AS email_matches_username, username = ? AS username_matches_email '
+        . 'FROM users WHERE username = ? OR email = ? OR email = ? OR username = ?';
     if ($excludedId === null) {
-        $statement = $connection->prepare('SELECT username = ?, email = ? FROM users WHERE username = ? OR email = ?');
-        $statement->bind_param('ssss', $values['username'], $values['email'], $values['username'], $values['email']);
+        $statement = $connection->prepare($sql);
+        $statement->bind_param(
+            'ssssssss',
+            $username,
+            $email,
+            $username,
+            $email,
+            $username,
+            $email,
+            $username,
+            $email
+        );
     } else {
-        $statement = $connection->prepare('SELECT username = ?, email = ? FROM users WHERE (username = ? OR email = ?) AND id <> ?');
-        $statement->bind_param('ssssi', $values['username'], $values['email'], $values['username'], $values['email'], $excludedId);
+        $statement = $connection->prepare($sql . ' AND id <> ?');
+        $statement->bind_param(
+            'ssssssssi',
+            $username,
+            $email,
+            $username,
+            $email,
+            $username,
+            $email,
+            $username,
+            $email,
+            $excludedId
+        );
     }
     $statement->execute();
-    $statement->bind_result($sameUsername, $sameEmail);
+    $statement->bind_result($sameUsername, $sameEmail, $emailMatchesUsername, $usernameMatchesEmail);
     $errors = [];
     while ($statement->fetch()) {
         if ($sameUsername) {
             $errors[] = 'Username já está em uso.';
+        } elseif ($emailMatchesUsername) {
+            $errors[] = 'Este username coincide com o email de outra conta.';
         }
         if ($sameEmail) {
             $errors[] = 'Email já está cadastrado.';
+        } elseif ($usernameMatchesEmail) {
+            $errors[] = 'Este email coincide com o username de outra conta.';
         }
     }
     $statement->close();

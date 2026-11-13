@@ -30,7 +30,7 @@ $dashboardHref = $dashboardHref ?? ($blogBase . 'admin/dashboard.php');
                     <li><a href="<?= authEscape($blogBase) ?>contact.php">Contato</a></li>
                     <?php if (!$hideAuthNav): ?>
                     <?php if (!isLoggedIn()): ?>
-                    <li><a href="<?= authEscape($blogBase) ?>signin.php">Signin</a></li>
+                    <li><a href="<?= authEscape($blogBase) ?>signin.php">Entrar</a></li>
                     <?php else: ?>
                     <li class="nav__profile">
                         <div class="avatar">
