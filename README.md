@@ -24,6 +24,7 @@ Site Institucional
 </p>
 
 Site desenvolvido com HTML, CSS e JavaScript puro, sem utilização de frameworks.
+
 Blog
 
 <p align="left">
@@ -35,6 +36,7 @@ Blog
 </p>
 
 Blog desenvolvido em PHP 8, com banco de dados MariaDB/MySQL e consultas utilizando mysqli. Durante o desenvolvimento, utiliza Apache através do XAMPP.
+
 Integração entre os sistemas
 
 <p align="left">
@@ -84,14 +86,11 @@ O blog é a parte mais complexa do projeto: tem API, banco de dados, login e pai
 
 No fim, deu certo. Isso não significa que não possa melhorar.
 
-## Agradecimento
-
-Obrigado, Rodrigo, por confiar em mim para fazer este projeto. E desculpa pela demora.
-
 ## Como rodar
 
 1. Coloque a pasta do projeto no `htdocs` do XAMPP e suba o Apache e o MySQL.
 2. Importe `nf_blog/database/database.sql` no phpMyAdmin. Isso cria o banco `nf_blog`.
 3. Abra `http://localhost/Nordeste_Ferramentas/`.
 
-No XAMPP padrão, os fallbacks locais já apontam para `root`, sem senha, no banco `nf_blog`. Fora desse ambiente, defina `NF_ROOT_URL`, `NF_DB_HOST`, `NF_DB_USER`, `NF_DB_PASS` e `NF_DB_NAME` no ambiente do servidor. Um arquivo `.env` solto não é lido pelo PHP.
+##
+(Obrigado, Rodrigo, por confiar em mim para fazer este projeto. E desculpa pela demora ❤️)
