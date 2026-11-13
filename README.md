@@ -4,9 +4,7 @@ O primeiro projeto de um desenvolvedor júnior, feito para um amigo.
 
 A Nordeste Ferramentas é uma empresa de aluguel e compra de ferramentas de construção. O pedido foi um site institucional e um blog. O sistema de aluguel também faz parte da ideia, mas fica para um plano futuro. Tudo foi feito para a web e funciona de forma responsiva.
 
-## Telas
-
-Prints de tela cheia do site institucional e do blog. Coloque as imagens nestes caminhos antes de publicar:
+## Uma Visão Geral
 
 ![Site institucional da Nordeste Ferramentas](docs/site-principal.png)
 
